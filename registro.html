@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - FaceTruck</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 800px;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+        .form-section {
+            display: none;
+        }
+        .form-section.active {
+            display: block;
+        }
+        h2 {
+            color: #007BFF;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Registro - FaceTruck</h2>
+        <form id="registroForm">
+            <label for="tipoUsuario">Tipo de Usuario:</label>
+            <select id="tipoUsuario" name="tipoUsuario" onchange="mostrarFormulario()">
+                <option value="">Seleccione una opción</option>
+                <option value="operadores">Operador</option>
+                <option value="hombresCamion">Hombre Camión</option> 
+                <option value="empresas">Empresa</option>
+            </select>
+
+            <!-- Formulario para Operadores -->
+            <div id="formOperadores" class="form-section">
+                <h3>Información Personal</h3>
+                <input type="text" name="nombre" placeholder="Nombre completo" required>
+                <input type="number" name="edad" placeholder="Edad" required>
+                <input type="text" name="domicilio" placeholder="Ciudad y Estado" required>
+                <input type="tel" name="telefono" placeholder="Teléfono de contacto" required>
+                <input type="email" name="correo" placeholder="Correo electrónico" required>
+                
+                <h3>Experiencia Laboral</h3>
+                <input type="text" name="experiencia" placeholder="¿Cuántos años de experiencia tiene manejando unidades pesadas?" required>
+                <textarea name="empresasAnteriores" placeholder="Empresas anteriores y duración del empleo" required></textarea>
+                <input type="text" name="tipoUnidades" placeholder="Tipo de unidades que ha manejado" required>
+                <input type="text" name="rutas" placeholder="Descripción de rutas manejadas" required>
+                
+                <h3>Licencia y Certificaciones</h3>
+                <input type="text" name="licencia" placeholder="Tipo de licencia de conducir y vigencia" required>
+                <label for="certificadoMaterialesPeligrosos">¿Cuenta con certificación para manejo de materiales peligrosos?</label>
+                <select id="certificadoMaterialesPeligrosos" name="certificadoMaterialesPeligrosos" required>
+                    <option value="sí">Sí</option>
+                    <option value="no">No</option>
+                </select>
+                <textarea name="otrosCertificados" placeholder="Otros certificados o capacitaciones relevantes"></textarea>
+                
+                <h3>Disponibilidad</h3>
+                <label for="viajar">¿Está dispuesto a viajar o hacer rutas nacionales?</label>
+                <select id="viajar" name="viajar" required>
+                    <option value="sí">Sí</option>
+                    <option value="no">No</option>
+                </select>
+                <label for="horariosVariables">Disponibilidad para horarios variables o nocturnos</label>
+                <select id="horariosVariables" name="horariosVariables" required>
+                    <option value="sí">Sí</option>
+                    <option value="no">No</option>
+                </select>
+                
+                <h3>Competencias</h3>
+                <label for="mecanica">Nivel de conocimiento en mecánica básica</label>
+                <select id="mecanica" name="mecanica" required>
+                    <option value="principiante">Principiante</option>
+                    <option value="intermedio">Intermedio</option>
+                    <option value="avanzado">Avanzado</option>
+                </select>
+                <input type="text" name="seguridadVial" placeholder="Nivel de conocimiento en seguridad vial y normas de tránsito" required>
+                <input type="text" name="usoGPS" placeholder="Habilidad para el uso de GPS y otras herramientas de navegación" required>
+                <input type="text" name="bitacoras" placeholder="Manejo de bitácoras o reportes de viaje" required>
+                
+                <h3>Referencias Laborales</h3>
+                <textarea name="referenciasLaborales" placeholder="Contacto de uno o dos empleadores anteriores" required></textarea>
+                
+                <h3>Preguntas Adicionales</h3>
+                <textarea name="interes" placeholder="¿Por qué está interesado en esta posición?" required></textarea>
+                <label for="accidentes">¿Ha tenido accidentes o infracciones en el último año?</label>
+                <select id="accidentes" name="accidentes" required>
+                    <option value="sí">Sí</option>
+                    <option value="no">No</option>
+                </select>
+                <textarea name="detallesAccidentes" placeholder="Detalles si aplica"></textarea>
+            </div>
+
+                        <!-- Formulario para Hombres Camión -->
+            <div id="formHombresCamion" class="form-section">
+                <h3>Información del Propietario</h3>
+                <input type="text" name="nombrePropietario" placeholder="Nombre completo" required>
+                <input type="text" name="domicilioPropietario" placeholder="Ciudad y Estado" required>
+                <input type="tel" name="telefonoPropietario" placeholder="Teléfono de contacto" required>
+                <input type="email" name="correoPropietario" placeholder="Correo electrónico" required>
+                <input type="text" name="rfc" placeholder="Número de identificación fiscal (RFC)" required>
+                
+                <h3>Información de la Unidad</h3>
+                <input type="text" name="marcaModelo" placeholder="Marca y modelo del camión" required>
+                <input type="number" name="añoFabricacion" placeholder="Año de fabricación" required>
+                <input type="text" name="tipoUnidad" placeholder="Tipo de unidad (e.g., torton, rabón, tráiler, doble remolque)" required>
+                <input type="text" name="numeroPlacas" placeholder="Número de placas y estado de registro" required>
+                <input type="text" name="vin" placeholder="Número de serie del vehículo (VIN)" required>
+                <input type="text" name="tipoCaja" placeholder="Tipo de caja o remolque (e.g., caja seca, refrigerada, plana, tanque)" required>
+                <input type="number" name="capacidadCarga" placeholder="Capacidad de carga (toneladas)" required>
+                
+                <h3>Condiciones de la Unidad</h3>
+                <input type="date" name="ultimaFechaServicio" placeholder="Última fecha de servicio mecánico" required>
+                <input type="text" name="documentacionPermisos" placeholder="Documentación y permisos vigentes (Seguro, Verificación Vehicular, Tarjeta de Circulación)" required>
+                <label for="seguroCarga">¿Cuenta con seguro de carga?</label>
+                <select id="seguroCarga" name="seguroCarga" required>
+                    <option value="sí">Sí</option>
+                    <option value="no">No</option>
+                </select>
+                <label for="estadoLlantas">Estado de llantas</label>
+                <select id="estadoLlantas" name="estadoLlantas" required>
+                    <option value="nuevas">Nuevas</option>
+                    <option value="usadasBuenEstado">Usadas en buen estado</option>
+                    <option value="necesitanReemplazo">Necesitan reemplazo</option>
+                </select>
+                <label for="gps">¿Cuenta con GPS o sistema de rastreo?</label>
+                <select id="gps" name="gps" required>
+                    <option value="sí">Sí</option>
+                    <option value="no">No</option>
+                </select>
+                
+                <h3>Licencia y Certificaciones del Operador (si aplican)</h3>
+                <input type="text" name="tipoLicencia" placeholder="Tipo de licencia del chofer asignado y vigencia" required>
+                <label for="certificadoMaterialesPeligrososOperador">Certificación para el manejo de materiales peligrosos (si aplica)</label>
+                <select id="certificadoMaterialesPeligrososOperador" name="certificadoMaterialesPeligrososOperador" required>
+                    <option value="sí">Sí</option>
+                    <option value="no">No</option>
+                </select>
+                <label for="choferAsignado">¿Se cuenta con chofer asignado o la empresa debe proveerlo?</label>
+                <select id="choferAsignado" name="choferAsignado" required>
+                    <option value="sí">Sí, ya tiene chofer</option>
+                    <option value="no">No, necesito chofer</option>
+                </select>
+                
+                <h3>Experiencia del Propietario y de la Unidad en Rutas</h3>
+                <input type="number" name="tiempoSectorTransporte" placeholder="Tiempo que ha trabajado en el sector de transporte (años)" required>
+                <input type="text" name="experienciaRutas" placeholder="Experiencia previa en rutas (locales, nacionales, internacionales)" required>
+                <input type="text" name="rutasFrecuentes" placeholder="Rutas más frecuentes (destinos principales)" required>
+                <input type="text" name="mercanciasEspecificas" placeholder="¿Tiene experiencia en transporte de mercancías específicas? (e.g., refrigerados, materiales peligrosos)" required>
+                
+                <h3>Documentación Requerida (subir archivos)</h3>
+                <input type="file" name="tarjetaCirculacion" required>
+                <input type="file" name="seguroCargaUnidad" required>
+                <input type="file" name="licenciaChoferAsignado" required>
+                <input type="file" name="certificadoVerificacion" required>
+                <input type="file" name="reporteMantenimiento" required>
+                
+                <h3>Disponibilidad</h3>
+                <label for="rutasDisponibilidad">Disponibilidad para rutas específicas</label>
+                <select id="rutasDisponibilidad" name="rutasDisponibilidad" required>
+                    <option value="nacionales">Nacionales</option>
+                    <option value="locales">Locales</option>
+                    <option value="ambas">Ambas</option>
+                </select>
+                <label for="diasHorarios">Días y horarios disponibles</label>
+                <textarea id="diasHorarios" name="diasHorarios" required></textarea>
+                
+                <h3>Preguntas Adicionales</h3>
+                <textarea name="razonColaboracion" placeholder="¿Por qué desea trabajar con nosotros?" required></textarea>
+                <label for="adaptarUnidad">¿Está abierto a adaptar la unidad según las necesidades de la empresa?</label>
+                <select id="adaptarUnidad" name="adaptarUnidad" required>
+                    <option value="sí">Sí</option>
+                    <option value="no">No</option>
+                </select>
+                <textarea name="condicionesRequerimientos" placeholder="¿Qué condiciones o requerimientos tiene para trabajar en colaboración?" required></textarea>
+            </div>
+            <!-- Formulario para Empresas -->
+            <div id="formEmpresas" class="form-section">
+                <h3>Información de la Empresa</h3>
+                <input type="text" name="nombreEmpresa" placeholder="Nombre de la empresa" required>
+                <input type="text" name="rfcEmpresa" placeholder="RFC de la empresa" required>
+                <input type="text" name="direccionEmpresa" placeholder="Ciudad y Estado" required>
+                <input type="tel" name="telefonoEmpresa" placeholder="Teléfono de contacto" required>
+                <input type="email" name="correoEmpresa" placeholder="Correo electrónico de contacto" required>
+                <input type="url" name="sitioWeb" placeholder="Sitio web (opcional)">
+                <input type="text" name="nombreContacto" placeholder="Nombre del contacto principal y cargo" required>
+                
+                <h3>Descripción de la Empresa</h3>
+                <input type="number" name="añosOperacion" placeholder="Años de operación en el sector de transporte" required>
+                <textarea name="areasEspecializacion" placeholder="Áreas de especialización (e.g., carga refrigerada, carga peligrosa, logística integral)" required></textarea>
+                <textarea name="certificaciones" placeholder="Certificaciones de la empresa (e.g., ISO 9001, Distintivo de Seguridad)" required></textarea>
+                <textarea name="experienciaRutas" placeholder="Experiencia en rutas específicas (nacionales, internacionales, locales)" required></textarea>
+                
+                <h3>Servicios de Transporte Ofrecidos</h3>
+                <textarea name="tiposVehiculos" placeholder="Tipos de vehículos disponibles (e.g., camión de caja seca, plataforma, tráiler, doble remolque)" required></textarea>
+                <input type="number" name="capacidadCargaTotal" placeholder="Capacidad de carga total de la flota (toneladas)" required>
+                <textarea name="tiposRemolque" placeholder="Tipos de remolque disponibles (e.g., caja seca, refrigerada, plana, tanque)" required></textarea>
+                <label for="seguroCarga">¿Cuenta con seguro de carga y seguro de responsabilidad civil?</label>
+                <select id="seguroCarga" name="seguroCarga" required>
+                    <option value="sí">Sí</option>
+                    <option value="no">No</option>
+                </select>
+                <label for="gps">¿Cuenta con sistema de rastreo GPS en las unidades?</label>
+                <select id="gps" name="gps" required>
+                    <option value="sí">Sí</option>
+                    <option value="no">No</option>
+                </select>
+                <textarea name="serviciosAdicionales" placeholder="Disponibilidad de servicios adicionales (almacenaje, gestión aduanal, monitoreo en tiempo real)" required></textarea>
+                
+                <h3>Información de la Flota</h3>
+                <input type="number" name="tamañoFlota" placeholder="Tamaño de la flota (número de unidades)" required>
+                <input type="number" name="añoPromedio" placeholder="Año promedio de los vehículos" required>
+                <textarea name="estadoMantenimiento" placeholder="Estado de mantenimiento de la flota (frecuencia de revisiones)" required></textarea>
+                <textarea name="permisosVerificaciones" placeholder="Registro de permisos y verificaciones vehiculares vigentes" required></textarea>
+                <label for="mecanicos">¿Cuentan con mecánicos y personal de mantenimiento en plantilla?</label>
+                <select id="mecanicos" name="mecanicos" required>
+                    <option value="sí">Sí</option>
+                    <option value="no">No</option>
+                </select>
+                
+                <h3>Información de los Operadores</h3>
+                <label for="operadoresCapacitados">¿La empresa cuenta con operadores capacitados y certificados?</label>
+                <select id="operadoresCapacitados" name="operadoresCapacitados" required>
+                    <option value="sí">Sí</option>
+                    <option value="no">No</option>
+                </select>
+                <input type="text" name="tipoLicenciaOperadores" placeholder="Tipo de licencia de los operadores (e.g., tipo C, federal)" required>
+                <label for="certificacionMateriales">Certificación en manejo de materiales peligrosos (si aplica)</label>
+                <select id="certificacionMateriales" name="certificacionMateriales" required>
+                    <option value="sí">Sí</option>
+                    <option value="no">No</option>
+                </select>
+                <label for="capacitadosSeguridad">¿Los operadores están capacitados en normas de seguridad y manejo defensivo?</label>
+                <select id="capacitadosSeguridad" name="capacitadosSeguridad" required>
+                    <option value="sí">Sí</option>
+                    <option value="no">No</option>
+                </select>
+                <input type="number" name="añosExperienciaOperadores" placeholder="Promedio de años de experiencia de los operadores en la empresa" required>
+                
+                <h3>Condiciones de Colaboración</h3>
+                <textarea name="tipoColaboracion" placeholder="Tipo de colaboración que buscan (ofrecer servicios de transporte a empresas, contratar operadores)" required></textarea>
+                <textarea name="disponibilidadHorarios" placeholder="Disponibilidad de horarios (e.g., rutas nocturnas, disponibilidad de emergencia)" required></textarea>
+                <label for="adaptarFlota">¿Están dispuestos a adaptar su flota a requisitos específicos de la empresa colaboradora?</label>
+                <select id="adaptarFlota" name="adaptarFlota" required>
+                    <option value="sí">Sí</option>
+                    <option value="no">No</option>
+                </select>
+                <textarea name="rutasPreferidas" placeholder="Rutas o destinos preferidos (si aplican)" required></textarea>
+                
+                <h3>Documentación Requerida (subir archivos)</h3>
+                <input type="file" name="rfcEmpresa" required>
+                <input type="file" name="permisosCertificaciones" required>
+                <input type="file" name="documentacionFlota" required>
+                <input type="file" name="licenciasOperadores" required>
+                
+                <h3>Preguntas Adicionales</h3>
+                <textarea name="razonColaboracion" placeholder="¿Por qué están interesados en colaborar con nosotros?" required></textarea>
+
+
+            <button type="submit">Registrar</button>
+        </form>
+    </div>
+
+    <script>
+        function mostrarFormulario() {
+            var tipoUsuario = document.getElementById('tipoUsuario').value;
+            var secciones = document.querySelectorAll('.form-section');
+            secciones.forEach(function(seccion) {
+                seccion.classList.remove('active');
+            });
+            if (tipoUsuario) {
+                document.getElementById('form' + tipoUsuario.charAt(0).toUpperCase() + tipoUsuario.slice(1)).classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
