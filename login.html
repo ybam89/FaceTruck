@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es"> <!-- Define el idioma del documento como español -->
+<head>
+    <meta charset="UTF-8"> <!-- Especifica la codificación de caracteres -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Configura la vista para dispositivos móviles -->
+    <title>Iniciar Sesión - FaceTruck</title> <!-- Título de la página -->
+    <style>
+        body {
+            font-family: Arial, sans-serif; /* Fuente de la página */
+            background-color: #f0f0f0; /* Color de fondo de la página */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Altura de la página completa */
+            margin: 0;
+        }
+        .login-container {
+            background-color: #ffffff; /* Color de fondo del contenedor de login */
+            padding: 20px;
+            border-radius: 8px; /* Bordes redondeados */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra del contenedor */
+            text-align: center;
+        }
+        .login-container img {
+            width: 100%;
+            max-width: 200px; /* Ancho máximo de la imagen */
+            margin-bottom: 20px;
+        }
+        .login-container h2 {
+            color: #007BFF; /* Color del texto del título */
+        }
+        .login-container label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        .login-container input {
+            width: calc(100% - 20px); /* Ancho de los inputs */
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc; /* Bordes de los inputs */
+            border-radius: 4px; /* Bordes redondeados de los inputs */
+            display: block;
+        }
+        .login-container input[type="submit"] {
+            background-color: #007BFF; /* Color de fondo del botón de envío */
+            border: none;
+            color: white; /* Color del texto del botón de envío */
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .login-container input[type="submit"]:hover {
+            background-color: #0056b3; /* Color de fondo del botón de envío al pasar el ratón */
+        }
+        .login-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF; /* Color de fondo de los botones */
+            border: none;
+            color: white; /* Color del texto de los botones */
+            border-radius: 4px; /* Bordes redondeados de los botones */
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .login-container button:hover {
+            background-color: #0056b3; /* Color de fondo de los botones al pasar el ratón */
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <img src="img/camion.jpg" alt="Camión"> <!-- Imagen de encabezado -->
+        <h2>Inicio de Sesión - FaceTruck</h2> <!-- Título de la página -->
+        <form action="login.php" method="post"> <!-- Formulario de inicio de sesión -->
+            <label for="username">Nombre de usuario o correo electrónico</label>
+            <input type="email" id="username" name="username" placeholder="Nombre de usuario o correo electrónico" autocomplete="username" required>
+            
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" name="password" placeholder="Contraseña" autocomplete="current-password" required>
+            
+            <input type="submit" value="Iniciar Sesión"> <!-- Botón para enviar el formulario -->
+        </form>
+        <button onclick="location.href='registro.html'" aria-label="Registrarse">Registrarse</button> <!-- Botón para ir a la página de registro -->
+        <button onclick="location.href='olvide_contraseña.html'" aria-label="Olvidé mi contraseña">Olvidé mi contraseña</button> <!-- Botón para ir a la página de recuperación de contraseña -->
+    </div>
+</body>
+</html>
