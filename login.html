@@ -78,7 +78,10 @@
         <img src="img/camion.jpg" alt="Camión">
         <h2>Inicio de Sesión - FaceTruck</h2>
         <?php
+        // Inicia la sesión para poder usar $_SESSION
         session_start();
+        
+        // Si hay un mensaje de error en la sesión, se muestra y luego se elimina
         if (isset($_SESSION['error'])) {
             echo '<div class="error-message">' . $_SESSION['error'] . '</div>';
             unset($_SESSION['error']);
