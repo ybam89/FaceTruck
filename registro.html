@@ -59,12 +59,12 @@
 <body>
     <div class="container">
         <h2>Registro - FaceTruck</h2>
-        <form id="registroForm">
+        <form id="registroForm" action="registro.php" method="POST">
             <label for="tipoUsuario">Tipo de Usuario:</label>
             <select id="tipoUsuario" name="tipoUsuario" onchange="mostrarFormulario()">
                 <option value="">Seleccione una opción</option>
                 <option value="operadores">Operador</option>
-                <option value="hombresCamion">Hombre Camión</option> 
+                <option value="hombresCamion">Hombre Camión</option>
                 <option value="empresas">Empresa</option>
             </select>
 
@@ -128,7 +128,7 @@
                 <textarea name="detallesAccidentes" placeholder="Detalles si aplica"></textarea>
             </div>
 
-                        <!-- Formulario para Hombres Camión -->
+             <!-- Formulario para Hombres Camión -->
             <div id="formHombresCamion" class="form-section">
                 <h3>Información del Propietario</h3>
                 <input type="text" name="nombrePropietario" placeholder="Nombre completo" required>
@@ -211,6 +211,7 @@
                 </select>
                 <textarea name="condicionesRequerimientos" placeholder="¿Qué condiciones o requerimientos tiene para trabajar en colaboración?" required></textarea>
             </div>
+
             <!-- Formulario para Empresas -->
             <div id="formEmpresas" class="form-section">
                 <h3>Información de la Empresa</h3>
@@ -292,21 +293,22 @@
                 
                 <h3>Preguntas Adicionales</h3>
                 <textarea name="razonColaboracion" placeholder="¿Por qué están interesados en colaborar con nosotros?" required></textarea>
-
+            </div>
 
             <button type="submit">Registrar</button>
         </form>
     </div>
 
     <script>
+        // Función para mostrar el formulario correspondiente según el tipo de usuario seleccionado
         function mostrarFormulario() {
-            var tipoUsuario = document.getElementById('tipoUsuario').value;
-            var secciones = document.querySelectorAll('.form-section');
+            var tipoUsuario = document.getElementById('tipoUsuario').value; // Obtener el valor seleccionado
+            var secciones = document.querySelectorAll('.form-section'); // Seleccionar todas las secciones de formulario
             secciones.forEach(function(seccion) {
-                seccion.classList.remove('active');
+                seccion.classList.remove('active'); // Ocultar todas las secciones
             });
             if (tipoUsuario) {
-                document.getElementById('form' + tipoUsuario.charAt(0).toUpperCase() + tipoUsuario.slice(1)).classList.add('active');
+                document.getElementById('form' + tipoUsuario.charAt(0).toUpperCase() + tipoUsuario.slice(1)).classList.add('active'); // Mostrar la sección correspondiente
             }
         }
     </script>
