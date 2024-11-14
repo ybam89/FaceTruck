@@ -1,89 +1,100 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8"> <!-- Define la codificación de caracteres como UTF-8 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Configura la vista para dispositivos móviles -->
-    <title>Iniciar Sesión - FaceTruck</title> <!-- Título de la página -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - FaceTruck</title>
     <style>
         body {
-            font-family: Arial, sans-serif; /* Define la fuente de la página */
-            background-color: #f0f0f0; /* Color de fondo de la página */
-            display: flex; /* Usar flexbox para centrar el contenido */
-            justify-content: center; /* Centrar horizontalmente */
-            align-items: center; /* Centrar verticalmente */
-            height: 100vh; /* Altura de la página completa */
-            margin: 0; /* Sin margen */
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
         .login-container {
-            background-color: #ffffff; /* Color de fondo del contenedor de login */
-            padding: 20px; /* Espaciado interno */
-            border-radius: 8px; /* Bordes redondeados */
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra del contenedor */
-            text-align: center; /* Centrar el texto */
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
         .login-container img {
-            width: 100%; /* Ancho completo */
-            max-width: 200px; /* Ancho máximo */
-            margin-bottom: 20px; /* Margen inferior */
+            width: 100%;
+            max-width: 200px;
+            margin-bottom: 20px;
         }
         .login-container h2 {
-            color: #007BFF; /* Color del texto del título */
+            color: #007BFF;
         }
         .login-container label {
-            display: block; /* Mostrar como bloque */
-            margin: 10px 0 5px; /* Margen */
-            font-weight: bold; /* Texto en negrita */
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
         }
         .login-container input {
-            width: calc(100% - 20px); /* Ancho de los inputs */
-            padding: 10px; /* Relleno interno */
-            margin: 10px 0; /* Margen */
-            border: 1px solid #ccc; /* Bordes de los inputs */
-            border-radius: 4px; /* Bordes redondeados */
-            display: block; /* Mostrar como bloque */
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: block;
         }
         .login-container input[type="submit"] {
-            background-color: #007BFF; /* Color de fondo del botón de envío */
-            border: none; /* Sin borde */
-            color: white; /* Color del texto del botón de envío */
-            cursor: pointer; /* Cambiar el cursor a mano */
-            margin-top: 10px; /* Margen superior */
-            width: 100%; /* Ancho completo */
-            padding: 10px; /* Relleno interno */
+            background-color: #007BFF;
+            border: none;
+            color: white;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+            padding: 10px;
         }
         .login-container input[type="submit"]:hover {
-            background-color: #0056b3; /* Color de fondo del botón de envío al pasar el ratón */
+            background-color: #0056b3;
         }
         .login-container button {
-            width: 100%; /* Ancho completo */
-            padding: 10px; /* Relleno interno */
-            background-color: #007BFF; /* Color de fondo de los botones */
-            border: none; /* Sin borde */
-            color: white; /* Color del texto de los botones */
-            border-radius: 4px; /* Bordes redondeados */
-            cursor: pointer; /* Cambiar el cursor a mano */
-            margin-top: 10px; /* Margen superior */
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
         }
         .login-container button:hover {
-            background-color: #0056b3; /* Color de fondo de los botones al pasar el ratón */
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: red;
+            margin: 10px 0;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <img src="img/camion.jpg" alt="Camión"> <!-- Imagen de encabezado -->
-        <h2>Inicio de Sesión - FaceTruck</h2> <!-- Título de la página -->
-        <form action="login.php" method="post"> <!-- Formulario de inicio de sesión -->
+        <img src="img/camion.jpg" alt="Camión">
+        <h2>Inicio de Sesión - FaceTruck</h2>
+        <?php
+        session_start();
+        if (isset($_SESSION['error'])) {
+            echo '<div class="error-message">' . $_SESSION['error'] . '</div>';
+            unset($_SESSION['error']);
+        }
+        ?>
+        <form action="login.php" method="post">
             <label for="username">Correo Electrónico</label>
-            <input type="email" id="username" name="username" placeholder="Correo Electrónico" autocomplete="username" required> <!-- Campo de entrada para el correo electrónico -->
+            <input type="email" id="username" name="username" placeholder="Correo Electrónico" autocomplete="username" required>
             
             <label for="password">Contraseña</label>
-            <input type="password" id="password" name="password" placeholder="Contraseña" autocomplete="current-password" required> <!-- Campo de entrada para la contraseña -->
+            <input type="password" id="password" name="password" placeholder="Contraseña" autocomplete="current-password" required>
             
-            <input type="submit" value="Iniciar Sesión"> <!-- Botón para enviar el formulario -->
+            <input type="submit" value="Iniciar Sesión">
         </form>
-        <button onclick="location.href='registro.html'" aria-label="Registrarse">Registrarse</button> <!-- Botón para ir a la página de registro -->
-        <button onclick="location.href='olvide_contraseña.html'" aria-label="Olvidé mi contraseña">Olvidé mi contraseña</button> <!-- Botón para ir a la página de recuperación de contraseña -->
+        <button onclick="location.href='registro.html'" aria-label="Registrarse">Registrarse</button>
+        <button onclick="location.href='olvide_contraseña.html'" aria-label="Olvidé mi contraseña">Olvidé mi contraseña</button>
     </div>
 </body>
 </html>
