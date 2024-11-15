@@ -1,5 +1,7 @@
 <?php
 // registro.php
+session_start();
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Obtiene los datos del formulario
     $tipoUsuario = $_POST['tipoUsuario'];
@@ -39,22 +41,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     try {
         // Insertar el nuevo usuario en la tabla usuarios
-        $sql = "INSERT INTO usuarios (correo, operador_id, password, tipo_usuario) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO usuarios (correo, password, tipo_usuario) VALUES (?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("siss", $correo, $operador_id, $password_hash, $tipoUsuario);
+        $stmt->bind_param("sss", $correo, $password_hash, $tipoUsuario);
         $stmt->execute();
 
         // Obtener el id generado para el nuevo usuario
         $usuario_id = $stmt->insert_id;
 
         // Insertar un nuevo registro en la tabla operadores con el mismo id
-        $sql = "INSERT INTO operadores (id, nombre_completo, edad, ciudad, estado, telefono, correo, foto_perfil, experiencia_anos, tipos_unidades, empresas, rutas, licencia_tipo, licencia_vigencia, materiales_peligrosos, otros_certificados, disponibilidad_viajar, disponibilidad_horarios, nivel_mecanica, nivel_seguridad_vial, habilidad_gps, manejo_bitacoras) VALUES (?, '', NULL, '', '', '', '', '', NULL, '', '', '', '', '', 0, '', 0, 0, '', '', 0, 0)";
+        $sql = "INSERT INTO operadores (id) VALUES (?)";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $usuario_id);
         $stmt->execute();
 
         // Confirmar la transacción
         $conn->commit();
+
+        // Iniciar sesión y asignar operador_id
+        $_SESSION['operador_id'] = $usuario_id;
 
         // Redirigir a perfil.php después del registro exitoso
         header("Location: editar_perfil.php");
@@ -70,7 +75,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
