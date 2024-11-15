@@ -1,5 +1,5 @@
 <?php
-session_start();
+session_start(); // Inicia la sesión
 
 // Configuración de la conexión a la base de datos
 $servername = "localhost";
@@ -12,21 +12,21 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Verificar la conexión
 if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
+    die("Conexión fallida: " . $conn->connect_error); // Termina el script si hay un error de conexión
 }
 
 // Obtener el ID del operador desde la sesión
 if (!isset($_SESSION['operador_id'])) {
-    die("No se ha iniciado sesión correctamente.");
+    die("No se ha iniciado sesión correctamente."); // Termina el script si no hay operador_id en la sesión
 }
-$operador_id = $_SESSION['operador_id']; // Asegúrate de que el ID del operador esté almacenado en la sesión
+$operador_id = $_SESSION['operador_id']; // Asigna el ID del operador desde la sesión
 
 // Consulta para obtener la información del operador
 $sql = "SELECT * FROM operadores WHERE id = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $operador_id);
+$stmt->bind_param("i", $operador_id); // Vincula el parámetro ID del operador
 $stmt->execute();
-$result = $stmt->get_result();
+$result = $stmt->get_result(); // Ejecuta la consulta y obtiene el resultado
 
 // Verificar si se encontró algún resultado
 if ($result->num_rows > 0) {
@@ -54,11 +54,11 @@ if ($result->num_rows > 0) {
     $habilidad_gps = $row['habilidad_gps'];
     $manejo_bitacoras = $row['manejo_bitacoras'];
 } else {
-    echo "No se encontró información del operador.";
+    echo "No se encontró información del operador."; // Mensaje si no se encuentra información del operador
 }
 
-$stmt->close();
-$conn->close();
+$stmt->close(); // Cierra la declaración
+$conn->close(); // Cierra la conexión
 
 // Establecer la imagen de perfil predeterminada si no hay una imagen de perfil
 if (empty($foto_perfil)) {
@@ -69,34 +69,34 @@ if (empty($foto_perfil)) {
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"> <!-- Configura la codificación de caracteres -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Configura la vista para dispositivos móviles -->
     <title>Perfil del Operador - FaceTruck</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            font-family: Arial, sans-serif; /* Define la fuente a usar */
+            background-color: #f0f0f0; /* Color de fondo */
             margin: 0;
             padding: 20px;
         }
         .container {
-            background-color: #ffffff;
+            background-color: #ffffff; /* Color de fondo del contenedor */
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 800px;
-            margin: 0 auto;
+            border-radius: 8px; /* Bordes redondeados */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra alrededor del contenedor */
+            max-width: 1200px; /* Ancho máximo */
+            margin: 0 auto; /* Centrar el contenedor */
         }
         h2 {
-            color: #007BFF;
-            border-bottom: 2px solid #007BFF;
+            color: #007BFF; /* Color del texto */
+            border-bottom: 2px solid #007BFF; /* Línea inferior */
             padding-bottom: 5px;
         }
         .section {
             margin-bottom: 20px;
         }
         .section label {
-            font-weight: bold;
+            font-weight: bold; /* Texto en negrita */
             display: block;
             margin: 10px 0 5px;
         }
@@ -104,58 +104,58 @@ if (empty($foto_perfil)) {
             margin: 5px 0;
         }
         .profile-picture {
-            text-align: center;
+            text-align: center; /* Centrar el contenido */
             margin-bottom: 20px;
         }
         .profile-picture img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
+            width: 200px; /* Ancho de la imagen */
+            height: 200px; /* Alto de la imagen */
+            border-radius: 50%; /* Bordes redondeados en forma de círculo */
+            object-fit: cover; /* Ajustar la imagen para cubrir el contenedor */
         }
         .profile-picture form {
             margin-top: 10px;
         }
         .profile-picture input[type="file"] {
-            display: none;
+            display: none; /* Ocultar el input de archivo */
         }
         .profile-picture label {
-            cursor: pointer;
-            color: #007BFF;
-            text-decoration: underline;
+            cursor: pointer; /* Cambia el cursor al pasar sobre el texto */
+            color: #007BFF; /* Color del texto */
+            text-decoration: underline; /* Subraya el texto */
         }
         .profile-picture button {
-            background-color: #007BFF;
-            color: white;
+            background-color: #007BFF; /* Color de fondo */
+            color: white; /* Color del texto */
             border: none;
             padding: 10px;
-            cursor: pointer;
-            border-radius: 4px;
+            cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+            border-radius: 4px; /* Bordes redondeados */
         }
         .edit-button {
             text-align: center;
             margin-top: 20px;
         }
         .edit-button button {
-            background-color: #007BFF;
-            color: white;
+            background-color: #007BFF; /* Color de fondo */
+            color: white; /* Color del texto */
             border: none;
             padding: 10px;
-            cursor: pointer;
-            border-radius: 4px;
+            cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+            border-radius: 4px; /* Bordes redondeados */
         }
         .logout {
-            position: absolute;
-            top: 20px;
-            right: 20px;
+            position: absolute; /* Posición absoluta */
+            top: 20px; /* Espacio desde el borde superior */
+            right: 20px; /* Espacio desde el borde derecho */
         }
         .logout button {
-            background-color: #FF0000;
-            color: white;
+            background-color: #FF0000; /* Color de fondo */
+            color: white; /* Color del texto */
             border: none;
             padding: 10px;
-            cursor: pointer;
-            border-radius: 4px;
+            cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+            border-radius: 4px; /* Bordes redondeados */
         }
     </style>
 </head>
