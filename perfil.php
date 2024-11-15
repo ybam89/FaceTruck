@@ -59,6 +59,11 @@ if ($result->num_rows > 0) {
 
 $stmt->close();
 $conn->close();
+
+// Establecer la imagen de perfil predeterminada si no hay una imagen de perfil
+if (empty($foto_perfil)) {
+    $foto_perfil = 'img/imgprofile.jpg';
+}
 ?>
 
 <!DOCTYPE html>
