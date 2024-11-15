@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Ejecutar la consulta
     if ($stmt->execute()) {
         // Redirigir a perfil.php después del registro exitoso
-        header("Location: perfil.php");
+        header("Location: editar_perfil.php");
         exit();
     } else {
         // Mostrar error en caso de fallo en la ejecución
