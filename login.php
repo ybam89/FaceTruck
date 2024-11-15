@@ -38,9 +38,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (password_verify($password, $hashed_password)) {
             // Almacena el id del usuario en la sesión
             $_SESSION['operador_id'] = $id;
-            echo 'Inicio de sesión exitoso!';
-            // Redirige al perfil del usuario
-            header("Location: perfil.php");
+            echo 'Inicio de sesión exitoso!<br>';
+            echo 'ID de usuario: ' . $id;
+            echo '<script>
+                    setTimeout(function() {
+                        window.location.href = "perfil.php";
+                    }, 5000);
+                  </script>';
             exit();
         } else {
             // Si la contraseña es incorrecta, establece un mensaje de error en la sesión

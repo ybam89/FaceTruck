@@ -139,9 +139,27 @@ $conn->close();
             cursor: pointer;
             border-radius: 4px;
         }
+        .logout {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .logout button {
+            background-color: #FF0000;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
+    <div class="logout">
+        <form action="logout.php" method="post">
+            <button type="submit">Cerrar sesión</button>
+        </form>
+    </div>
     <div class="container">
         <div class="profile-picture">
             <img src="<?php echo $foto_perfil; ?>" alt="Foto de Perfil">
