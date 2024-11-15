@@ -1,17 +1,9 @@
-<?php
-// editar_perfil.php
-session_start();
-
-// Aquí debes agregar la lógica para obtener la información actual del operador desde la base de datos
-
-?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Perfil - FaceTruck</title>
+    <title>Editar Perfil del Operador - FaceTruck</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -41,16 +33,17 @@ session_start();
             margin: 10px 0 5px;
         }
         .section input, .section textarea {
-            width: calc(100% - 20px);
+            width: 100%;
             padding: 10px;
             margin: 5px 0;
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-        .section textarea {
-            height: 100px;
+        .submit-button {
+            text-align: center;
+            margin-top: 20px;
         }
-        .section button {
+        .submit-button button {
             background-color: #007BFF;
             color: white;
             border: none;
@@ -83,50 +76,52 @@ session_start();
                 <label for="correo">Correo electrónico:</label>
                 <input type="email" id="correo" name="correo" value="<?php echo $correo; ?>" required>
 
-                <label for="experiencia_años">Años de experiencia:</label>
-                <input type="number" id="experiencia_años" name="experiencia_años" value="<?php echo $experiencia['años']; ?>" required>
+                <label for="experiencia_anos">Años de experiencia:</label>
+                <input type="number" id="experiencia_anos" name="experiencia_anos" value="<?php echo $experiencia_anos; ?>" required>
 
                 <label for="tipos_unidades">Tipo de unidades que he manejado:</label>
-                <input type="text" id="tipos_unidades" name="tipos_unidades" value="<?php echo $experiencia['tipos_unidades']; ?>" required>
+                <textarea id="tipos_unidades" name="tipos_unidades" required><?php echo $tipos_unidades; ?></textarea>
 
                 <label for="empresas">Empresas anteriores y duración del empleo:</label>
-                <textarea id="empresas" name="empresas" required><?php echo $experiencia['empresas']; ?></textarea>
+                <textarea id="empresas" name="empresas" required><?php echo $empresas; ?></textarea>
 
                 <label for="rutas">Rutas manejadas:</label>
-                <textarea id="rutas" name="rutas" required><?php echo $experiencia['rutas']; ?></textarea>
+                <textarea id="rutas" name="rutas" required><?php echo $rutas; ?></textarea>
 
                 <label for="licencia_tipo">Tipo de licencia de conducir:</label>
-                <input type="text" id="licencia_tipo" name="licencia_tipo" value="<?php echo $licencias['tipo']; ?>" required>
+                <input type="text" id="licencia_tipo" name="licencia_tipo" value="<?php echo $licencia_tipo; ?>" required>
 
                 <label for="licencia_vigencia">Vigencia de la licencia:</label>
-                <input type="date" id="licencia_vigencia" name="licencia_vigencia" value="<?php echo $licencias['vigencia']; ?>" required>
+                <input type="date" id="licencia_vigencia" name="licencia_vigencia" value="<?php echo $licencia_vigencia; ?>" required>
 
                 <label for="materiales_peligrosos">¿Cuenta con certificación para manejo de materiales peligrosos?</label>
-                <input type="text" id="materiales_peligrosos" name="materiales_peligrosos" value="<?php echo $licencias['materiales_peligrosos']; ?>" required>
+                <input type="checkbox" id="materiales_peligrosos" name="materiales_peligrosos" value="1" <?php if($materiales_peligrosos) echo "checked"; ?>>
 
                 <label for="otros_certificados">Otros certificados o capacitaciones relevantes:</label>
-                <textarea id="otros_certificados" name="otros_certificados" required><?php echo $licencias['otros_certificados']; ?></textarea>
+                <textarea id="otros_certificados" name="otros_certificados" required><?php echo $otros_certificados; ?></textarea>
 
                 <label for="disponibilidad_viajar">¿Está dispuesto a viajar o hacer rutas nacionales?</label>
-                <input type="text" id="disponibilidad_viajar" name="disponibilidad_viajar" value="<?php echo $disponibilidad['viajar']; ?>" required>
+                <input type="checkbox" id="disponibilidad_viajar" name="disponibilidad_viajar" value="1" <?php if($disponibilidad_viajar) echo "checked"; ?>>
 
-                <label for="horarios_variables">Disponibilidad para horarios variables o nocturnos:</label>
-                <input type="text" id="horarios_variables" name="horarios_variables" value="<?php echo $disponibilidad['horarios_var']; ?>" required>
+                <label for="disponibilidad_horarios">Disponibilidad para horarios variables o nocturnos:</label>
+                <input type="checkbox" id="disponibilidad_horarios" name="disponibilidad_horarios" value="1" <?php if($disponibilidad_horarios) echo "checked"; ?>>
 
-                <label for="mecanica">Nivel de conocimiento en mecánica básica:</label>
-                <input type="text" id="mecanica" name="mecanica" value="<?php echo $competencias['mecanica']; ?>" required>
+                <label for="nivel_mecanica">Nivel de conocimiento en mecánica básica:</label>
+                <input type="text" id="nivel_mecanica" name="nivel_mecanica" value="<?php echo $nivel_mecanica; ?>" required>
 
-                <label for="seguridad_vial">Nivel de conocimiento en seguridad vial y normas de tránsito:</label>
-                <input type="text" id="seguridad_vial" name="seguridad_vial" value="<?php echo $competencias['seguridad_vial']; ?>" required>
+                <label for="nivel_seguridad_vial">Nivel de conocimiento en seguridad vial y normas de tránsito:</label>
+                <input type="text" id="nivel_seguridad_vial" name="nivel_seguridad_vial" value="<?php echo $nivel_seguridad_vial; ?>" required>
 
-                <label for="gps">Habilidad para el uso de GPS y otras herramientas de navegación:</label>
-                <input type="text" id="gps" name="gps" value="<?php echo $competencias['gps']; ?>" required>
+                <label for="habilidad_gps">Habilidad para el uso de GPS y otras herramientas de navegación:</label>
+                <input type="text" id="habilidad_gps" name="habilidad_gps" value="<?php echo $habilidad_gps; ?>" required>
 
-                <label for="bitacoras">Manejo de bitácoras o reportes de viaje:</label>
-                <input type="text" id="bitacoras" name="bitacoras" value="<?php echo $competencias['bitacoras']; ?>" required>
-
+                <label for="manejo_bitacoras">Manejo de bitácoras o reportes de viaje:</label>
+                <input type="text" id="manejo_bitacoras" name="manejo_bitacoras" value="<?php echo $manejo_bitacoras; ?>" required>
             </div>
-            <button type="submit">Guardar Cambios</button>
+
+            <div class="submit-button">
+                <button type="submit">Actualizar Información</button>
+            </div>
         </form>
     </div>
 </body>
