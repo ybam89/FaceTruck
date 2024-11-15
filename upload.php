@@ -15,18 +15,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verificar la conexión
     if ($conn->connect_error) {
         echo "Conexión fallida: " . $conn->connect_error;
-        flush();
-        sleep(3);
-        header("Location: perfil.php");
+        echo '<script>setTimeout(function(){ window.location.href = "perfil.php"; }, 3000);</script>';
         exit();
     }
 
     // Verificar si el ID del operador está definido en la sesión
     if (!isset($_SESSION['operador_id'])) {
         echo "Error: operador_id no está definido en la sesión.";
-        flush();
-        sleep(3);
-        header("Location: perfil.php");
+        echo '<script>setTimeout(function(){ window.location.href = "perfil.php"; }, 3000);</script>';
         exit();
     }
     $operador_id = $_SESSION['operador_id'];
@@ -34,9 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verificar si se ha seleccionado un archivo
     if (!isset($_FILES["fileToUpload"]) || $_FILES["fileToUpload"]["error"] == UPLOAD_ERR_NO_FILE) {
         echo "No se ha seleccionado ningún archivo.";
-        flush();
-        sleep(3);
-        header("Location: perfil.php");
+        echo '<script>setTimeout(function(){ window.location.href = "perfil.php"; }, 3000);</script>';
         exit();
     }
 
@@ -52,45 +46,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $uploadOk = 1;
     } else {
         echo "El archivo no es una imagen.";
-        flush();
-        sleep(3);
-        header("Location: perfil.php");
+        echo '<script>setTimeout(function(){ window.location.href = "perfil.php"; }, 3000);</script>';
         exit();
     }
 
     // Verificar si el archivo ya existe
     if (file_exists($target_file)) {
         echo "Lo sentimos, el archivo ya existe.";
-        flush();
-        sleep(3);
-        header("Location: perfil.php");
+        echo '<script>setTimeout(function(){ window.location.href = "perfil.php"; }, 3000);</script>';
         exit();
     }
 
     // Verificar el tamaño del archivo
     if ($_FILES["fileToUpload"]["size"] > 500000) {
         echo "Lo sentimos, tu archivo es demasiado grande.";
-        flush();
-        sleep(3);
-        header("Location: perfil.php");
+        echo '<script>setTimeout(function(){ window.location.href = "perfil.php"; }, 3000);</script>';
         exit();
     }
 
     // Permitir ciertos formatos de archivo
     if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
         echo "Lo sentimos, solo se permiten archivos JPG, JPEG, PNG y GIF.";
-        flush();
-        sleep(3);
-        header("Location: perfil.php");
+        echo '<script>setTimeout(function(){ window.location.href = "perfil.php"; }, 3000);</script>';
         exit();
     }
 
     // Verificar si $uploadOk está establecido a 0 por un error
     if ($uploadOk == 0) {
         echo "Lo sentimos, tu archivo no fue subido.";
-        flush();
-        sleep(3);
-        header("Location: perfil.php");
+        echo '<script>setTimeout(function(){ window.location.href = "perfil.php"; }, 3000);</script>';
         exit();
     // Si todo está bien, intenta subir el archivo
     } else {
@@ -105,18 +89,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 exit();
             } else {
                 echo "Error al actualizar la foto de perfil: " . $stmt->error;
-                flush();
-                sleep(3);
-                header("Location: perfil.php");
+                echo '<script>setTimeout(function(){ window.location.href = "perfil.php"; }, 3000);</script>';
                 exit();
             }
 
             $stmt->close();
         } else {
             echo "Lo sentimos, hubo un error al subir tu archivo.";
-            flush();
-            sleep(3);
-            header("Location: perfil.php");
+            echo '<script>setTimeout(function(){ window.location.href = "perfil.php"; }, 3000);</script>';
             exit();
         }
     }
@@ -124,9 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $conn->close();
 } else {
     echo "Método de solicitud no válido.";
-    flush();
-    sleep(3);
-    header("Location: perfil.php");
+    echo '<script>setTimeout(function(){ window.location.href = "perfil.php"; }, 3000);</script>';
     exit();
 }
 ?>
