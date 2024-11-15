@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verificar la conexión
     if ($conn->connect_error) {
         echo "Conexión fallida: " . $conn->connect_error;
+        sleep(3);
         header("Location: perfil.php");
         exit();
     }
@@ -22,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verificar si el ID del operador está definido en la sesión
     if (!isset($_SESSION['operador_id'])) {
         echo "Error: operador_id no está definido en la sesión.";
+        sleep(3);
         header("Location: perfil.php");
         exit();
     }
@@ -30,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verificar si se ha seleccionado un archivo
     if (!isset($_FILES["fileToUpload"]) || $_FILES["fileToUpload"]["error"] == UPLOAD_ERR_NO_FILE) {
         echo "No se ha seleccionado ningún archivo.";
+        sleep(3);
         header("Location: perfil.php");
         exit();
     }
@@ -47,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         echo "El archivo no es una imagen.";
         $uploadOk = 0;
+        sleep(3);
         header("Location: perfil.php");
         exit();
     }
@@ -55,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (file_exists($target_file)) {
         echo "Lo sentimos, el archivo ya existe.";
         $uploadOk = 0;
+        sleep(3);
         header("Location: perfil.php");
         exit();
     }
@@ -63,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($_FILES["fileToUpload"]["size"] > 500000) {
         echo "Lo sentimos, tu archivo es demasiado grande.";
         $uploadOk = 0;
+        sleep(3);
         header("Location: perfil.php");
         exit();
     }
@@ -71,6 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
         echo "Lo sentimos, solo se permiten archivos JPG, JPEG, PNG y GIF.";
         $uploadOk = 0;
+        sleep(3);
         header("Location: perfil.php");
         exit();
     }
@@ -78,6 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verificar si $uploadOk está establecido a 0 por un error
     if ($uploadOk == 0) {
         echo "Lo sentimos, tu archivo no fue subido.";
+        sleep(3);
         header("Location: perfil.php");
         exit();
     // Si todo está bien, intenta subir el archivo
@@ -93,6 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 exit();
             } else {
                 echo "Error al actualizar la foto de perfil: " . $stmt->error;
+                sleep(3);
                 header("Location: perfil.php");
                 exit();
             }
@@ -100,6 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->close();
         } else {
             echo "Lo sentimos, hubo un error al subir tu archivo.";
+            sleep(3);
             header("Location: perfil.php");
             exit();
         }
@@ -108,6 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $conn->close();
 } else {
     echo "Método de solicitud no válido.";
+    sleep(3);
     header("Location: perfil.php");
     exit();
 }
