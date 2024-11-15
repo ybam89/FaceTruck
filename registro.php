@@ -34,6 +34,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Aquí debes agregar la lógica para asignar el operador_id
     $operador_id = obtenerOperadorId($conn);
 
+    // Depuración
+    if ($operador_id === null) {
+        die("Error: operador_id es NULL");
+    }
+
     // Insertar datos en la tabla 'usuarios'
     $sql = "INSERT INTO usuarios (correo, operador_id, password, tipo_usuario) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
@@ -41,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($stmt->execute()) {
         echo "Registro exitoso!";
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        echo "Error: " . $stmt->error;
     }
 
     $stmt->close();
@@ -50,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 function obtenerOperadorId($conn) {
     // Implementa la lógica para obtener el operador_id
-    // Aquí hay un ejemplo simple que obtiene el siguiente ID disponible
     $sql = "SELECT id FROM operadores ORDER BY id DESC LIMIT 1";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
