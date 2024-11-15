@@ -2,6 +2,22 @@
 session_start(); // Inicia la sesión para poder usar $_SESSION
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Verificación de reCAPTCHA
+    $recaptcha_secret = 'YOUR_SECRET_KEY'; // Reemplaza 'YOUR_SECRET_KEY' con tu clave secreta de reCAPTCHA
+    $recaptcha_response = $_POST['g-recaptcha-response']; // Obtiene la respuesta de reCAPTCHA del formulario
+    $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
+    
+    // Solicita la verificación de reCAPTCHA a Google
+    $recaptcha = file_get_contents($recaptcha_url . '?secret=' . $recaptcha_secret . '&response=' . $recaptcha_response);
+    $recaptcha = json_decode($recaptcha);
+    
+    // Verifica si la validación de reCAPTCHA fue exitosa
+    if (!$recaptcha->success) {
+        $_SESSION['error'] = 'Error de verificación de reCAPTCHA. Inténtalo de nuevo.';
+        header("Location: login.php");
+        exit();
+    }
+
     $correo = $_POST['username']; // Obtiene el correo electrónico del formulario
     $password = $_POST['password']; // Obtiene la contraseña del formulario
 
@@ -139,6 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             margin: 10px 0; /* Margen del mensaje de error */
         }
     </style>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script> <!-- Script para cargar reCAPTCHA -->
 </head>
 <body>
     <div class="login-container">
@@ -158,9 +175,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <label for="password">Contraseña</label>
             <input type="password" id="password" name="password" placeholder="Contraseña" autocomplete="current-password" required> <!-- Campo de entrada para la contraseña -->
             
+            <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div> <!-- Añadir reCAPTCHA al formulario -->
+            
             <input type="submit" value="Iniciar Sesión"> <!-- Botón para enviar el formulario -->
         </form>
-        <button onclick="location.href='registro.html'" aria-label="Registrarse">Registrarse</button> <!-- Botón para ir a la página de registro -->
+        <button onclick="location.href='registro.php'" aria-label="Registrarse">Registrarse</button> <!-- Botón para ir a la página de registro -->
         <button onclick="location.href='olvide_contraseña.html'" aria-label="Olvidé mi contraseña">Olvidé mi contraseña</button> <!-- Botón para ir a la página de recuperación de contraseña -->
     </div>
 </body>
