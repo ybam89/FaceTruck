@@ -36,6 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->fetch();
         // Verifica si la contraseña proporcionada coincide con la almacenada en la base de datos
         if (password_verify($password, $hashed_password)) {
+            // Almacena el id del usuario en la sesión
+            $_SESSION['operador_id'] = $id;
             echo 'Inicio de sesión exitoso!';
             // Redirige al perfil del usuario
             header("Location: perfil.php");

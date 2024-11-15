@@ -1,6 +1,8 @@
 <?php
 // registro.php
+// Verifica si la solicitud es de tipo POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Obtiene los datos del formulario
     $tipoUsuario = $_POST['tipoUsuario'];
     $correo = $_POST['email'];
     $password = $_POST['password'];
@@ -25,38 +27,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $db_password = "";
     $dbname = "facetruck";
 
+    // Crear la conexión
     $conn = new mysqli($servername, $db_username, $db_password, $dbname);
 
+    // Verificar la conexión
     if ($conn->connect_error) {
         die("Conexión fallida: " . $conn->connect_error);
     }
 
-    // Insertar datos en la tabla 'usuarios' sin operador_id
-    $sql = "INSERT INTO usuarios (correo, password, tipo_usuario) VALUES (?, ?, ?)";
+    // Asignar operador_id como null (puede ser modificado según la lógica de la aplicación)
+    $operador_id = null;
+
+    // Preparar la consulta de inserción
+    $sql = "INSERT INTO usuarios (correo, operador_id, password, tipo_usuario) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
+    
+    // Verificar la preparación de la consulta
     if (!$stmt) {
         die("Error en la preparación de la consulta: " . $conn->error);
     }
-    $stmt->bind_param("sss", $correo, $password_hash, $tipoUsuario);
+
+    // Vincular los parámetros
+    $stmt->bind_param("siss", $correo, $operador_id, $password_hash, $tipoUsuario);
+
+    // Ejecutar la consulta
     if ($stmt->execute()) {
-        $last_id = $conn->insert_id;
-        // Actualizar operador_id con el valor de id
-        $update_sql = "UPDATE usuarios SET operador_id = ? WHERE id = ?";
-        $update_stmt = $conn->prepare($update_sql);
-        if (!$update_stmt) {
-            die("Error en la preparación de la consulta de actualización: " . $conn->error);
-        }
-        $update_stmt->bind_param("ii", $last_id, $last_id);
-        if ($update_stmt->execute()) {
-            echo "Registro exitoso!";
-        } else {
-            echo "Error en la actualización de operador_id: " . $update_stmt->error;
-        }
-        $update_stmt->close();
+        // Redirigir a perfil.php después del registro exitoso
+        header("Location: perfil.php");
+        exit();
     } else {
+        // Mostrar error en caso de fallo en la ejecución
         echo "Error: " . $stmt->error;
     }
 
+    // Cerrar la declaración y la conexión
     $stmt->close();
     $conn->close();
 }

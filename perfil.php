@@ -5,7 +5,7 @@ session_start();
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "operadores";
+$dbname = "facetruck"; // Asegúrate de que el nombre de la base de datos sea correcto
 
 // Crear la conexión
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -16,6 +16,9 @@ if ($conn->connect_error) {
 }
 
 // Obtener el ID del operador desde la sesión
+if (!isset($_SESSION['operador_id'])) {
+    die("No se ha iniciado sesión correctamente.");
+}
 $operador_id = $_SESSION['operador_id']; // Asegúrate de que el ID del operador esté almacenado en la sesión
 
 // Consulta para obtener la información del operador
