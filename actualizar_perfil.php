@@ -17,7 +17,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         die("Conexión fallida: " . $conn->connect_error);
     }
 
-    // Obtener el ID del operador desde la sesión
+    // Verificar si el ID del operador está definido en la sesión
+    if (!isset($_SESSION['operador_id'])) {
+        die("Error: operador_id no está definido en la sesión.");
+    }
     $operador_id = $_SESSION['operador_id'];
 
     // Obtener los datos del formulario
@@ -66,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 manejo_bitacoras = ? 
             WHERE id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sissssissssssisssssi", 
+    $stmt->bind_param("sissssisssssisisssssi", 
         $nombre_completo, $edad, $ciudad, $estado, $telefono, $correo, 
         $experiencia_anos, $tipos_unidades, $empresas, $rutas, 
         $licencia_tipo, $licencia_vigencia, $materiales_peligrosos, 
