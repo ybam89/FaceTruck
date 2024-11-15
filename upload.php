@@ -27,6 +27,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     $operador_id = $_SESSION['operador_id'];
 
+    // Verificar si se ha seleccionado un archivo
+    if (!isset($_FILES["fileToUpload"]) || $_FILES["fileToUpload"]["error"] == UPLOAD_ERR_NO_FILE) {
+        echo "No se ha seleccionado ningún archivo.";
+        header("Location: perfil.php");
+        exit();
+    }
+
     // Directorio donde se subirán las imágenes
     $target_dir = "uploads/";
     $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
