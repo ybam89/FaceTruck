@@ -31,38 +31,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         die("Conexión fallida: " . $conn->connect_error);
     }
 
-    // Aquí debes agregar la lógica para asignar el operador_id
-    $operador_id = obtenerOperadorId($conn);
-
-    // Depuración
-    echo "Operador ID: " . $operador_id;
-
-    // Insertar datos en la tabla 'usuarios'
-    $sql = "INSERT INTO usuarios (correo, operador_id, password, tipo_usuario) VALUES (?, ?, ?, ?)";
+    // Insertar datos en la tabla 'usuarios' sin operador_id
+    $sql = "INSERT INTO usuarios (correo, password, tipo_usuario) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         die("Error en la preparación de la consulta: " . $conn->error);
     }
-    $stmt->bind_param("siss", $correo, $operador_id, $password_hash, $tipoUsuario);
+    $stmt->bind_param("sss", $correo, $password_hash, $tipoUsuario);
     if ($stmt->execute()) {
-        echo "Registro exitoso!";
+        $last_id = $conn->insert_id;
+        // Actualizar operador_id con el valor de id
+        $update_sql = "UPDATE usuarios SET operador_id = ? WHERE id = ?";
+        $update_stmt = $conn->prepare($update_sql);
+        if (!$update_stmt) {
+            die("Error en la preparación de la consulta de actualización: " . $conn->error);
+        }
+        $update_stmt->bind_param("ii", $last_id, $last_id);
+        if ($update_stmt->execute()) {
+            echo "Registro exitoso!";
+        } else {
+            echo "Error en la actualización de operador_id: " . $update_stmt->error;
+        }
+        $update_stmt->close();
     } else {
         echo "Error: " . $stmt->error;
     }
 
     $stmt->close();
     $conn->close();
-}
-
-function obtenerOperadorId($conn) {
-    // Implementa la lógica para obtener el operador_id
-    $sql = "SELECT MAX(id) AS max_id FROM operadores";
-    $result = $conn->query($sql);
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        return $row['max_id'] + 1;
-    } else {
-        return 1; // Si no hay operadores, empieza con el ID 1
-    }
 }
 ?>
