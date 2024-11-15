@@ -31,10 +31,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         die("Conexión fallida: " . $conn->connect_error);
     }
 
+    // Aquí debes agregar la lógica para asignar el operador_id
+    $operador_id = obtenerOperadorId($conn);
+
     // Insertar datos en la tabla 'usuarios'
-    $sql = "INSERT INTO usuarios (correo, password, tipo_usuario) VALUES (?, ?, ?)";
+    $sql = "INSERT INTO usuarios (correo, operador_id, password, tipo_usuario) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sss", $correo, $password_hash, $tipoUsuario);
+    $stmt->bind_param("siss", $correo, $operador_id, $password_hash, $tipoUsuario);
     if ($stmt->execute()) {
         echo "Registro exitoso!";
     } else {
@@ -43,5 +46,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $stmt->close();
     $conn->close();
+}
+
+function obtenerOperadorId($conn) {
+    // Implementa la lógica para obtener el operador_id
+    // Aquí hay un ejemplo simple que obtiene el siguiente ID disponible
+    $sql = "SELECT id FROM operadores ORDER BY id DESC LIMIT 1";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        return $row['id'] + 1;
+    } else {
+        return 1; // Si no hay operadores, empieza con el ID 1
+    }
 }
 ?>

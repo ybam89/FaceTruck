@@ -69,13 +69,17 @@
         .login-container button:hover {
             background-color: #0056b3;
         }
+        .error {
+            color: red;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
         <img src="img/camion.jpg" alt="Camión">
         <h2>Registro - FaceTruck</h2>
-        <form action="registro.php" method="post">
+        <form id="registroForm" action="registro.php" method="post" onsubmit="return validarFormulario()">
             <label for="tipoUsuario">Tipo de Usuario</label>
             <select id="tipoUsuario" name="tipoUsuario" required>
                 <option value="">Seleccione una opción</option>
@@ -93,6 +97,8 @@
             <label for="confirm_password">Confirmar Contraseña</label>
             <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirmar Contraseña" pattern="(?=.*[A-Z])[A-Za-z\d]{8,}" title="Al menos 8 caracteres, una mayúscula y solo letras y números" required>
 
+            <div id="error" class="error"></div>
+
             <div class="g-recaptcha" data-sitekey="your_site_key"></div>
 
             <input type="submit" value="Registrar">
@@ -101,5 +107,19 @@
     </div>
 
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+        function validarFormulario() {
+            var password = document.getElementById('password').value;
+            var confirmPassword = document.getElementById('confirm_password').value;
+            var errorDiv = document.getElementById('error');
+
+            if (password !== confirmPassword) {
+                errorDiv.textContent = "Las contraseñas no coinciden.";
+                return false;
+            }
+
+            return true;
+        }
+    </script>
 </body>
 </html>
