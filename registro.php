@@ -35,13 +35,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $operador_id = obtenerOperadorId($conn);
 
     // Depuración
-    if ($operador_id === null) {
-        die("Error: operador_id es NULL");
-    }
+    echo "Operador ID: " . $operador_id;
 
     // Insertar datos en la tabla 'usuarios'
     $sql = "INSERT INTO usuarios (correo, operador_id, password, tipo_usuario) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        die("Error en la preparación de la consulta: " . $conn->error);
+    }
     $stmt->bind_param("siss", $correo, $operador_id, $password_hash, $tipoUsuario);
     if ($stmt->execute()) {
         echo "Registro exitoso!";
@@ -55,11 +56,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 function obtenerOperadorId($conn) {
     // Implementa la lógica para obtener el operador_id
-    $sql = "SELECT id FROM operadores ORDER BY id DESC LIMIT 1";
+    $sql = "SELECT MAX(id) AS max_id FROM operadores";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        return $row['id'] + 1;
+        return $row['max_id'] + 1;
     } else {
         return 1; // Si no hay operadores, empieza con el ID 1
     }
