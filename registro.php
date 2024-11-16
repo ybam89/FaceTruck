@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Verifica si el formulario fue env
 
     if ($stmt->execute()) { // Ejecuta la consulta y verifica si fue exitosa
         $_SESSION['message'] = 'Registro exitoso. Ahora puedes iniciar sesión.';
-        header("Location: login.php"); // Redirige a la página de inicio de sesión
+        header("Location: editar_perfil.php"); // Redirige a la página de edición de perfil
         exit(); // Termina el script
     } else {
         $_SESSION['error'] = 'Error al registrar el usuario. Inténtalo de nuevo.';
