@@ -5,6 +5,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Verifica si el formulario fue env
     $correo = $_POST['email']; // Obtiene el correo electrónico del formulario
     $password = $_POST['password']; // Obtiene la contraseña del formulario
     $confirm_password = $_POST['confirm_password']; // Obtiene la confirmación de la contraseña del formulario
+    $user_type = $_POST['user_type']; // Obtiene el tipo de usuario del formulario
 
     // Validación de la contraseña
     if (strlen($password) < 8 || !preg_match("/[A-Z]/", $password) || !preg_match("/[0-9]/", $password)) {
@@ -51,9 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Verifica si el formulario fue env
 
     // Registrar el nuevo usuario
     $hashed_password = password_hash($password, PASSWORD_DEFAULT); // Encripta la contraseña
-    $sql = "INSERT INTO usuarios (correo, password) VALUES (?, ?)";
+    $sql = "INSERT INTO usuarios (correo, password, user_type) VALUES (?, ?, ?)"; // Actualiza la consulta para incluir el tipo de usuario
     $stmt = $conn->prepare($sql); // Prepara una consulta SQL
-    $stmt->bind_param("ss", $correo, $hashed_password); // Asigna los valores del correo y la contraseña encriptada a la consulta preparada
+    $stmt->bind_param("sss", $correo, $hashed_password, $user_type); // Asigna los valores del correo, la contraseña encriptada y el tipo de usuario a la consulta preparada
 
     if ($stmt->execute()) { // Ejecuta la consulta y verifica si fue exitosa
         $_SESSION['message'] = 'Registro exitoso. Ahora puedes iniciar sesión.';
@@ -106,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Verifica si el formulario fue env
             margin: 10px 0 5px; /* Margen */
             font-weight: bold; /* Texto en negrita */
         }
-        .login-container input {
+        .login-container input, .login-container select {
             width: calc(100% - 20px); /* Ancho de los inputs */
             padding: 10px; /* Relleno interno */
             margin: 10px 0; /* Margen */
@@ -183,6 +184,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Verifica si el formulario fue env
             
             <label for="confirm_password">Confirmar Contraseña</label>
             <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirmar Contraseña" required> <!-- Campo de entrada para confirmar la contraseña -->
+
+            <label for="user_type">Tipo de Usuario</label> <!-- Etiqueta para el tipo de usuario -->
+            <select id="user_type" name="user_type" required> <!-- Campo de selección para el tipo de usuario -->
+                <option value="operador">Operador</option>
+                <option value="hombreCamion">Hombre Camión</option>
+                <option value="empresa">Empresa</option>
+            </select>
             
             <input type="submit" value="Registrarse"> <!-- Botón de envío del formulario -->
         </form>
