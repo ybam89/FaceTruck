@@ -1,86 +1,87 @@
 <?php
-// registro.php
-session_start();
+session_start(); // Inicia la sesión
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Obtiene los datos del formulario
-    $tipoUsuario = $_POST['tipoUsuario'];
+    // Verificación de reCAPTCHA
+    $recaptcha_secret = 'YOUR_SECRET_KEY'; // Reemplaza 'YOUR_SECRET_KEY' con tu clave secreta de reCAPTCHA
+    $recaptcha_response = $_POST['g-recaptcha-response'];
+    $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
+
+    $recaptcha = file_get_contents($recaptcha_url . '?secret=' . $recaptcha_secret . '&response=' . $recaptcha_response);
+    $recaptcha = json_decode($recaptcha);
+
+    if (!$recaptcha->success) {
+        $_SESSION['error'] = 'Error de verificación de reCAPTCHA. Inténtalo de nuevo.';
+        header("Location: registro.php");
+        exit();
+    }
+
     $correo = $_POST['email'];
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
-    // Validar que las contraseñas coinciden
+    // Validación de la contraseña
+    if (strlen($password) < 8 || !preg_match("/[A-Z]/", $password) || !preg_match("/[0-9]/", $password)) {
+        $_SESSION['error'] = 'La contraseña debe tener al menos 8 caracteres, una letra mayúscula y un número.';
+        header("Location: registro.php");
+        exit();
+    }
+
+    // Verificar que las contraseñas coincidan
     if ($password !== $confirm_password) {
-        die("Las contraseñas no coinciden.");
+        $_SESSION['error'] = 'Las contraseñas no coinciden.';
+        header("Location: registro.php");
+        exit();
     }
 
-    // Validar formato de la contraseña
-    if (!preg_match('/(?=.*[A-Z])[A-Za-z\d]{8,}/', $password)) {
-        die("La contraseña debe tener al menos 8 caracteres, una mayúscula, y solo letras y números.");
-    }
-
-    // Encriptar la contraseña
-    $password_hash = password_hash($password, PASSWORD_DEFAULT);
-
-    // Conectar a la base de datos
+    // Datos de conexión a la base de datos
     $servername = "localhost";
     $db_username = "root";
     $db_password = "";
     $dbname = "facetruck";
 
-    // Crear la conexión
     $conn = new mysqli($servername, $db_username, $db_password, $dbname);
 
-    // Verificar la conexión
     if ($conn->connect_error) {
         die("Conexión fallida: " . $conn->connect_error);
     }
 
-    // Iniciar una transacción
-    $conn->begin_transaction();
+    // Verificar si el correo ya está registrado
+    $sql = "SELECT id FROM usuarios WHERE correo = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $correo);
+    $stmt->execute();
+    $stmt->store_result();
 
-    try {
-        // Insertar el nuevo usuario en la tabla usuarios
-        $sql = "INSERT INTO usuarios (correo, password, tipo_usuario) VALUES (?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sss", $correo, $password_hash, $tipoUsuario);
-        $stmt->execute();
-
-        // Obtener el id generado para el nuevo usuario
-        $usuario_id = $stmt->insert_id;
-
-        // Insertar en la tabla correspondiente según el tipo de usuario
-        if ($tipoUsuario == 'HombreCamion') {
-            $sql = "INSERT INTO HombreCamion (id) VALUES (?)";
-        } elseif ($tipoUsuario == 'Empresa') {
-            $sql = "INSERT INTO Empresa (id) VALUES (?)";
-        } else {
-            $sql = "INSERT INTO operadores (id) VALUES (?)";
-        }
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $usuario_id);
-        $stmt->execute();
-
-        // Confirmar la transacción
-        $conn->commit();
-
-        // Iniciar sesión y asignar operador_id
-        $_SESSION['operador_id'] = $usuario_id;
-
-        // Redirigir a perfil.php después del registro exitoso
-        header("Location: editar_perfil.php");
-        exit();
-    } catch (Exception $e) {
-        // Revertir la transacción en caso de error
-        $conn->rollback();
-        die("Error: " . $e->getMessage());
-    } finally {
-        // Cerrar la declaración y la conexión
+    if ($stmt->num_rows > 0) {
+        $_SESSION['error'] = 'El correo electrónico ya está registrado.';
         $stmt->close();
         $conn->close();
+        header("Location: registro.php");
+        exit();
     }
+
+    // Registrar el nuevo usuario
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    $sql = "INSERT INTO usuarios (correo, password) VALUES (?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ss", $correo, $hashed_password);
+
+    if ($stmt->execute()) {
+        $_SESSION['message'] = 'Registro exitoso. Ahora puedes iniciar sesión.';
+        header("Location: login.php");
+        exit();
+    } else {
+        $_SESSION['error'] = 'Error al registrar el usuario. Inténtalo de nuevo.';
+    }
+
+    $stmt->close();
+    $conn->close();
+    header("Location: registro.php");
+    exit();
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -102,55 +103,105 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
+            text-align: center;
         }
-        .login-container h2 {
+        .login-container img {
+            width: 100%;
+            max-width: 200px;
             margin-bottom: 20px;
         }
-        .login-container form {
-            display: flex;
-            flex-direction: column;
+        .login-container h2 {
+            color: #007BFF;
         }
         .login-container label {
-            margin-bottom: 5px;
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
         }
         .login-container input {
-            margin-bottom: 10px;
+            width: calc(100% - 20px);
             padding: 10px;
+            margin: 10px 0;
             border: 1px solid #ccc;
             border-radius: 4px;
+            display: block;
         }
-        .login-container button {
-            padding: 10px;
+        .login-container input[type="submit"] {
             background-color: #007BFF;
             border: none;
             color: white;
             cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+            padding: 10px;
+        }
+        .login-container input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .login-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            border: none;
+            color: white;
             border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
         }
         .login-container button:hover {
             background-color: #0056b3;
         }
+        .error-message {
+            color: red;
+            margin: 10px 0;
+        }
+        .success-message {
+            color: green;
+            margin: 10px 0;
+        }
     </style>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+        function validateForm() {
+            var password = document.getElementById("password").value;
+            var confirmPassword = document.getElementById("confirm_password").value;
+            if (password !== confirmPassword) {
+                alert("Las contraseñas no coinciden.");
+                return false;
+            }
+            return true;
+        }
+    </script>
 </head>
 <body>
     <div class="login-container">
+        <img src="img/camion.jpg" alt="Camión">
         <h2>Registro - FaceTruck</h2>
-        <form action="registro.php" method="post">
-            <label for="tipoUsuario">Tipo de Usuario</label>
-            <select id="tipoUsuario" name="tipoUsuario" required>
-                <option value="Operador">Operador</option>
-                <option value="HombreCamion">Hombre Camión</option>
-                <option value="Empresa">Empresa</option>
-            </select>
+        <?php
+        if (isset($_SESSION['error'])) {
+            echo '<div class="error-message">' . $_SESSION['error'] . '</div>';
+            unset($_SESSION['error']);
+        }
+        if (isset($_SESSION['message'])) {
+            echo '<div class="success-message">' . $_SESSION['message'] . '</div>';
+            unset($_SESSION['message']);
+        }
+        ?>
+        <form action="registro.php" method="post" onsubmit="return validateForm()">
             <label for="email">Correo Electrónico</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="email" name="email" placeholder="Correo Electrónico" required>
+            
             <label for="password">Contraseña</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" id="password" name="password" placeholder="Contraseña" required>
+            
             <label for="confirm_password">Confirmar Contraseña</label>
-            <input type="password" id="confirm_password" name="confirm_password" required>
-            <button type="submit">Registrarse</button>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirmar Contraseña" required>
+            
+            <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
+            
+            <input type="submit" value="Registrarse">
         </form>
+        <button onclick="location.href='login.php'" aria-label="Iniciar Sesión">Iniciar Sesión</button>
     </div>
 </body>
 </html>
