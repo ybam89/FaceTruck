@@ -108,10 +108,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Verifica si el formulario fue env
             font-weight: bold; /* Texto en negrita */
         }
         .login-container input, .login-container select {
-            width: calc(100% - 20px); /* Ancho de los inputs */
+            width: calc(100% - 20px); /* Ancho de los inputs y el select */
             padding: 10px; /* Relleno interno */
             margin: 10px 0; /* Margen */
-            border: 1px solid #ccc; /* Bordes de los inputs */
+            border: 1px solid #ccc; /* Bordes de los inputs y el select */
             border-radius: 4px; /* Bordes redondeados */
             display: block; /* Mostrar como bloque */
         }
@@ -176,21 +176,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Verifica si el formulario fue env
         }
         ?>
         <form action="registro.php" method="post" onsubmit="return validateForm()"> <!-- Formulario de registro -->
-            <label for="email">Correo Electrónico</label>
-            <input type="email" id="email" name="email" placeholder="Correo Electrónico" required> <!-- Campo de entrada para el correo electrónico -->
-            
-            <label for="password">Contraseña</label>
-            <input type="password" id="password" name="password" placeholder="Contraseña" required> <!-- Campo de entrada para la contraseña -->
-            
-            <label for="confirm_password">Confirmar Contraseña</label>
-            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirmar Contraseña" required> <!-- Campo de entrada para confirmar la contraseña -->
-
             <label for="user_type">Tipo de Usuario</label> <!-- Etiqueta para el tipo de usuario -->
             <select id="user_type" name="user_type" required> <!-- Campo de selección para el tipo de usuario -->
                 <option value="operador">Operador</option>
                 <option value="hombreCamion">Hombre Camión</option>
                 <option value="empresa">Empresa</option>
             </select>
+
+            <label for="email">Correo Electrónico</label> <!-- Etiqueta para el correo electrónico -->
+            <input type="email" id="email" name="email" placeholder="Correo Electrónico" required> <!-- Campo de entrada para el correo electrónico -->
+            
+            <label for="password">Contraseña</label> <!-- Etiqueta para la contraseña -->
+            <input type="password" id="password" name="password" placeholder="Contraseña" required> <!-- Campo de entrada para la contraseña -->
+            
+            <label for="confirm_password">Confirmar Contraseña</label> <!-- Etiqueta para confirmar la contraseña -->
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirmar Contraseña" required> <!-- Campo de entrada para confirmar la contraseña -->
             
             <input type="submit" value="Registrarse"> <!-- Botón de envío del formulario -->
         </form>
