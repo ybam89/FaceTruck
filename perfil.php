@@ -12,12 +12,12 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Verificar la conexión
 if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
+    die("Conexión fallida: " . $conn->connect_error); // Termina la ejecución si hay un error en la conexión
 }
 
 // Obtener el ID del usuario y el tipo de usuario desde la sesión
 if (!isset($_SESSION['usuario_id']) || !isset($_SESSION['tipo_usuario'])) {
-    die("No se ha iniciado sesión correctamente.");
+    die("No se ha iniciado sesión correctamente."); // Termina la ejecución si no se encuentran las variables de sesión
 }
 $usuario_id = $_SESSION['usuario_id'];
 $tipo_usuario = $_SESSION['tipo_usuario'];
@@ -34,49 +34,49 @@ switch ($tipo_usuario) {
         $sql = "SELECT * FROM empresas WHERE usuario_id = ?";
         break;
     default:
-        die("Tipo de usuario no válido.");
+        die("Tipo de usuario no válido."); // Termina la ejecución si el tipo de usuario no es válido
 }
 
-$stmt = $conn->prepare($sql);
+$stmt = $conn->prepare($sql); // Prepara la consulta SQL
 $stmt->bind_param("i", $usuario_id); // Vincula el parámetro ID del usuario
-$stmt->execute();
-$result = $stmt->get_result(); // Ejecuta la consulta y obtiene el resultado
+$stmt->execute(); // Ejecuta la consulta
+$result = $stmt->get_result(); // Obtiene el resultado de la consulta
 
 // Verificar si se encontró algún resultado
 if ($result->num_rows > 0) {
     // Obtener los datos del usuario
     $row = $result->fetch_assoc();
-    $nombre_completo = $row['nombre_completo'] ?? $row['nombre'];
-    $edad = $row['edad'] ?? '';
-    $ciudad = $row['ciudad'] ?? '';
-    $estado = $row['estado'] ?? '';
-    $telefono = $row['telefono'] ?? '';
-    $correo = $row['correo'] ?? '';
-    $foto_perfil = $row['foto_perfil'] ?? '';
-    $experiencia_anos = $row['experiencia_anos'] ?? '';
-    $tipos_unidades = $row['tipos_unidades'] ?? '';
-    $empresas = $row['empresas'] ?? '';
-    $rutas = $row['rutas'] ?? '';
-    $licencia_tipo = $row['licencia_tipo'] ?? '';
-    $licencia_vigencia = $row['licencia_vigencia'] ?? '';
-    $materiales_peligrosos = $row['materiales_peligrosos'] ?? 0;
-    $otros_certificados = $row['otros_certificados'] ?? '';
-    $disponibilidad_viajar = $row['disponibilidad_viajar'] ?? 0;
-    $disponibilidad_horarios = $row['disponibilidad_horarios'] ?? 0;
-    $nivel_mecanica = $row['nivel_mecanica'] ?? '';
-    $nivel_seguridad_vial = $row['nivel_seguridad_vial'] ?? '';
-    $habilidad_gps = $row['habilidad_gps'] ?? '';
-    $manejo_bitacoras = $row['manejo_bitacoras'] ?? '';
+    $nombre_completo = $row['nombre_completo'] ?? $row['nombre']; // Asigna el nombre completo o nombre
+    $edad = $row['edad'] ?? ''; // Asigna la edad
+    $ciudad = $row['ciudad'] ?? ''; // Asigna la ciudad
+    $estado = $row['estado'] ?? ''; // Asigna el estado
+    $telefono = $row['telefono'] ?? ''; // Asigna el teléfono
+    $correo = $row['correo'] ?? ''; // Asigna el correo
+    $foto_perfil = $row['foto_perfil'] ?? ''; // Asigna la foto de perfil
+    $experiencia_anos = $row['experiencia_anos'] ?? ''; // Asigna los años de experiencia
+    $tipos_unidades = $row['tipos_unidades'] ?? ''; // Asigna los tipos de unidades manejadas
+    $empresas = $row['empresas'] ?? ''; // Asigna las empresas anteriores
+    $rutas = $row['rutas'] ?? ''; // Asigna las rutas manejadas
+    $licencia_tipo = $row['licencia_tipo'] ?? ''; // Asigna el tipo de licencia
+    $licencia_vigencia = $row['licencia_vigencia'] ?? ''; // Asigna la vigencia de la licencia
+    $materiales_peligrosos = $row['materiales_peligrosos'] ?? 0; // Asigna la certificación de materiales peligrosos
+    $otros_certificados = $row['otros_certificados'] ?? ''; // Asigna otros certificados
+    $disponibilidad_viajar = $row['disponibilidad_viajar'] ?? 0; // Asigna la disponibilidad para viajar
+    $disponibilidad_horarios = $row['disponibilidad_horarios'] ?? 0; // Asigna la disponibilidad para horarios variables
+    $nivel_mecanica = $row['nivel_mecanica'] ?? ''; // Asigna el nivel de mecánica
+    $nivel_seguridad_vial = $row['nivel_seguridad_vial'] ?? ''; // Asigna el nivel de seguridad vial
+    $habilidad_gps = $row['habilidad_gps'] ?? ''; // Asigna la habilidad para el uso de GPS
+    $manejo_bitacoras = $row['manejo_bitacoras'] ?? ''; // Asigna el manejo de bitácoras
 } else {
-    echo "No se encontró información del usuario.";
+    echo "No se encontró información del usuario."; // Muestra un mensaje si no se encontró información del usuario
 }
 
-$stmt->close();
-$conn->close();
+$stmt->close(); // Cierra la declaración preparada
+$conn->close(); // Cierra la conexión a la base de datos
 
 // Establecer la imagen de perfil predeterminada si no hay una imagen de perfil
 if (empty($foto_perfil)) {
-    $foto_perfil = 'img/imgprofile.jpg';
+    $foto_perfil = 'img/camion.jpg'; // Asigna la imagen de perfil predeterminada
 }
 ?>
 
@@ -250,4 +250,4 @@ if (empty($foto_perfil)) {
         </div>
     </div>
 </body>
-</html> 
+</html>
