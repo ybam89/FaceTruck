@@ -5,60 +5,74 @@ session_start(); // Inicia la sesión
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "facetruck"; // Asegúrate de que el nombre de la base de datos sea correcto
+$dbname = "facetruck";
 
 // Crear la conexión
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Verificar la conexión
 if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error); // Termina el script si hay un error de conexión
+    die("Conexión fallida: " . $conn->connect_error);
 }
 
-// Obtener el ID del operador desde la sesión
-if (!isset($_SESSION['operador_id'])) {
-    die("No se ha iniciado sesión correctamente."); // Termina el script si no hay operador_id en la sesión
+// Obtener el ID del usuario y el tipo de usuario desde la sesión
+if (!isset($_SESSION['usuario_id']) || !isset($_SESSION['tipo_usuario'])) {
+    die("No se ha iniciado sesión correctamente.");
 }
-$operador_id = $_SESSION['operador_id']; // Asigna el ID del operador desde la sesión
+$usuario_id = $_SESSION['usuario_id'];
+$tipo_usuario = $_SESSION['tipo_usuario'];
 
-// Consulta para obtener la información del operador
-$sql = "SELECT * FROM operadores WHERE id = ?";
+// Consulta para obtener la información del usuario según el tipo
+switch ($tipo_usuario) {
+    case 'operador':
+        $sql = "SELECT * FROM operadores WHERE usuario_id = ?";
+        break;
+    case 'hombreCamion':
+        $sql = "SELECT * FROM hombres_camion WHERE usuario_id = ?";
+        break;
+    case 'empresa':
+        $sql = "SELECT * FROM empresas WHERE usuario_id = ?";
+        break;
+    default:
+        die("Tipo de usuario no válido.");
+}
+
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $operador_id); // Vincula el parámetro ID del operador
+$stmt->bind_param("i", $usuario_id); // Vincula el parámetro ID del usuario
 $stmt->execute();
 $result = $stmt->get_result(); // Ejecuta la consulta y obtiene el resultado
 
 // Verificar si se encontró algún resultado
 if ($result->num_rows > 0) {
-    // Obtener los datos del operador
+    // Obtener los datos del usuario
     $row = $result->fetch_assoc();
-    $nombre_completo = $row['nombre_completo'];
-    $edad = $row['edad'];
-    $ciudad = $row['ciudad'];
-    $estado = $row['estado'];
-    $telefono = $row['telefono'];
-    $correo = $row['correo'];
-    $foto_perfil = $row['foto_perfil'];
-    $experiencia_anos = $row['experiencia_anos'];
-    $tipos_unidades = $row['tipos_unidades'];
-    $empresas = $row['empresas'];
-    $rutas = $row['rutas'];
-    $licencia_tipo = $row['licencia_tipo'];
-    $licencia_vigencia = $row['licencia_vigencia'];
-    $materiales_peligrosos = $row['materiales_peligrosos'];
-    $otros_certificados = $row['otros_certificados'];
-    $disponibilidad_viajar = $row['disponibilidad_viajar'];
-    $disponibilidad_horarios = $row['disponibilidad_horarios'];
-    $nivel_mecanica = $row['nivel_mecanica'];
-    $nivel_seguridad_vial = $row['nivel_seguridad_vial'];
-    $habilidad_gps = $row['habilidad_gps'];
-    $manejo_bitacoras = $row['manejo_bitacoras'];
+    $nombre_completo = $row['nombre_completo'] ?? $row['nombre'];
+    $edad = $row['edad'] ?? '';
+    $ciudad = $row['ciudad'] ?? '';
+    $estado = $row['estado'] ?? '';
+    $telefono = $row['telefono'] ?? '';
+    $correo = $row['correo'] ?? '';
+    $foto_perfil = $row['foto_perfil'] ?? '';
+    $experiencia_anos = $row['experiencia_anos'] ?? '';
+    $tipos_unidades = $row['tipos_unidades'] ?? '';
+    $empresas = $row['empresas'] ?? '';
+    $rutas = $row['rutas'] ?? '';
+    $licencia_tipo = $row['licencia_tipo'] ?? '';
+    $licencia_vigencia = $row['licencia_vigencia'] ?? '';
+    $materiales_peligrosos = $row['materiales_peligrosos'] ?? 0;
+    $otros_certificados = $row['otros_certificados'] ?? '';
+    $disponibilidad_viajar = $row['disponibilidad_viajar'] ?? 0;
+    $disponibilidad_horarios = $row['disponibilidad_horarios'] ?? 0;
+    $nivel_mecanica = $row['nivel_mecanica'] ?? '';
+    $nivel_seguridad_vial = $row['nivel_seguridad_vial'] ?? '';
+    $habilidad_gps = $row['habilidad_gps'] ?? '';
+    $manejo_bitacoras = $row['manejo_bitacoras'] ?? '';
 } else {
-    echo "No se encontró información del operador."; // Mensaje si no se encuentra información del operador
+    echo "No se encontró información del usuario.";
 }
 
-$stmt->close(); // Cierra la declaración
-$conn->close(); // Cierra la conexión
+$stmt->close();
+$conn->close();
 
 // Establecer la imagen de perfil predeterminada si no hay una imagen de perfil
 if (empty($foto_perfil)) {
@@ -69,34 +83,34 @@ if (empty($foto_perfil)) {
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8"> <!-- Configura la codificación de caracteres -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Configura la vista para dispositivos móviles -->
-    <title>Perfil del Operador - FaceTruck</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil del Usuario - FaceTruck</title>
     <style>
         body {
-            font-family: Arial, sans-serif; /* Define la fuente a usar */
-            background-color: #f0f0f0; /* Color de fondo */
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
             margin: 0;
             padding: 20px;
         }
         .container {
-            background-color: #ffffff; /* Color de fondo del contenedor */
+            background-color: #ffffff;
             padding: 20px;
-            border-radius: 8px; /* Bordes redondeados */
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra alrededor del contenedor */
-            max-width: 1200px; /* Ancho máximo */
-            margin: 0 auto; /* Centrar el contenedor */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 1200px;
+            margin: 0 auto;
         }
         h2 {
-            color: #007BFF; /* Color del texto */
-            border-bottom: 2px solid #007BFF; /* Línea inferior */
+            color: #007BFF;
+            border-bottom: 2px solid #007BFF;
             padding-bottom: 5px;
         }
         .section {
             margin-bottom: 20px;
         }
         .section label {
-            font-weight: bold; /* Texto en negrita */
+            font-weight: bold;
             display: block;
             margin: 10px 0 5px;
         }
@@ -104,58 +118,58 @@ if (empty($foto_perfil)) {
             margin: 5px 0;
         }
         .profile-picture {
-            text-align: center; /* Centrar el contenido */
+            text-align: center;
             margin-bottom: 20px;
         }
         .profile-picture img {
-            width: 200px; /* Ancho de la imagen */
-            height: 200px; /* Alto de la imagen */
-            border-radius: 50%; /* Bordes redondeados en forma de círculo */
-            object-fit: cover; /* Ajustar la imagen para cubrir el contenedor */
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
         }
         .profile-picture form {
             margin-top: 10px;
         }
         .profile-picture input[type="file"] {
-            display: none; /* Ocultar el input de archivo */
+            display: none;
         }
         .profile-picture label {
-            cursor: pointer; /* Cambia el cursor al pasar sobre el texto */
-            color: #007BFF; /* Color del texto */
-            text-decoration: underline; /* Subraya el texto */
+            cursor: pointer;
+            color: #007BFF;
+            text-decoration: underline;
         }
         .profile-picture button {
-            background-color: #007BFF; /* Color de fondo */
-            color: white; /* Color del texto */
+            background-color: #007BFF;
+            color: white;
             border: none;
             padding: 10px;
-            cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
-            border-radius: 4px; /* Bordes redondeados */
+            cursor: pointer;
+            border-radius: 4px;
         }
         .edit-button {
             text-align: center;
             margin-top: 20px;
         }
         .edit-button button {
-            background-color: #007BFF; /* Color de fondo */
-            color: white; /* Color del texto */
+            background-color: #007BFF;
+            color: white;
             border: none;
             padding: 10px;
-            cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
-            border-radius: 4px; /* Bordes redondeados */
+            cursor: pointer;
+            border-radius: 4px;
         }
         .logout {
-            position: absolute; /* Posición absoluta */
-            top: 20px; /* Espacio desde el borde superior */
-            right: 20px; /* Espacio desde el borde derecho */
+            position: absolute;
+            top: 20px;
+            right: 20px;
         }
         .logout button {
-            background-color: #FF0000; /* Color de fondo */
-            color: white; /* Color del texto */
+            background-color: #FF0000;
+            color: white;
             border: none;
             padding: 10px;
-            cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
-            border-radius: 4px; /* Bordes redondeados */
+            cursor: pointer;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -236,4 +250,4 @@ if (empty($foto_perfil)) {
         </div>
     </div>
 </body>
-</html>
+</html> 
