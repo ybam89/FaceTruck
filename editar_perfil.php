@@ -1,192 +1,187 @@
 <?php
-session_start(); // Inicia la sesión para poder usar $_SESSION
+session_start();
 
 // Datos de conexión a la base de datos
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "facetruck"; // Asegúrate de que el nombre de la base de datos sea correcto
+$db_username = "root";
+$db_password = "";
+$dbname = "facetruck";
 
-// Crear la conexión
-$conn = new mysqli($servername, $username, $password, $dbname);
+// Crear una nueva conexión a la base de datos
+$conn = new mysqli($servername, $db_username, $db_password, $dbname);
 
-// Verificar la conexión
+// Verifica si la conexión a la base de datos ha fallado
 if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error); // Termina el script si hay un error de conexión
+    die("Conexión fallida: " . $conn->connect_error);
 }
 
-// Obtener el ID del operador desde la sesión
-if (!isset($_SESSION['operador_id'])) {
-    die("No se ha iniciado sesión correctamente."); // Termina el script si no hay operador_id en la sesión
-}
-$operador_id = $_SESSION['operador_id']; // Asigna el ID del operador desde la sesión
+// Obtener el ID del usuario desde la sesión
+$usuario_id = $_SESSION['usuario_id'];
 
-// Consulta para obtener la información del usuario
-$sql = "SELECT * FROM usuarios WHERE id = ?";
+// Consultar el tipo de usuario
+$sql = "SELECT tipo_usuario FROM usuarios WHERE id = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $operador_id); // Vincula el parámetro ID del operador
+$stmt->bind_param("i", $usuario_id);
 $stmt->execute();
-$result = $stmt->get_result(); // Ejecuta la consulta y obtiene el resultado
+$stmt->bind_result($tipo_usuario);
+$stmt->fetch();
+$stmt->close();
 
-// Verificar si se encontró algún resultado
-if ($result->num_rows > 0) {
-    // Obtener los datos del usuario
-    $row = $result->fetch_assoc();
-    $tipo_usuario = $row['tipo_usuario'];
-} else {
-    echo "No se encontró información del usuario."; // Mensaje si no se encuentra información del usuario
-    exit();
-}
-
-// Determinar la tabla a consultar según el tipo de usuario
-if ($tipo_usuario == 'HombreCamion') {
-    $sql = "SELECT * FROM HombreCamion WHERE id = ?";
-} elseif ($tipo_usuario == 'Empresa') {
-    $sql = "SELECT * FROM Empresa WHERE id = ?";
-} else {
-    $sql = "SELECT * FROM operadores WHERE id = ?";
+// Obtener los datos del usuario según el tipo
+switch ($tipo_usuario) {
+    case 'operador':
+        $sql = "SELECT pregunta_uno_operadores, pregunta_dos_operadores, pregunta_tres_operadores FROM operadores WHERE usuario_id = ?";
+        break;
+    case 'hombreCamion':
+        $sql = "SELECT pregunta_uno_hombres_camion, pregunta_dos_hombres_camion, pregunta_tres_hombres_camion FROM hombres_camion WHERE usuario_id = ?";
+        break;
+    case 'empresa':
+        $sql = "SELECT pregunta_uno_empresas, pregunta_dos_empresas, pregunta_tres_empresas FROM empresas WHERE usuario_id = ?";
+        break;
 }
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $operador_id); // Vincula el parámetro ID del operador
+$stmt->bind_param("i", $usuario_id);
 $stmt->execute();
-$result = $stmt->get_result(); // Ejecuta la consulta y obtiene el resultado
+$stmt->bind_result($pregunta_uno, $pregunta_dos, $pregunta_tres);
+$stmt->fetch();
+$stmt->close();
 
-// Verificar si se encontró algún resultado
-if ($result->num_rows > 0) {
-    // Obtener los datos del operador
-    $row = $result->fetch_assoc();
-    $nombre_completo = $row['nombre_completo'];
-    $edad = $row['edad'];
-    $ciudad = $row['ciudad'];
-    $estado = $row['estado'];
-    $telefono = $row['telefono'];
-    $correo = $row['correo'];
-    // Otros campos específicos según el tipo de usuario
-} else {
-    echo "No se encontró información del operador."; // Mensaje si no se encuentra información del operador
+// Procesar la actualización del perfil
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $pregunta_uno = $_POST['pregunta_uno'];
+    $pregunta_dos = $_POST['pregunta_dos'];
+    $pregunta_tres = $_POST['pregunta_tres'];
+
+    switch ($tipo_usuario) {
+        case 'operador':
+            $sql = "UPDATE operadores SET pregunta_uno_operadores = ?, pregunta_dos_operadores = ?, pregunta_tres_operadores = ? WHERE usuario_id = ?";
+            break;
+        case 'hombreCamion':
+            $sql = "UPDATE hombres_camion SET pregunta_uno_hombres_camion = ?, pregunta_dos_hombres_camion = ?, pregunta_tres_hombres_camion = ? WHERE usuario_id = ?";
+            break;
+        case 'empresa':
+            $sql = "UPDATE empresas SET pregunta_uno_empresas = ?, pregunta_dos_empresas = ?, pregunta_tres_empresas = ? WHERE usuario_id = ?";
+            break;
+    }
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sssi", $pregunta_uno, $pregunta_dos, $pregunta_tres, $usuario_id);
+    if ($stmt->execute()) {
+        $_SESSION['message'] = 'Perfil actualizado con éxito.';
+    } else {
+        $_SESSION['error'] = 'Error al actualizar el perfil. Inténtalo de nuevo.';
+    }
+    $stmt->close();
 }
 
-$stmt->close(); // Cierra la declaración
-$conn->close(); // Cierra la conexión
+$conn->close();
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8"> <!-- Define la codificación de caracteres como UTF-8 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Configura la vista para dispositivos móviles -->
-    <title>Editar Perfil del Operador - FaceTruck</title> <!-- Título de la página -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil</title>
     <style>
         body {
-            font-family: Arial, sans-serif; /* Define la fuente de la página */
-            background-color: #f0f0f0; /* Color de fondo de la página */
-            margin: 0; /* Sin margen */
-            padding: 20px; /* Espaciado interno */
-            display: flex; /* Usar flexbox para centrar el contenido */
-            justify-content: center; /* Centrar horizontalmente */
-            align-items: center; /* Centrar verticalmente */
-            height: 100vh; /* Altura de la página completa */
-            overflow: hidden; /* Evita que la página se desplace */
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
-        .container {
-            background-color: #ffffff; /* Color de fondo del contenedor de login */
-            padding: 20px; /* Espaciado interno */
-            border-radius: 8px; /* Bordes redondeados */
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra del contenedor */
-            max-width: 800px; /* Ancho máximo */
-            width: 100%; /* Ancho completo */
-            max-height: 90vh; /* Altura máxima del contenedor */
-            overflow-y: auto; /* Habilita el desplazamiento vertical */
+        .login-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
-        h2 {
-            color: #007BFF; /* Color del texto del título */
-            border-bottom: 2px solid #007BFF; /* Línea inferior */
-            padding-bottom: 5px; /* Relleno inferior */
-            margin-bottom: 20px; /* Margen inferior */
+        .login-container img {
+            width: 100%;
+            max-width: 200px;
+            margin-bottom: 20px;
         }
-        .section {
-            margin-bottom: 15px; /* Margen inferior */
+        .login-container h2 {
+            color: #007BFF;
         }
-        .section label {
-            font-weight: bold; /* Texto en negrita */
-            display: block; /* Mostrar como bloque */
-            margin: 10px 0 5px; /* Margen */
+        .login-container label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
         }
-        .section input, .section textarea {
-            width: calc(100% - 20px); /* Ancho de los inputs */
-            padding: 8px; /* Relleno interno */
-            margin: 5px 0; /* Margen */
-            border: 1px solid #ccc; /* Bordes de los inputs */
-            border-radius: 4px; /* Bordes redondeados */
-            font-size: 14px; /* Tamaño de la fuente */
+        .login-container input, .login-container select, .login-container textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: block;
         }
-        .section input[type="checkbox"] {
-            width: auto; /* Ancho automático */
+        .login-container input[type="submit"] {
+            background-color: #007BFF;
+            border: none;
+            color: white;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+            padding: 10px;
         }
-        .submit-button {
-            text-align: center; /* Centrar el texto */
-            margin-top: 20px; /* Margen superior */
+        .login-container input[type="submit"]:hover {
+            background-color: #0056b3;
         }
-        .submit-button button {
-            background-color: #007BFF; /* Color de fondo */
-            color: white; /* Color del texto */
-            border: none; /* Sin borde */
-            padding: 10px 20px; /* Relleno interno */
-            cursor: pointer; /* Cambiar el cursor a mano */
-            border-radius: 4px; /* Bordes redondeados */
-            font-size: 16px; /* Tamaño de la fuente */
+        .login-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
         }
-        .submit-button button:hover {
-            background-color: #0056b3; /* Color de fondo al pasar el ratón */
+        .login-container button:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: red;
+            margin: 10px 0;
+        }
+        .success-message {
+            color: green;
+            margin: 10px 0;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Editar Información Personal</h2>
-        <form action="actualizar_perfil.php" method="post"> <!-- Formulario de edición de perfil -->
-            <div class="section">
-                <label for="nombre_completo">Nombre completo:</label>
-                <input type="text" id="nombre_completo" name="nombre_completo" value="<?php echo !empty($nombre_completo) ? $nombre_completo : ''; ?>" required> <!-- Campo de entrada para el nombre completo -->
-                
-                <label for="edad">Edad:</label>
-                <input type="number" id="edad" name="edad" value="<?php echo !empty($edad) ? $edad : ''; ?>" required> <!-- Campo de entrada para la edad -->
-                
-                <label for="ciudad">Ciudad:</label>
-                <input type="text" id="ciudad" name="ciudad" value="<?php echo !empty($ciudad) ? $ciudad : ''; ?>" required> <!-- Campo de entrada para la ciudad -->
-                
-                <label for="estado">Estado:</label>
-                <input type="text" id="estado" name="estado" value="<?php echo !empty($estado) ? $estado : ''; ?>" required> <!-- Campo de entrada para el estado -->
-                
-                <label for="telefono">Teléfono de contacto:</label>
-                <input type="text" id="telefono" name="telefono" value="<?php echo !empty($telefono) ? $telefono : ''; ?>" required> <!-- Campo de entrada para el teléfono de contacto -->
-                
-                <label for="correo">Correo electrónico:</label>
-                <input type="email" id="correo" name="correo" value="<?php echo !empty($correo) ? $correo : ''; ?>" required> <!-- Campo de entrada para el correo electrónico -->
+    <div class="login-container">
+        <img src="img/camion.jpg" alt="Camión">
+        <h2>Editar Perfil - <?php echo ucfirst($tipo_usuario); ?></h2>
+        <?php
+        if (isset($_SESSION['error'])) {
+            echo '<div class="error-message">' . $_SESSION['error'] . '</div>';
+            unset($_SESSION['error']);
+        }
+        if (isset($_SESSION['message'])) {
+            echo '<div class="success-message">' . $_SESSION['message'] . '</div>';
+            unset($_SESSION['message']);
+        }
+        ?>
+        <form action="editar_perfil.php" method="post">
+            <label for="pregunta_uno">Pregunta Uno</label>
+            <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo $pregunta_uno; ?>" required>
 
-                <!-- Campos específicos según el tipo de usuario -->
-                <?php if ($tipo_usuario == 'HombreCamion'): ?>
-                    <label for="experiencia_anos">Años de experiencia:</label>
-                    <input type="number" id="experiencia_anos" name="experiencia_anos" value="<?php echo !empty($row['experiencia_anos']) ? $row['experiencia_anos'] : ''; ?>" required> <!-- Campo de entrada para los años de experiencia -->
+            <label for="pregunta_dos">Pregunta Dos</label>
+            <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $pregunta_dos; ?>" required>
 
-                    <label for="tipos_unidades">Tipo de unidades que he manejado:</label>
-                    <textarea id="tipos_unidades" name="tipos_unidades" required><?php echo !empty($row['tipos_unidades']) ? $row['tipos_unidades'] : ''; ?></textarea> <!-- Campo de texto para el tipo de unidades -->
+            <label for="pregunta_tres">Pregunta Tres</label>
+            <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $pregunta_tres; ?>" required>
 
-                    <label for="rutas">Rutas manejadas:</label>
-                    <textarea id="rutas" name="rutas" required><?php echo !empty($row['rutas']) ? $row['rutas'] : ''; ?></textarea> <!-- Campo de texto para las rutas -->
-                <?php elseif ($tipo_usuario == 'Empresa'): ?>
-                    <label for="nombre_empresa">Nombre de la Empresa:</label>
-                    <input type="text" id="nombre_empresa" name="nombre_empresa" value="<?php echo !empty($row['nombre_empresa']) ? $row['nombre_empresa'] : ''; ?>" required> <!-- Campo de entrada para el nombre de la empresa -->
-
-                    <label for="direccion">Dirección:</label>
-                    <textarea id="direccion" name="direccion" required><?php echo !empty($row['direccion']) ? $row['direccion'] : ''; ?></textarea> <!-- Campo de texto para la dirección -->
-                <?php endif; ?>
-            </div>
-
-            <div class="submit-button">
-                <button type="submit">Actualizar Información</button> <!-- Botón para enviar el formulario -->
-            </div>
+            <input type="submit" value="Guardar Cambios">
         </form>
     </div>
 </body>

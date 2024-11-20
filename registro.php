@@ -5,7 +5,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Verifica si el formulario fue env
     $correo = $_POST['email']; // Obtiene el correo electrónico del formulario
     $password = $_POST['password']; // Obtiene la contraseña del formulario
     $confirm_password = $_POST['confirm_password']; // Obtiene la confirmación de la contraseña del formulario
-    $user_type = $_POST['user_type']; // Obtiene el tipo de usuario del formulario
+    $tipo_usuario = $_POST['user_type']; // Obtiene el tipo de usuario del formulario
 
     // Validación de la contraseña
     if (strlen($password) < 8 || !preg_match("/[A-Z]/", $password) || !preg_match("/[0-9]/", $password)) {
@@ -52,9 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Verifica si el formulario fue env
 
     // Registrar el nuevo usuario
     $hashed_password = password_hash($password, PASSWORD_DEFAULT); // Encripta la contraseña
-    $sql = "INSERT INTO usuarios (correo, password, user_type) VALUES (?, ?, ?)"; // Actualiza la consulta para incluir el tipo de usuario
+    $sql = "INSERT INTO usuarios (correo, password, tipo_usuario) VALUES (?, ?, ?)"; // Actualiza la consulta para incluir el tipo de usuario
     $stmt = $conn->prepare($sql); // Prepara una consulta SQL
-    $stmt->bind_param("sss", $correo, $hashed_password, $user_type); // Asigna los valores del correo, la contraseña encriptada y el tipo de usuario a la consulta preparada
+    $stmt->bind_param("sss", $correo, $hashed_password, $tipo_usuario); // Asigna los valores del correo, la contraseña encriptada y el tipo de usuario a la consulta preparada
 
     if ($stmt->execute()) { // Ejecuta la consulta y verifica si fue exitosa
         $_SESSION['message'] = 'Registro exitoso. Ahora puedes iniciar sesión.';
