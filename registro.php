@@ -57,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Verifica si el formulario fue env
     $stmt->bind_param("sss", $correo, $hashed_password, $tipo_usuario); // Asigna los valores del correo, la contraseña encriptada y el tipo de usuario a la consulta preparada
 
     if ($stmt->execute()) { // Ejecuta la consulta y verifica si fue exitosa
+        $_SESSION['usuario_id'] = $stmt->insert_id; // Establece el ID del usuario recién registrado en la sesión
         $_SESSION['message'] = 'Registro exitoso. Ahora puedes iniciar sesión.';
         header("Location: editar_perfil.php"); // Redirige a la página de edición de perfil
         exit(); // Termina el script
