@@ -35,7 +35,7 @@ switch ($tipo_usuario) {
     case 'hombreCamion':
         $sql = "SELECT pregunta_uno_hombres_camion, pregunta_dos_hombres_camion, pregunta_tres_hombres_camion FROM hombres_camion WHERE usuario_id = ?"; // Consulta SQL para hombres camión
         break;
-    case 'empresas':
+    case 'empresa':
         $sql = "SELECT pregunta_uno_empresas, pregunta_dos_empresas, pregunta_tres_empresas FROM empresas WHERE usuario_id = ?"; // Consulta SQL para empresas
         break;
 }
@@ -172,13 +172,49 @@ $conn->close(); // Cierra la conexión a la base de datos
         }
         ?>
         <form action="editar_perfil.php" method="post"> <!-- Formulario de edición de perfil -->
-            <label for="pregunta_uno">Pregunta Uno</label> <!-- Etiqueta para la pregunta uno -->
+            <label for="pregunta_uno"><?php 
+                switch ($tipo_usuario) {
+                    case 'operador':
+                        echo "Pregunta uno operadores";
+                        break;
+                    case 'hombreCamion':
+                        echo "Pregunta uno hombres camión";
+                        break;
+                    case 'empresa':
+                        echo "Pregunta uno empresas";
+                        break;
+                }
+            ?></label> <!-- Etiqueta para la pregunta uno -->
             <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo $pregunta_uno; ?>" required> <!-- Campo de entrada para la pregunta uno -->
 
-            <label for="pregunta_dos">Pregunta Dos</label> <!-- Etiqueta para la pregunta dos -->
+            <label for="pregunta_dos"><?php 
+                switch ($tipo_usuario) {
+                    case 'operador':
+                        echo "Pregunta dos operadores";
+                        break;
+                    case 'hombreCamion':
+                        echo "Pregunta dos hombres camión";
+                        break;
+                    case 'empresa':
+                        echo "Pregunta dos empresas";
+                        break;
+                }
+            ?></label> <!-- Etiqueta para la pregunta dos -->
             <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $pregunta_dos; ?>" required> <!-- Campo de entrada para la pregunta dos -->
 
-            <label for="pregunta_tres">Pregunta Tres</label> <!-- Etiqueta para la pregunta tres -->
+            <label for="pregunta_tres"><?php 
+                switch ($tipo_usuario) {
+                    case 'operador':
+                        echo "Pregunta tres operadores";
+                        break;
+                    case 'hombreCamion':
+                        echo "Pregunta tres hombres camión";
+                        break;
+                    case 'empresa':
+                        echo "Pregunta tres empresas";
+                        break;
+                }
+            ?></label> <!-- Etiqueta para la pregunta tres -->
             <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $pregunta_tres; ?>" required> <!-- Campo de entrada para la pregunta tres -->
 
             <input type="submit" value="Guardar Cambios"> <!-- Botón para enviar el formulario -->
