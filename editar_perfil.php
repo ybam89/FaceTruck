@@ -27,6 +27,10 @@ $stmt->bind_result($tipo_usuario); // Vincula el resultado de la consulta a la v
 $stmt->fetch(); // Obtiene el resultado de la consulta
 $stmt->close(); // Cierra la declaración preparada
 
+if (!$tipo_usuario) {
+    die("Tipo de usuario no encontrado."); // Termina el script si no se encuentra el tipo de usuario
+}
+
 // Obtener los datos del usuario según el tipo
 switch ($tipo_usuario) {
     case 'operador':
@@ -38,6 +42,8 @@ switch ($tipo_usuario) {
     case 'empresa':
         $sql = "SELECT pregunta_uno_empresas, pregunta_dos_empresas, pregunta_tres_empresas FROM empresas WHERE usuario_id = ?"; // Consulta SQL para empresas
         break;
+    default:
+        die("Tipo de usuario no válido."); // Termina el script si el tipo de usuario no es válido
 }
 
 $stmt = $conn->prepare($sql); // Prepara la consulta SQL basada en el tipo de usuario
@@ -53,26 +59,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Verifica si el formulario fue env
     $pregunta_dos = $_POST['pregunta_dos']; // Asigna el valor de la pregunta dos desde el formulario
     $pregunta_tres = $_POST['pregunta_tres']; // Asigna el valor de la pregunta tres desde el formulario
 
-    switch ($tipo_usuario) {
-        case 'operador':
-            $sql = "UPDATE operadores SET pregunta_uno_operadores = ?, pregunta_dos_operadores = ?, pregunta_tres_operadores = ? WHERE usuario_id = ?"; // Consulta SQL para actualizar operadores
-            break;
-        case 'hombreCamion':
-            $sql = "UPDATE hombres_camion SET pregunta_uno_hombres_camion = ?, pregunta_dos_hombres_camion = ?, pregunta_tres_hombres_camion = ? WHERE usuario_id = ?"; // Consulta SQL para actualizar hombres camión
-            break;
-        case 'empresa':
-            $sql = "UPDATE empresas SET pregunta_uno_empresas = ?, pregunta_dos_empresas = ?, pregunta_tres_empresas = ? WHERE usuario_id = ?"; // Consulta SQL para actualizar empresas
-            break;
-    }
-
-    $stmt = $conn->prepare($sql); // Prepara la consulta SQL para actualizar los datos
-    $stmt->bind_param("sssi", $pregunta_uno, $pregunta_dos, $pregunta_tres, $usuario_id); // Vincula los parámetros a la consulta SQL
-    if ($stmt->execute()) { // Ejecuta la consulta y verifica si fue exitosa
-        $_SESSION['message'] = 'Perfil actualizado con éxito.'; // Asigna un mensaje de éxito a la sesión
+    if (empty($pregunta_uno) || empty($pregunta_dos) || empty($pregunta_tres)) {
+        $_SESSION['error'] = 'Todos los campos son obligatorios.'; // Asigna un mensaje de error a la sesión
     } else {
-        $_SESSION['error'] = 'Error al actualizar el perfil. Inténtalo de nuevo.'; // Asigna un mensaje de error a la sesión
+        switch ($tipo_usuario) {
+            case 'operador':
+                $sql = "UPDATE operadores SET pregunta_uno_operadores = ?, pregunta_dos_operadores = ?, pregunta_tres_operadores = ? WHERE usuario_id = ?"; // Consulta SQL para actualizar operadores
+                break;
+            case 'hombreCamion':
+                $sql = "UPDATE hombres_camion SET pregunta_uno_hombres_camion = ?, pregunta_dos_hombres_camion = ?, pregunta_tres_hombres_camion = ? WHERE usuario_id = ?"; // Consulta SQL para actualizar hombres camión
+                break;
+            case 'empresa':
+                $sql = "UPDATE empresas SET pregunta_uno_empresas = ?, pregunta_dos_empresas = ?, pregunta_tres_empresas = ? WHERE usuario_id = ?"; // Consulta SQL para actualizar empresas
+                break;
+        }
+
+        $stmt = $conn->prepare($sql); // Prepara la consulta SQL para actualizar los datos
+        $stmt->bind_param("sssi", $pregunta_uno, $pregunta_dos, $pregunta_tres, $usuario_id); // Vincula los parámetros a la consulta SQL
+        if ($stmt->execute()) { // Ejecuta la consulta y verifica si fue exitosa
+            $_SESSION['message'] = 'Perfil actualizado con éxito.'; // Asigna un mensaje de éxito a la sesión
+        } else {
+            $_SESSION['error'] = 'Error al actualizar el perfil. Inténtalo de nuevo.'; // Asigna un mensaje de error a la sesión
+        }
+        $stmt->close(); // Cierra la declaración preparada
     }
-    $stmt->close(); // Cierra la declaración preparada
 }
 
 $conn->close(); // Cierra la conexión a la base de datos

@@ -52,15 +52,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Verifica si el formulario fue env
 
     // Registrar el nuevo usuario
     $hashed_password = password_hash($password, PASSWORD_DEFAULT); // Encripta la contraseña
-    $sql = "INSERT INTO usuarios (correo, password, tipo_usuario) VALUES (?, ?, ?)"; // Actualiza la consulta para incluir el tipo de usuario
+    $sql = "INSERT INTO usuarios (correo, password, tipo_usuario) VALUES (?, ?, ?)"; // Consulta SQL para insertar un nuevo usuario
     $stmt = $conn->prepare($sql); // Prepara una consulta SQL
     $stmt->bind_param("sss", $correo, $hashed_password, $tipo_usuario); // Asigna los valores del correo, la contraseña encriptada y el tipo de usuario a la consulta preparada
 
     if ($stmt->execute()) { // Ejecuta la consulta y verifica si fue exitosa
-        $_SESSION['usuario_id'] = $stmt->insert_id; // Establece el ID del usuario recién registrado en la sesión
-        $_SESSION['message'] = 'Registro exitoso. Ahora puedes iniciar sesión.';
-        header("Location: editar_perfil.php"); // Redirige a la página de edición de perfil
-        exit(); // Termina el script
+        $usuario_id = $stmt->insert_id; // Obtiene el ID del usuario recién registrado
+        $_SESSION['usuario_id'] = $usuario_id; // Establece el ID del usuario recién registrado en la sesión
+
+        // Insertar en la tabla correspondiente según el tipo de usuario
+        switch ($tipo_usuario) {
+            case 'operador':
+                $sql = "INSERT INTO operadores (usuario_id) VALUES (?)";
+                break;
+            case 'hombreCamion':
+                $sql = "INSERT INTO hombres_camion (usuario_id) VALUES (?)";
+                break;
+            case 'empresa':
+                $sql = "INSERT INTO empresas (usuario_id) VALUES (?)";
+                break;
+        }
+
+        $stmt = $conn->prepare($sql); // Prepara una consulta SQL
+        $stmt->bind_param("i", $usuario_id); // Asigna el valor del ID del usuario a la consulta preparada
+        if ($stmt->execute()) { // Ejecuta la consulta y verifica si fue exitosa
+            $_SESSION['message'] = 'Registro exitoso. Ahora puedes iniciar sesión.';
+            header("Location: editar_perfil.php"); // Redirige a la página de edición de perfil
+            exit(); // Termina el script
+        } else {
+            $_SESSION['error'] = 'Error al registrar el tipo de usuario. Inténtalo de nuevo.';
+        }
     } else {
         $_SESSION['error'] = 'Error al registrar el usuario. Inténtalo de nuevo.';
     }
