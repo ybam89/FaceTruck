@@ -45,12 +45,28 @@ $result = $stmt->get_result(); // Obtiene el resultado de la consulta
 // Verificar si se encontró algún resultado
 if ($result->num_rows > 0) {
     // Obtener los datos del usuario
-
+    $row = $result->fetch_assoc();
 } else {
     echo "No se encontró información del usuario."; // Muestra un mensaje si no se encontró información del usuario
 }
 
 $stmt->close(); // Cierra la declaración preparada
+
+// Consulta para obtener el correo del usuario desde la tabla Usuarios
+$sql_email = "SELECT correo FROM Usuarios WHERE id = ?";
+$stmt_email = $conn->prepare($sql_email);
+$stmt_email->bind_param("i", $usuario_id);
+$stmt_email->execute();
+$result_email = $stmt_email->get_result();
+
+if ($result_email->num_rows > 0) {
+    $row_email = $result_email->fetch_assoc();
+    $correo = $row_email['correo'];
+} else {
+    $correo = "Correo no encontrado";
+}
+
+$stmt_email->close(); // Cierra la declaración preparada
 $conn->close(); // Cierra la conexión a la base de datos
 
 // Establecer la imagen de perfil predeterminada si no hay una imagen de perfil
@@ -125,6 +141,11 @@ if (empty($foto_perfil)) {
             cursor: pointer;
             border-radius: 4px;
         }
+        .profile-picture p {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
         .edit-button {
             text-align: center;
             margin-top: 20px;
@@ -166,6 +187,8 @@ if (empty($foto_perfil)) {
                 <label for="fileToUpload">Cambiar foto de perfil</label>
                 <button type="submit" value="Upload Image">Actualizar foto</button>
             </form>
+            <p><?php echo $correo; ?></p>
+            <p><?php echo ucfirst($tipo_usuario); ?></p> <!-- Mostrar el tipo de usuario -->
         </div>
 
         <div class="edit-button">
