@@ -45,28 +45,7 @@ $result = $stmt->get_result(); // Obtiene el resultado de la consulta
 // Verificar si se encontró algún resultado
 if ($result->num_rows > 0) {
     // Obtener los datos del usuario
-    $row = $result->fetch_assoc();
-    $nombre_completo = $row['nombre_completo'] ?? $row['nombre']; // Asigna el nombre completo o nombre
-    $edad = $row['edad'] ?? ''; // Asigna la edad
-    $ciudad = $row['ciudad'] ?? ''; // Asigna la ciudad
-    $estado = $row['estado'] ?? ''; // Asigna el estado
-    $telefono = $row['telefono'] ?? ''; // Asigna el teléfono
-    $correo = $row['correo'] ?? ''; // Asigna el correo
-    $foto_perfil = $row['foto_perfil'] ?? ''; // Asigna la foto de perfil
-    $experiencia_anos = $row['experiencia_anos'] ?? ''; // Asigna los años de experiencia
-    $tipos_unidades = $row['tipos_unidades'] ?? ''; // Asigna los tipos de unidades manejadas
-    $empresas = $row['empresas'] ?? ''; // Asigna las empresas anteriores
-    $rutas = $row['rutas'] ?? ''; // Asigna las rutas manejadas
-    $licencia_tipo = $row['licencia_tipo'] ?? ''; // Asigna el tipo de licencia
-    $licencia_vigencia = $row['licencia_vigencia'] ?? ''; // Asigna la vigencia de la licencia
-    $materiales_peligrosos = $row['materiales_peligrosos'] ?? 0; // Asigna la certificación de materiales peligrosos
-    $otros_certificados = $row['otros_certificados'] ?? ''; // Asigna otros certificados
-    $disponibilidad_viajar = $row['disponibilidad_viajar'] ?? 0; // Asigna la disponibilidad para viajar
-    $disponibilidad_horarios = $row['disponibilidad_horarios'] ?? 0; // Asigna la disponibilidad para horarios variables
-    $nivel_mecanica = $row['nivel_mecanica'] ?? ''; // Asigna el nivel de mecánica
-    $nivel_seguridad_vial = $row['nivel_seguridad_vial'] ?? ''; // Asigna el nivel de seguridad vial
-    $habilidad_gps = $row['habilidad_gps'] ?? ''; // Asigna la habilidad para el uso de GPS
-    $manejo_bitacoras = $row['manejo_bitacoras'] ?? ''; // Asigna el manejo de bitácoras
+
 } else {
     echo "No se encontró información del usuario."; // Muestra un mensaje si no se encontró información del usuario
 }
@@ -187,62 +166,6 @@ if (empty($foto_perfil)) {
                 <label for="fileToUpload">Cambiar foto de perfil</label>
                 <button type="submit" value="Upload Image">Actualizar foto</button>
             </form>
-        </div>
-
-        <h2>Información Personal</h2>
-        <div class="section">
-            <label>Nombre completo:</label>
-            <p><?php echo $nombre_completo; ?></p>
-            <label>Edad:</label>
-            <p><?php echo $edad; ?> años</p>
-            <label>Domicilio:</label>
-            <p><?php echo $ciudad . ", " . $estado; ?></p>
-            <label>Teléfono de contacto:</label>
-            <p><?php echo $telefono; ?></p>
-            <label>Correo electrónico:</label>
-            <p><?php echo $correo; ?></p>
-        </div>
-
-        <h2>Experiencia Laboral</h2>
-        <div class="section">
-            <label>Años de experiencia manejando unidades pesadas:</label>
-            <p><?php echo $experiencia_anos; ?></p>
-            <label>Tipo de unidades que he manejado:</label>
-            <p><?php echo $tipos_unidades; ?></p>
-            <label>Empresas anteriores y duración del empleo:</label>
-            <p><?php echo $empresas; ?></p>
-            <label>Rutas manejadas:</label>
-            <p><?php echo $rutas; ?></p>
-        </div>
-
-        <h2>Licencia y Certificaciones</h2>
-        <div class="section">
-            <label>Tipo de licencia de conducir y vigencia:</label>
-            <p><?php echo $licencia_tipo . " (Vigencia: " . $licencia_vigencia . ")"; ?></p>
-            <label>¿Cuenta con certificación para manejo de materiales peligrosos?</label>
-            <p><?php echo $materiales_peligrosos ? 'Sí' : 'No'; ?></p>
-            <label>Otros certificados o capacitaciones relevantes:</label>
-            <p><?php echo $otros_certificados; ?></p>
-        </div>
-
-        <h2>Disponibilidad</h2>
-        <div class="section">
-            <label>¿Está dispuesto a viajar o hacer rutas nacionales?</label>
-            <p><?php echo $disponibilidad_viajar ? 'Sí' : 'No'; ?></p>
-            <label>Disponibilidad para horarios variables o nocturnos:</label>
-            <p><?php echo $disponibilidad_horarios ? 'Sí' : 'No'; ?></p>
-        </div>
-
-        <h2>Competencias</h2>
-        <div class="section">
-            <label>Nivel de conocimiento en mecánica básica:</label>
-            <p><?php echo $nivel_mecanica; ?></p>
-            <label>Nivel de conocimiento en seguridad vial y normas de tránsito:</label>
-            <p><?php echo $nivel_seguridad_vial; ?></p>
-            <label>Habilidad para el uso de GPS y otras herramientas de navegación:</label>
-            <p><?php echo $habilidad_gps; ?></p>
-            <label>Manejo de bitácoras o reportes de viaje:</label>
-            <p><?php echo $manejo_bitacoras; ?></p>
         </div>
 
         <div class="edit-button">
