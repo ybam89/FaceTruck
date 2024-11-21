@@ -181,7 +181,7 @@ $conn->close(); // Cierra la conexión a la base de datos
             unset($_SESSION['message']); // Elimina el mensaje de éxito de la sesión
         }
         ?>
-        <form action="editar_perfil.php" method="post"> <!-- Formulario de edición de perfil -->
+        <form action="perfil.php" method="post"> <!-- Formulario de edición de perfil -->
             <label for="pregunta_uno"><?php 
                 switch ($tipo_usuario) {
                     case 'operador':
