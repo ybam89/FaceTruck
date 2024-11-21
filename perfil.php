@@ -191,6 +191,62 @@ if (empty($foto_perfil)) {
             <p><?php echo ucfirst($tipo_usuario); ?></p> <!-- Mostrar el tipo de usuario -->
         </div>
 
+        <!-- Mostrar el formulario según el tipo de usuario -->
+        <div class="form-section">
+            <?php if ($tipo_usuario == 'operador'): ?>
+                <h2>Formulario para Operadores</h2>
+                <form action="operador_form.php" method="post">
+                    <!-- Campos específicos para operadores -->
+                    <form action="perfil.php" method="post">
+                        <label for="pregunta_uno">Pregunta uno operadores</label>
+                        <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo $pregunta_uno; ?>" required>
+                        
+                        <label for="pregunta_dos">Pregunta dos operadores</label>
+                        <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $pregunta_dos; ?>" required>
+                        
+                        <label for="pregunta_tres">Pregunta tres operadores</label>
+                        <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $pregunta_tres; ?>" required>
+                        
+                        <input type="submit" value="Guardar Cambios">
+                    </form>
+                </form>
+            <?php elseif ($tipo_usuario == 'hombreCamion'): ?>
+                <h2>Formulario para Hombres Camión</h2>
+                <form action="hombre_camion_form.php" method="post">
+                    <!-- Campos específicos para hombres camión -->
+                    <form action="perfil.php" method="post">
+                        <label for="pregunta_uno">Pregunta uno hombres camión</label>
+                        <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo $pregunta_uno; ?>" required>
+                        
+                        <label for="pregunta_dos">Pregunta dos hombres camión</label>
+                        <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $pregunta_dos; ?>" required>
+                        
+                        <label for="pregunta_tres">Pregunta tres hombres camión</label>
+                        <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $pregunta_tres; ?>" required>
+                        
+                        <input type="submit" value="Guardar Cambios">
+                    </form>
+                </form>
+            <?php elseif ($tipo_usuario == 'empresa'): ?>
+                <h2>Formulario para Empresas</h2>
+                <form action="empresa_form.php" method="post">
+                    <!-- Campos específicos para empresas -->
+                    <form action="perfil.php" method="post">
+                        <label for="pregunta_uno">Pregunta uno empresas</label>
+                        <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo $pregunta_uno; ?>" required>
+                        
+                        <label for="pregunta_dos">Pregunta dos empresas</label>
+                        <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $pregunta_dos; ?>" required>
+                        
+                        <label for="pregunta_tres">Pregunta tres empresas</label>
+                        <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $pregunta_tres; ?>" required>
+                        
+                        <input type="submit" value="Guardar Cambios">
+                    </form>
+                </form>
+            <?php endif; ?>
+        </div>
+
         <div class="edit-button">
             <button onclick="location.href='editar_perfil.php'">Editar Información</button>
         </div>
