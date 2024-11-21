@@ -17,7 +17,8 @@ if ($conn->connect_error) {
 
 // Obtener el ID del usuario y el tipo de usuario desde la sesión
 if (!isset($_SESSION['usuario_id']) || !isset($_SESSION['tipo_usuario'])) {
-    die("No se ha iniciado sesión correctamente."); // Termina la ejecución si no se encuentran las variables de sesión
+    echo "Error: No se ha iniciado sesión correctamente.";
+    exit;
 }
 $usuario_id = $_SESSION['usuario_id'];
 $tipo_usuario = $_SESSION['tipo_usuario'];
@@ -25,16 +26,17 @@ $tipo_usuario = $_SESSION['tipo_usuario'];
 // Consulta para obtener la información del usuario según el tipo
 switch ($tipo_usuario) {
     case 'operador':
-        $sql = "SELECT * FROM operadores WHERE usuario_id = ?";
+        $sql = "SELECT pregunta_uno_operadores, pregunta_dos_operadores, pregunta_tres_operadores FROM operadores WHERE usuario_id = ?";
         break;
     case 'hombreCamion':
-        $sql = "SELECT * FROM hombres_camion WHERE usuario_id = ?";
+        $sql = "SELECT pregunta_uno_hombres_camion, pregunta_dos_hombres_camion, pregunta_tres_hombres_camion FROM hombres_camion WHERE usuario_id = ?";
         break;
     case 'empresa':
-        $sql = "SELECT * FROM empresas WHERE usuario_id = ?";
+        $sql = "SELECT pregunta_uno_empresas, pregunta_dos_empresas, pregunta_tres_empresas FROM empresas WHERE usuario_id = ?";
         break;
     default:
-        die("Tipo de usuario no válido."); // Termina la ejecución si el tipo de usuario no es válido
+        echo "Error: Tipo de usuario no válido.";
+        exit;
 }
 
 $stmt = $conn->prepare($sql); // Prepara la consulta SQL
@@ -44,10 +46,10 @@ $result = $stmt->get_result(); // Obtiene el resultado de la consulta
 
 // Verificar si se encontró algún resultado
 if ($result->num_rows > 0) {
-    // Obtener los datos del usuario
-    $row = $result->fetch_assoc();
+    $row = $result->fetch_assoc(); // Obtener los datos del usuario
 } else {
-    echo "No se encontró información del usuario."; // Muestra un mensaje si no se encontró información del usuario
+    echo "No se encontró información del usuario.";
+    exit;
 }
 
 $stmt->close(); // Cierra la declaración preparada
@@ -70,9 +72,7 @@ $stmt_email->close(); // Cierra la declaración preparada
 $conn->close(); // Cierra la conexión a la base de datos
 
 // Establecer la imagen de perfil predeterminada si no hay una imagen de perfil
-if (empty($foto_perfil)) {
-    $foto_perfil = 'img/camion.jpg'; // Asigna la imagen de perfil predeterminada
-}
+$foto_perfil = $foto_perfil ?? 'img/camion.jpg'; // Usa un valor predeterminado si no está definido
 ?>
 
 <!DOCTYPE html>
@@ -82,6 +82,7 @@ if (empty($foto_perfil)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil del Usuario - FaceTruck</title>
     <style>
+        /* Estilos CSS */
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
@@ -101,155 +102,71 @@ if (empty($foto_perfil)) {
             border-bottom: 2px solid #007BFF;
             padding-bottom: 5px;
         }
-        .section {
-            margin-bottom: 20px;
-        }
-        .section label {
-            font-weight: bold;
-            display: block;
-            margin: 10px 0 5px;
-        }
-        .section p {
-            margin: 5px 0;
-        }
-        .profile-picture {
-            text-align: center;
-            margin-bottom: 20px;
-        }
         .profile-picture img {
             width: 200px;
             height: 200px;
             border-radius: 50%;
             object-fit: cover;
         }
-        .profile-picture form {
-            margin-top: 10px;
-        }
-        .profile-picture input[type="file"] {
-            display: none;
-        }
-        .profile-picture label {
-            cursor: pointer;
-            color: #007BFF;
-            text-decoration: underline;
-        }
-        .profile-picture button {
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        .profile-picture p {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #555;
-        }
-        .edit-button {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .edit-button button {
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        .logout {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-        }
-        .logout button {
-            background-color: #FF0000;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
     </style>
 </head>
 <body>
-    <div class="logout">
-        <form action="logout.php" method="post">
-            <button type="submit">Cerrar sesión</button>
-        </form>
-    </div>
     <div class="container">
         <div class="profile-picture">
             <img src="<?php echo $foto_perfil; ?>" alt="Foto de Perfil">
             <form action="upload.php" method="post" enctype="multipart/form-data">
                 <input type="file" name="fileToUpload" id="fileToUpload">
                 <label for="fileToUpload">Cambiar foto de perfil</label>
-                <button type="submit" value="Upload Image">Actualizar foto</button>
+                <button type="submit">Actualizar foto</button>
             </form>
             <p><?php echo $correo; ?></p>
-            <p><?php echo ucfirst($tipo_usuario); ?></p> <!-- Mostrar el tipo de usuario -->
+            <p><?php echo ucfirst($tipo_usuario); ?></p>
         </div>
 
         <!-- Mostrar el formulario según el tipo de usuario -->
-        <div class="form-section">
-            <?php if ($tipo_usuario == 'operador'): ?>
-                <h2>Formulario para Operadores</h2>
-                <form action="operador_form.php" method="post">
-                    <!-- Campos específicos para operadores -->
-                    <form action="perfil.php" method="post">
-                        <label for="pregunta_uno">Pregunta uno operadores</label>
-                        <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo $pregunta_uno; ?>" required>
-                        
-                        <label for="pregunta_dos">Pregunta dos operadores</label>
-                        <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $pregunta_dos; ?>" required>
-                        
-                        <label for="pregunta_tres">Pregunta tres operadores</label>
-                        <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $pregunta_tres; ?>" required>
-                        
-                        <input type="submit" value="Guardar Cambios">
-                    </form>
-                </form>
-            <?php elseif ($tipo_usuario == 'hombreCamion'): ?>
-                <h2>Formulario para Hombres Camión</h2>
-                <form action="hombre_camion_form.php" method="post">
-                    <!-- Campos específicos para hombres camión -->
-                    <form action="perfil.php" method="post">
-                        <label for="pregunta_uno">Pregunta uno hombres camión</label>
-                        <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo $pregunta_uno; ?>" required>
-                        
-                        <label for="pregunta_dos">Pregunta dos hombres camión</label>
-                        <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $pregunta_dos; ?>" required>
-                        
-                        <label for="pregunta_tres">Pregunta tres hombres camión</label>
-                        <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $pregunta_tres; ?>" required>
-                        
-                        <input type="submit" value="Guardar Cambios">
-                    </form>
-                </form>
-            <?php elseif ($tipo_usuario == 'empresa'): ?>
-                <h2>Formulario para Empresas</h2>
-                <form action="empresa_form.php" method="post">
-                    <!-- Campos específicos para empresas -->
-                    <form action="perfil.php" method="post">
-                        <label for="pregunta_uno">Pregunta uno empresas</label>
-                        <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo $pregunta_uno; ?>" required>
-                        
-                        <label for="pregunta_dos">Pregunta dos empresas</label>
-                        <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $pregunta_dos; ?>" required>
-                        
-                        <label for="pregunta_tres">Pregunta tres empresas</label>
-                        <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $pregunta_tres; ?>" required>
-                        
-                        <input type="submit" value="Guardar Cambios">
-                    </form>
-                </form>
-            <?php endif; ?>
-        </div>
-
-        <div class="edit-button">
-            <button onclick="location.href='editar_perfil.php'">Editar Información</button>
-        </div>
+        <?php if ($tipo_usuario == 'operador'): ?>
+            <h2>Formulario para Operadores</h2>
+            <form action="operador_form.php" method="post">
+                <label for="pregunta_uno">Pregunta uno operadores</label>
+                <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo $row['pregunta_uno_operadores']; ?>" required>
+                
+                <label for="pregunta_dos">Pregunta dos operadores</label>
+                <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $row['pregunta_dos_operadores']; ?>" required>
+                
+                <label for="pregunta_tres">Pregunta tres operadores</label>
+                <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $row['pregunta_tres_operadores']; ?>" required>
+                
+                <input type="submit" value="Guardar Cambios">
+            </form>
+        <?php elseif ($tipo_usuario == 'hombreCamion'): ?>
+            <h2>Formulario para Hombres Camión</h2>
+            <form action="hombre_camion_form.php" method="post">
+                <label for="pregunta_uno">Pregunta uno hombres camión</label>
+                <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo $row['pregunta_uno_hombres_camion']; ?>" required>
+                
+                <label for="pregunta_dos">Pregunta dos hombres camión</label>
+                <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $row['pregunta_dos_hombres_camion']; ?>" required>
+                
+                <label for="pregunta_tres">Pregunta tres hombres camión</label>
+                <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $row['pregunta_tres_hombres_camion']; ?>" required>
+                
+                <input type="submit" value="Guardar Cambios">
+            </form>
+        <?php elseif ($tipo_usuario == 'empresa'): ?>
+            <h2>Formulario para Empresas</h2>
+            <form action="empresa_form.php" method="post">
+                <label for="pregunta_uno">Pregunta uno empresas</label>
+                <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo $row['pregunta_uno_empresas']; ?>" required>
+                
+                <label for="pregunta_dos">Pregunta dos empresas</label>
+                <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $row['pregunta_dos_empresas']; ?>" required>
+                
+                <label for="pregunta_tres">Pregunta tres empresas</label>
+                <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $row['pregunta_tres_empresas']; ?>" required>
+                
+                <input type="submit" value="Guardar Cambios">
+            </form>
+        <?php endif; ?>
     </div>
 </body>
 </html>
