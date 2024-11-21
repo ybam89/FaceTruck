@@ -16,27 +16,13 @@ if ($conn->connect_error) {
 }
 
 // Obtener el ID del usuario y el tipo de usuario desde la sesión
-if (!isset($_SESSION['usuario_id']) || !isset($_SESSION['tipo_usuario'])) {
+if (!isset($_SESSION['operador_id'])) {
     die("No se ha iniciado sesión correctamente."); // Termina la ejecución si no se encuentran las variables de sesión
 }
-$usuario_id = $_SESSION['usuario_id'];
-$tipo_usuario = $_SESSION['tipo_usuario'];
+$usuario_id = $_SESSION['operador_id'];
 
 // Consulta para obtener la información del usuario según el tipo
-switch ($tipo_usuario) {
-    case 'operador':
-        $sql = "SELECT * FROM operadores WHERE usuario_id = ?";
-        break;
-    case 'hombreCamion':
-        $sql = "SELECT * FROM hombres_camion WHERE usuario_id = ?";
-        break;
-    case 'empresa':
-        $sql = "SELECT * FROM empresas WHERE usuario_id = ?";
-        break;
-    default:
-        die("Tipo de usuario no válido."); // Termina la ejecución si el tipo de usuario no es válido
-}
-
+$sql = "SELECT * FROM usuarios WHERE id = ?";
 $stmt = $conn->prepare($sql); // Prepara la consulta SQL
 $stmt->bind_param("i", $usuario_id); // Vincula el parámetro ID del usuario
 $stmt->execute(); // Ejecuta la consulta

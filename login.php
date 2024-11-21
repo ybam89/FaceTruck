@@ -2,22 +2,6 @@
 session_start(); // Inicia la sesión para poder usar $_SESSION
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Verificación de reCAPTCHA
-    // $recaptcha_secret = 'YOUR_SECRET_KEY'; // Reemplaza 'YOUR_SECRET_KEY' con tu clave secreta de reCAPTCHA
-    // $recaptcha_response = $_POST['g-recaptcha-response']; // Obtiene la respuesta de reCAPTCHA del formulario
-    // $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
-    
-    // Solicita la verificación de reCAPTCHA a Google
-    // $recaptcha = file_get_contents($recaptcha_url . '?secret=' . $recaptcha_secret . '&response=' . $recaptcha_response);
-    // $recaptcha = json_decode($recaptcha);
-    
-    // Verifica si la validación de reCAPTCHA fue exitosa
-    // if (!$recaptcha->success) {
-    //     $_SESSION['error'] = 'Error de verificación de reCAPTCHA. Inténtalo de nuevo.';
-    //     header("Location: login.php");
-    //     exit();
-    // }
-
     $correo = $_POST['username']; // Obtiene el correo electrónico del formulario
     $password = $_POST['password']; // Obtiene la contraseña del formulario
 
@@ -36,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // Prepara una consulta SQL para verificar el correo en la base de datos
-    $sql = "SELECT id, password FROM usuarios WHERE correo = ?";
+    $sql = "SELECT id, password, tipo_usuario FROM usuarios WHERE correo = ?";
     $stmt = $conn->prepare($sql);
     // Asigna el valor del correo a la consulta preparada
     $stmt->bind_param("s", $correo);
@@ -48,12 +32,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verifica si se encontró un usuario con el correo proporcionado
     if ($stmt->num_rows > 0) {
         // Asigna los resultados de la consulta a variables
-        $stmt->bind_result($id, $hashed_password);
+        $stmt->bind_result($id, $hashed_password, $tipo_usuario);
         $stmt->fetch();
         // Verifica si la contraseña proporcionada coincide con la almacenada en la base de datos
         if (password_verify($password, $hashed_password)) {
-            // Almacena el id del usuario en la sesión
-            $_SESSION['operador_id'] = $id;
+            // Almacena el id del usuario y tipo_usuario en la sesión
+            $_SESSION['usuario_id'] = $id;
+            $_SESSION['tipo_usuario'] = $tipo_usuario;
             echo 'Inicio de sesión exitoso!<br>';
             echo 'ID de usuario: ' . $id;
             echo '<script>
