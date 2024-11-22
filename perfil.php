@@ -164,9 +164,12 @@ $foto_perfil = $foto_perfil ?? 'img/camion.jpg'; // Usa un valor predeterminado 
                 <label for="pregunta_tres">Pregunta tres empresas</label>
                 <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $row['pregunta_tres_empresas']; ?>" required>
                 
-                <input type="submit" value="Guardar Cambios">
             </form>
         <?php endif; ?>
+
+        <div class="edit-button">
+            <button onclick="location.href='editar_perfil.php'">Editar perfil</button>
+        </div>
     </div>
 </body>
 </html>
