@@ -78,6 +78,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Verifica si el formulario fue env
         $stmt->bind_param("sssi", $pregunta_uno, $pregunta_dos, $pregunta_tres, $usuario_id); // Vincula los parámetros a la consulta SQL
         if ($stmt->execute()) { // Ejecuta la consulta y verifica si fue exitosa
             $_SESSION['message'] = 'Perfil actualizado con éxito.'; // Asigna un mensaje de éxito a la sesión
+            header("Location: perfil.php"); // Redirige a perfil.php
+            exit(); // Asegura que el script se detenga después de la redirección
         } else {
             $_SESSION['error'] = 'Error al actualizar el perfil. Inténtalo de nuevo.'; // Asigna un mensaje de error a la sesión
         }
