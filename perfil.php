@@ -94,19 +94,57 @@ $foto_perfil = $foto_perfil ?? 'img/camion.jpg'; // Usa un valor predeterminado 
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
         }
         h2 {
             color: #007BFF;
             border-bottom: 2px solid #007BFF;
             padding-bottom: 5px;
+            margin-bottom: 20px;
+        }
+        .profile-picture {
+            text-align: center;
+            margin-bottom: 20px;
         }
         .profile-picture img {
-            width: 200px;
-            height: 200px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             object-fit: cover;
+        }
+        .profile-picture form {
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .form-container label {
+            font-weight: bold;
+        }
+        .form-container input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .edit-button {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .edit-button button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .edit-button button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -126,45 +164,40 @@ $foto_perfil = $foto_perfil ?? 'img/camion.jpg'; // Usa un valor predeterminado 
         <!-- Mostrar el formulario según el tipo de usuario -->
         <?php if ($tipo_usuario == 'operador'): ?>
             <h2>Formulario para Operadores</h2>
-            <form action="operador_form.php" method="post">
+            <div class="form-container">
                 <label for="pregunta_uno">Pregunta uno operadores</label>
-                <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo $row['pregunta_uno_operadores']; ?>" required>
+                <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo $row['pregunta_uno_operadores']; ?>" readonly>
                 
                 <label for="pregunta_dos">Pregunta dos operadores</label>
-                <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $row['pregunta_dos_operadores']; ?>" required>
+                <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $row['pregunta_dos_operadores']; ?>" readonly>
                 
                 <label for="pregunta_tres">Pregunta tres operadores</label>
-                <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $row['pregunta_tres_operadores']; ?>" required>
-                
-                <input type="submit" value="Guardar Cambios">
-            </form>
+                <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $row['pregunta_tres_operadores']; ?>" readonly>
+            </div>
         <?php elseif ($tipo_usuario == 'hombreCamion'): ?>
             <h2>Formulario para Hombres Camión</h2>
-            <form action="hombre_camion_form.php" method="post">
+            <div class="form-container">
                 <label for="pregunta_uno">Pregunta uno hombres camión</label>
-                <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo $row['pregunta_uno_hombres_camion']; ?>" required>
+                <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo $row['pregunta_uno_hombres_camion']; ?>" readonly>
                 
                 <label for="pregunta_dos">Pregunta dos hombres camión</label>
-                <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $row['pregunta_dos_hombres_camion']; ?>" required>
+                <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $row['pregunta_dos_hombres_camion']; ?>" readonly>
                 
                 <label for="pregunta_tres">Pregunta tres hombres camión</label>
-                <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $row['pregunta_tres_hombres_camion']; ?>" required>
-                
-                <input type="submit" value="Guardar Cambios">
-            </form>
+                <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $row['pregunta_tres_hombres_camion']; ?>" readonly>
+            </div>
         <?php elseif ($tipo_usuario == 'empresa'): ?>
             <h2>Formulario para Empresas</h2>
-            <form action="empresa_form.php" method="post">
+            <div class="form-container">
                 <label for="pregunta_uno">Pregunta uno empresas</label>
-                <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo $row['pregunta_uno_empresas']; ?>" required>
+                <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo $row['pregunta_uno_empresas']; ?>" readonly>
                 
                 <label for="pregunta_dos">Pregunta dos empresas</label>
-                <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $row['pregunta_dos_empresas']; ?>" required>
+                <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $row['pregunta_dos_empresas']; ?>" readonly>
                 
                 <label for="pregunta_tres">Pregunta tres empresas</label>
-                <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $row['pregunta_tres_empresas']; ?>" required>
-                
-            </form>
+                <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $row['pregunta_tres_empresas']; ?>" readonly>
+            </div>
         <?php endif; ?>
 
         <div class="edit-button">
