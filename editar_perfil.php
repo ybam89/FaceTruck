@@ -34,13 +34,13 @@ if (!$tipo_usuario) {
 // Obtener los datos del usuario según el tipo
 switch ($tipo_usuario) {
     case 'operador':
-        $sql = "SELECT pregunta_uno_operadores, pregunta_dos_operadores, pregunta_tres_operadores FROM operadores WHERE usuario_id = ?"; // Consulta SQL para operadores
+        $sql = "SELECT pregunta_uno_operadores, pregunta_dos_operadores, pregunta_tres_operadores FROM operadores WHERE usuario_id = ?";
         break;
     case 'hombreCamion':
-        $sql = "SELECT pregunta_uno_hombres_camion, pregunta_dos_hombres_camion, pregunta_tres_hombres_camion FROM hombres_camion WHERE usuario_id = ?"; // Consulta SQL para hombres camión
+        $sql = "SELECT pregunta_uno_hombres_camion, pregunta_dos_hombres_camion, pregunta_tres_hombres_camion FROM hombres_camion WHERE usuario_id = ?";
         break;
     case 'empresa':
-        $sql = "SELECT pregunta_uno_empresas, pregunta_dos_empresas, pregunta_tres_empresas FROM empresas WHERE usuario_id = ?"; // Consulta SQL para empresas
+        $sql = "SELECT pregunta_uno_empresas, pregunta_dos_empresas, pregunta_tres_empresas FROM empresas WHERE usuario_id = ?";
         break;
     default:
         die("Tipo de usuario no válido."); // Termina el script si el tipo de usuario no es válido
@@ -64,13 +64,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Verifica si el formulario fue env
     } else {
         switch ($tipo_usuario) {
             case 'operador':
-                $sql = "UPDATE operadores SET pregunta_uno_operadores = ?, pregunta_dos_operadores = ?, pregunta_tres_operadores = ? WHERE usuario_id = ?"; // Consulta SQL para actualizar operadores
+                $sql = "UPDATE operadores SET pregunta_uno_operadores = ?, pregunta_dos_operadores = ?, pregunta_tres_operadores = ? WHERE usuario_id = ?";
                 break;
             case 'hombreCamion':
-                $sql = "UPDATE hombres_camion SET pregunta_uno_hombres_camion = ?, pregunta_dos_hombres_camion = ?, pregunta_tres_hombres_camion = ? WHERE usuario_id = ?"; // Consulta SQL para actualizar hombres camión
+                $sql = "UPDATE hombres_camion SET pregunta_uno_hombres_camion = ?, pregunta_dos_hombres_camion = ?, pregunta_tres_hombres_camion = ? WHERE usuario_id = ?";
                 break;
             case 'empresa':
-                $sql = "UPDATE empresas SET pregunta_uno_empresas = ?, pregunta_dos_empresas = ?, pregunta_tres_empresas = ? WHERE usuario_id = ?"; // Consulta SQL para actualizar empresas
+                $sql = "UPDATE empresas SET pregunta_uno_empresas = ?, pregunta_dos_empresas = ?, pregunta_tres_empresas = ? WHERE usuario_id = ?";
                 break;
         }
 
@@ -181,7 +181,7 @@ $conn->close(); // Cierra la conexión a la base de datos
             unset($_SESSION['message']); // Elimina el mensaje de éxito de la sesión
         }
         ?>
-        <form action="perfil.php" method="post"> <!-- Formulario de edición de perfil -->
+        <form action="editar_perfil.php" method="post"> <!-- Formulario de edición de perfil -->
             <label for="pregunta_uno"><?php 
                 switch ($tipo_usuario) {
                     case 'operador':
@@ -195,7 +195,7 @@ $conn->close(); // Cierra la conexión a la base de datos
                         break;
                 }
             ?></label> <!-- Etiqueta para la pregunta uno -->
-            <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo $pregunta_uno; ?>" required> <!-- Campo de entrada para la pregunta uno -->
+            <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo htmlspecialchars($pregunta_uno, ENT_QUOTES, 'UTF-8'); ?>" required> <!-- Campo de entrada para la pregunta uno -->
 
             <label for="pregunta_dos"><?php 
                 switch ($tipo_usuario) {
@@ -210,7 +210,7 @@ $conn->close(); // Cierra la conexión a la base de datos
                         break;
                 }
             ?></label> <!-- Etiqueta para la pregunta dos -->
-            <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $pregunta_dos; ?>" required> <!-- Campo de entrada para la pregunta dos -->
+            <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo htmlspecialchars($pregunta_dos, ENT_QUOTES, 'UTF-8'); ?>" required> <!-- Campo de entrada para la pregunta dos -->
 
             <label for="pregunta_tres"><?php 
                 switch ($tipo_usuario) {
@@ -225,7 +225,7 @@ $conn->close(); // Cierra la conexión a la base de datos
                         break;
                 }
             ?></label> <!-- Etiqueta para la pregunta tres -->
-            <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $pregunta_tres; ?>" required> <!-- Campo de entrada para la pregunta tres -->
+            <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo htmlspecialchars($pregunta_tres, ENT_QUOTES, 'UTF-8'); ?>" required> <!-- Campo de entrada para la pregunta tres -->
 
             <input type="submit" value="Guardar Cambios"> <!-- Botón para enviar el formulario -->
         </form>
