@@ -131,20 +131,23 @@ $foto_perfil = $foto_perfil ?? 'img/camion.jpg'; // Usa un valor predeterminado 
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-        .edit-button {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .edit-button button {
+        .button {
             background-color: #007BFF;
             color: white;
             padding: 10px 20px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            text-align: center;
+            display: inline-block;
+            margin-top: 10px;
         }
-        .edit-button button:hover {
+        .button:hover {
             background-color: #0056b3;
+        }
+        .edit-button {
+            text-align: center;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -154,8 +157,8 @@ $foto_perfil = $foto_perfil ?? 'img/camion.jpg'; // Usa un valor predeterminado 
             <img src="<?php echo $foto_perfil; ?>" alt="Foto de Perfil">
             <form action="upload.php" method="post" enctype="multipart/form-data">
                 <input type="file" name="fileToUpload" id="fileToUpload">
-                <label for="fileToUpload">Cambiar foto de perfil</label>
-                <button type="submit">Actualizar foto</button>
+                <label for="fileToUpload" class="button">Cambiar foto de perfil</label>
+                <button type="submit" class="button">Actualizar foto</button>
             </form>
             <p><?php echo $correo; ?></p>
             <p><?php echo ucfirst($tipo_usuario); ?></p>
@@ -201,7 +204,7 @@ $foto_perfil = $foto_perfil ?? 'img/camion.jpg'; // Usa un valor predeterminado 
         <?php endif; ?>
 
         <div class="edit-button">
-            <button onclick="location.href='editar_perfil.php'">Editar perfil</button>
+            <button onclick="location.href='editar_perfil.php'" class="button">Editar perfil</button>
         </div>
     </div>
 </body>
