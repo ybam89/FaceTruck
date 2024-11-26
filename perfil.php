@@ -108,6 +108,8 @@ $foto_perfil = $foto_perfil ?? 'img/camion.jpg'; // Usa un valor predeterminado 
             margin-bottom: 20px;
         }
         .profile-picture img {
+            display: block;
+            margin: auto;
             width: 150px;
             height: 150px;
             border-radius: 50%;
