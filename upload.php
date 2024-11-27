@@ -30,6 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['fileToUpload'])) {
             $stmt->bind_param("si", $target_file, $usuario_id);
             if ($stmt->execute()) {
                 echo "La foto de perfil se ha actualizado correctamente.";
+                header("Location: perfil.php");
+                exit();
             } else {
                 echo "Error al actualizar la base de datos.";
             }

@@ -54,8 +54,8 @@ if ($result->num_rows > 0) {
 
 $stmt->close(); // Cierra la declaración preparada
 
-// Consulta para obtener el correo del usuario desde la tabla Usuarios
-$sql_email = "SELECT correo FROM Usuarios WHERE id = ?";
+// Consulta para obtener el correo y foto de perfil del usuario desde la tabla Usuarios
+$sql_email = "SELECT correo, foto_perfil FROM Usuarios WHERE id = ?";
 $stmt_email = $conn->prepare($sql_email);
 $stmt_email->bind_param("i", $usuario_id);
 $stmt_email->execute();
@@ -64,8 +64,10 @@ $result_email = $stmt_email->get_result();
 if ($result_email->num_rows > 0) {
     $row_email = $result_email->fetch_assoc();
     $correo = $row_email['correo'];
+    $foto_perfil = $row_email['foto_perfil']; // Obtener la ruta de la foto de perfil
 } else {
     $correo = "Correo no encontrado";
+    $foto_perfil = 'img/camion.jpg'; // Imagen predeterminada
 }
 
 $stmt_email->close(); // Cierra la declaración preparada
@@ -155,16 +157,16 @@ $foto_perfil = $foto_perfil ?? 'img/camion.jpg'; // Usa un valor predeterminado 
 </head>
 <body>
     <div class="container">
-            <div class="profile-picture">
-                <img src="<?php echo $foto_perfil; ?>" alt="Foto de Perfil">
-                <form action="upload.php" method="post" enctype="multipart/form-data">
-                    <input type="file" name="fileToUpload" id="fileToUpload">
-                    <label for="fileToUpload" class="button">Cambiar foto de perfil</label>
-                    <button type="submit" class="button">Actualizar foto</button>
-                </form>
-                <p><?php echo $correo; ?></p>
-                <p><?php echo ucfirst($tipo_usuario); ?></p>
-            </div>
+<div class="profile-picture">
+        <img src="<?php echo $foto_perfil; ?>" alt="Foto de Perfil">
+        <form action="upload.php" method="post" enctype="multipart/form-data">
+            <input type="file" name="fileToUpload" id="fileToUpload">
+            <label for="fileToUpload" class="button">Cambiar foto de perfil</label>
+            <button type="submit" class="button">Actualizar foto</button>
+        </form>
+        <p><?php echo $correo; ?></p>
+        <p><?php echo ucfirst($tipo_usuario); ?></p>
+    </div>
 
         <!-- Mostrar el formulario según el tipo de usuario -->
         <?php if ($tipo_usuario == 'operador'): ?>
