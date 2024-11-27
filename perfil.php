@@ -121,6 +121,23 @@ $foto_perfil = $foto_perfil ?? 'img/camion.jpg'; // Usa un valor predeterminado 
             display: inline-block;
             margin-top: 10px;
         }
+        .profile-picture input[type="file"] {
+            display: none;
+        }
+        .profile-picture label {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .profile-picture label:hover {
+            background-color: #0056b3;
+        }
         .form-container {
             display: flex;
             flex-direction: column;
@@ -157,16 +174,16 @@ $foto_perfil = $foto_perfil ?? 'img/camion.jpg'; // Usa un valor predeterminado 
 </head>
 <body>
     <div class="container">
-<div class="profile-picture">
-        <img src="<?php echo $foto_perfil; ?>" alt="Foto de Perfil">
-        <form action="upload.php" method="post" enctype="multipart/form-data">
-            <input type="file" name="fileToUpload" id="fileToUpload">
-            <label for="fileToUpload" class="button">Cambiar foto de perfil</label>
-            <button type="submit" class="button">Actualizar foto</button>
-        </form>
-        <p><?php echo $correo; ?></p>
-        <p><?php echo ucfirst($tipo_usuario); ?></p>
-    </div>
+        <div class="profile-picture">
+            <img src="<?php echo $foto_perfil; ?>" alt="Foto de Perfil">
+            <form action="upload.php" method="post" enctype="multipart/form-data">
+                <input type="file" name="fileToUpload" id="fileToUpload">
+                <label for="fileToUpload" class="button">Cambiar foto de perfil</label>
+                <button type="submit" class="button">Actualizar foto</button>
+            </form>
+            <p><?php echo $correo; ?></p>
+            <p><?php echo ucfirst($tipo_usuario); ?></p>
+        </div>
 
         <!-- Mostrar el formulario según el tipo de usuario -->
         <?php if ($tipo_usuario == 'operador'): ?>
