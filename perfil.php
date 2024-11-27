@@ -98,12 +98,29 @@ $foto_perfil = $foto_perfil ?? 'img/camion.jpg'; // Usa un valor predeterminado 
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             max-width: 800px;
             margin: 0 auto;
+            position: relative;
         }
         h2 {
             color: #007BFF;
             border-bottom: 2px solid #007BFF;
             padding-bottom: 5px;
             margin-bottom: 20px;
+        }
+        .logout-button {
+            background-color: #FF0000;
+            color: white;
+            padding: 4px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            display: inline-block;
+            position: absolute;
+            top: 20px;       
+            right: 20px;
+        }
+        .logout-button:hover {
+            background-color: #cc0000;
         }
         .profile-picture {
             text-align: center;
@@ -174,6 +191,7 @@ $foto_perfil = $foto_perfil ?? 'img/camion.jpg'; // Usa un valor predeterminado 
 </head>
 <body>
     <div class="container">
+        <a href="logout.php" class="logout-button">Cerrar sesión</a>
         <div class="profile-picture">
             <img src="<?php echo $foto_perfil; ?>" alt="Foto de Perfil">
             <form action="upload.php" method="post" enctype="multipart/form-data">
