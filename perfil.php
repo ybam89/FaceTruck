@@ -304,12 +304,16 @@ switch ($tipo_usuario) {
                 
                 <label for="pregunta_tres">Pregunta tres empresas</label>
                 <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $row['pregunta_tres_empresas']; ?>" readonly>
+                <div class="edit-button">
+                    <button onclick="location.href='publicar_vacante.php'" class="button">Publicar bacante de operador</button>
+                </div>
             </div>
         <?php endif; ?>
 
         <div class="edit-button">
             <button onclick="location.href='editar_perfil.php'" class="button">Editar perfil</button>
         </div>
+
     </div>
 </body>
 </html>
