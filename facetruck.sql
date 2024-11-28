@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 28-11-2024 a las 04:01:44
+-- Tiempo de generación: 28-11-2024 a las 04:10:05
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -20,6 +20,48 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `facetruck`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `buscar_fletes`
+--
+
+CREATE TABLE `buscar_fletes` (
+  `id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL,
+  `vigencia` tinyint(1) NOT NULL,
+  `fecha_publicacion` date NOT NULL,
+  `tipo_viaje` enum('Local','Foráneo') NOT NULL,
+  `estado_partida` varchar(255) NOT NULL,
+  `municipio_partida` varchar(255) NOT NULL,
+  `estado_destino` varchar(255) NOT NULL,
+  `municipio_destino` varchar(255) NOT NULL,
+  `kilometraje_aproximado` int(11) NOT NULL,
+  `tipo_vehiculo_solicitado` varchar(255) NOT NULL,
+  `descripcion` text NOT NULL,
+  `pago_ofrecido` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `buscar_operadores`
+--
+
+CREATE TABLE `buscar_operadores` (
+  `id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL,
+  `nombre` varchar(255) NOT NULL,
+  `apellido_paterno` varchar(255) NOT NULL,
+  `apellido_materno` varchar(255) NOT NULL,
+  `fecha_nacimiento` date NOT NULL,
+  `estado` varchar(255) NOT NULL,
+  `municipio` varchar(255) NOT NULL,
+  `licencia` enum('Estatal','Federal') NOT NULL,
+  `tipo_licencia` varchar(255) NOT NULL,
+  `fecha_vigencia` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -62,6 +104,49 @@ CREATE TABLE `hombres_camion` (
 
 INSERT INTO `hombres_camion` (`id`, `usuario_id`, `pregunta_uno_hombres_camion`, `pregunta_dos_hombres_camion`, `pregunta_tres_hombres_camion`) VALUES
 (1, 20, 'HC_111', 'HC_222', 'HC_333');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ofertas_empleo`
+--
+
+CREATE TABLE `ofertas_empleo` (
+  `id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL,
+  `vigente` tinyint(1) NOT NULL,
+  `estado` varchar(255) NOT NULL,
+  `municipio` varchar(255) NOT NULL,
+  `fecha_publicacion` date NOT NULL,
+  `sueldo` decimal(10,2) NOT NULL,
+  `tipo_viaje` enum('foráneo','local') NOT NULL,
+  `descripcion_ruta` text NOT NULL,
+  `tipo_vehiculo_remolque` varchar(255) NOT NULL,
+  `requisitos` text NOT NULL,
+  `prestaciones` text NOT NULL,
+  `contacto` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ofertas_empresas`
+--
+
+CREATE TABLE `ofertas_empresas` (
+  `id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL,
+  `vigente` tinyint(1) NOT NULL,
+  `estado` varchar(255) NOT NULL,
+  `municipio` varchar(255) NOT NULL,
+  `fecha_publicacion` date NOT NULL,
+  `pago_ofrecido` decimal(10,2) NOT NULL,
+  `tipo_viaje` enum('foráneo','local') NOT NULL,
+  `descripcion_ruta` text NOT NULL,
+  `tipo_vehiculo_remolque` varchar(255) NOT NULL,
+  `requisitos` text NOT NULL,
+  `contacto` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -129,6 +214,20 @@ DELIMITER ;
 --
 
 --
+-- Indices de la tabla `buscar_fletes`
+--
+ALTER TABLE `buscar_fletes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `usuario_id` (`usuario_id`);
+
+--
+-- Indices de la tabla `buscar_operadores`
+--
+ALTER TABLE `buscar_operadores`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `usuario_id` (`usuario_id`);
+
+--
 -- Indices de la tabla `empresas`
 --
 ALTER TABLE `empresas`
@@ -139,6 +238,20 @@ ALTER TABLE `empresas`
 -- Indices de la tabla `hombres_camion`
 --
 ALTER TABLE `hombres_camion`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `usuario_id` (`usuario_id`);
+
+--
+-- Indices de la tabla `ofertas_empleo`
+--
+ALTER TABLE `ofertas_empleo`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `usuario_id` (`usuario_id`);
+
+--
+-- Indices de la tabla `ofertas_empresas`
+--
+ALTER TABLE `ofertas_empresas`
   ADD PRIMARY KEY (`id`),
   ADD KEY `usuario_id` (`usuario_id`);
 
@@ -160,6 +273,18 @@ ALTER TABLE `usuarios`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `buscar_fletes`
+--
+ALTER TABLE `buscar_fletes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `buscar_operadores`
+--
+ALTER TABLE `buscar_operadores`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `empresas`
 --
 ALTER TABLE `empresas`
@@ -170,6 +295,18 @@ ALTER TABLE `empresas`
 --
 ALTER TABLE `hombres_camion`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `ofertas_empleo`
+--
+ALTER TABLE `ofertas_empleo`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `ofertas_empresas`
+--
+ALTER TABLE `ofertas_empresas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `operadores`
@@ -188,6 +325,18 @@ ALTER TABLE `usuarios`
 --
 
 --
+-- Filtros para la tabla `buscar_fletes`
+--
+ALTER TABLE `buscar_fletes`
+  ADD CONSTRAINT `buscar_fletes_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
+
+--
+-- Filtros para la tabla `buscar_operadores`
+--
+ALTER TABLE `buscar_operadores`
+  ADD CONSTRAINT `buscar_operadores_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
+
+--
 -- Filtros para la tabla `empresas`
 --
 ALTER TABLE `empresas`
@@ -198,6 +347,18 @@ ALTER TABLE `empresas`
 --
 ALTER TABLE `hombres_camion`
   ADD CONSTRAINT `hombres_camion_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
+
+--
+-- Filtros para la tabla `ofertas_empleo`
+--
+ALTER TABLE `ofertas_empleo`
+  ADD CONSTRAINT `ofertas_empleo_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
+
+--
+-- Filtros para la tabla `ofertas_empresas`
+--
+ALTER TABLE `ofertas_empresas`
+  ADD CONSTRAINT `ofertas_empresas_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
 
 --
 -- Filtros para la tabla `operadores`
