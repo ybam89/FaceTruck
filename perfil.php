@@ -339,42 +339,126 @@ $conn->close(); // Cierra la conexión a la base de datos
         }
         ?>
 
-        <table border="1">
-    <tr>
-        <th>Vigente</th>
-        <th>Estado</th>
-        <th>Municipio</th>
-        <th>Fecha Publicación</th>
-        <th>Sueldo</th>
-        <th>Tipo de Viaje</th>
-        <th>Descripción de Ruta</th>
-        <th>Tipo Vehículo/Remolque</th>
-        <th>Requisitos</th>
-        <th>Prestaciones</th>
-        <th>Contacto</th>
-        <th>Acciones</th>
-    </tr>
-    <?php if (!empty($job_offers)): ?>
-        <?php foreach($job_offers as $row_oferta): ?>
-            <tr>
-                <td><?php echo $row_oferta['vigente']; ?></td>
-                <td><?php echo $row_oferta['estado']; ?></td>
-                <td><?php echo $row_oferta['municipio']; ?></td>
-                <td><?php echo $row_oferta['fecha_publicacion']; ?></td>
-                <td><?php echo $row_oferta['sueldo']; ?></td>
-                <td><?php echo $row_oferta['tipo_viaje']; ?></td>
-                <td><?php echo $row_oferta['descripcion_ruta']; ?></td>
-                <td><?php echo $row_oferta['tipo_vehiculo_remolque']; ?></td>
-                <td><?php echo $row_oferta['requisitos']; ?></td>
-                <td><?php echo $row_oferta['prestaciones']; ?></td>
-                <td><?php echo $row_oferta['contacto']; ?></td>
-                <td><a href="editar_oferta.php?id=<?php echo $row_oferta['id']; ?>" class="button">Editar</a></td>
-            </tr>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <tr><td colspan="12">No hay ofertas de empleo disponibles.</td></tr>
-    <?php endif; ?>
+    <title>Tabla Ordenable y Filtrable</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ccc;
+        }
+        th {
+            background-color: #f2f2f2;
+            cursor: pointer;
+        }
+        th.sortable:hover {
+            background-color: #ddd;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 5px;
+            margin: 5px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+
+<table id="tabla">
+    <thead>
+        <tr>
+            <th class="sortable" onclick="sortTable(0)">Vigente <input type="text" onkeyup="filterTable(0)" placeholder="Filtrar..."></th>
+            <th class="sortable" onclick="sortTable(1)">Estado <input type="text" onkeyup="filterTable(1)" placeholder="Filtrar..."></th>
+            <th class="sortable" onclick="sortTable(2)">Municipio <input type="text" onkeyup="filterTable(2)" placeholder="Filtrar..."></th>
+            <th class="sortable" onclick="sortTable(3)">Fecha Publicación <input type="text" onkeyup="filterTable(3)" placeholder="Filtrar..."></th>
+            <th class="sortable" onclick="sortTable(4)">Sueldo <input type="text" onkeyup="filterTable(4)" placeholder="Filtrar..."></th>
+            <th class="sortable" onclick="sortTable(5)">Tipo de Viaje <input type="text" onkeyup="filterTable(5)" placeholder="Filtrar..."></th>
+            <th class="sortable" onclick="sortTable(6)">Descripción de Ruta <input type="text" onkeyup="filterTable(6)" placeholder="Filtrar..."></th>
+            <th class="sortable" onclick="sortTable(7)">Tipo Vehículo/Remolque <input type="text" onkeyup="filterTable(7)" placeholder="Filtrar..."></th>
+            <th class="sortable" onclick="sortTable(8)">Requisitos <input type="text" onkeyup="filterTable(8)" placeholder="Filtrar..."></th>
+            <th class="sortable" onclick="sortTable(9)">Prestaciones <input type="text" onkeyup="filterTable(9)" placeholder="Filtrar..."></th>
+            <th class="sortable" onclick="sortTable(10)">Contacto <input type="text" onkeyup="filterTable(10)" placeholder="Filtrar..."></th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php if (!empty($job_offers)): ?>
+            <?php foreach($job_offers as $row_oferta): ?>
+                <tr>
+                    <td><?php echo $row_oferta['vigente']; ?></td>
+                    <td><?php echo $row_oferta['estado']; ?></td>
+                    <td><?php echo $row_oferta['municipio']; ?></td>
+                    <td><?php echo $row_oferta['fecha_publicacion']; ?></td>
+                    <td><?php echo $row_oferta['sueldo']; ?></td>
+                    <td><?php echo $row_oferta['tipo_viaje']; ?></td>
+                    <td><?php echo $row_oferta['descripcion_ruta']; ?></td>
+                    <td><?php echo $row_oferta['tipo_vehiculo_remolque']; ?></td>
+                    <td><?php echo $row_oferta['requisitos']; ?></td>
+                    <td><?php echo $row_oferta['prestaciones']; ?></td>
+                    <td><?php echo $row_oferta['contacto']; ?></td>
+                    <td><a href="editar_oferta.php?id=<?php echo $row_oferta['id']; ?>" class="button">Editar</a></td>
+                </tr>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <tr><td colspan="12">No hay ofertas de empleo disponibles.</td></tr>
+        <?php endif; ?>
+    </tbody>
 </table>
+
+<script>
+    // Función para ordenar las filas de la tabla por una columna
+    function sortTable(n) {
+        var table = document.getElementById("tabla");
+        var rows = table.rows;
+        var switching = true;
+        var dir = "asc"; // Dirección de ordenación
+        var switchCount = 0;
+
+        while (switching) {
+            switching = false;
+            var rowsArray = Array.from(rows).slice(1); // Saltamos la primera fila (cabecera)
+            for (var i = 0; i < (rowsArray.length - 1); i++) {
+                var x = rowsArray[i].getElementsByTagName("TD")[n];
+                var y = rowsArray[i + 1].getElementsByTagName("TD")[n];
+                if (dir == "asc" && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase() || 
+                    dir == "desc" && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                    rowsArray[i].parentNode.insertBefore(rowsArray[i + 1], rowsArray[i]);
+                    switching = true;
+                    switchCount++;
+                    break;
+                }
+            }
+            if (switchCount == 0 && dir == "asc") {
+                dir = "desc";
+                switching = true;
+            }
+        }
+    }
+
+    // Función para filtrar las filas de la tabla por una columna
+    function filterTable(n) {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.querySelectorAll('th input')[n];
+        filter = input.value.toLowerCase();
+        table = document.getElementById("tabla");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 1; i < tr.length; i++) { // Empezamos desde 1 para no filtrar la cabecera
+            td = tr[i].getElementsByTagName("td")[n];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
 
         <div class="edit-button">
             <button onclick="location.href='editar_perfil.php'" class="button">Editar perfil</button>

@@ -75,13 +75,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Actualizar los datos de la oferta de empleo
     $sql_update = "UPDATE ofertas_empleo SET vigente = ?, estado = ?, municipio = ?, fecha_publicacion = ?, sueldo = ?, tipo_viaje = ?, descripcion_ruta = ?, tipo_vehiculo_remolque = ?, requisitos = ?, prestaciones = ?, contacto = ? WHERE id = ? AND usuario_id = ?";
     $stmt_update = $conn->prepare($sql_update);
-    // Vincula los parámetros al statement
     $stmt_update->bind_param("sssssssssssii", $vigente, $estado, $municipio, $fecha_publicacion, $sueldo, $tipo_viaje, $descripcion_ruta, $tipo_vehiculo_remolque, $requisitos, $prestaciones, $contacto, $oferta_id, $usuario_id);
-
 
     // Ejecutar la actualización y verificar si se ha completado correctamente
     if ($stmt_update->execute()) {
-        echo "Oferta actualizada exitosamente.";
+        header("Location: perfil.php"); // Redirigir a perfil.php después de guardar los cambios
+        exit;
     } else {
         echo "Error: " . $stmt_update->error;
     }
