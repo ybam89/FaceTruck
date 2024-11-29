@@ -84,7 +84,7 @@ if ($tipo_usuario == 'empresa') {
     }
 }
 
-$conn->close(); // Cierra la conexión a la base de datos
+
 
 // Establecer la imagen de perfil predeterminada si no hay una imagen de perfil
 $foto_perfil = $foto_perfil ?? 'img/camion.jpg'; // Usa un valor predeterminado si no está definido
@@ -114,6 +114,7 @@ switch ($tipo_usuario) {
                     <li><a href="publicar_oferta_ruta.php">Publicar oferta de ruta</a></li>
                  </ul>';
         break;
+$conn->close(); // Cierra la conexión a la base de datos
 }
 ?>
 
@@ -334,58 +335,46 @@ switch ($tipo_usuario) {
         if ($tipo_usuario == 'empresa') {
             $sql_ofertas = "SELECT * FROM ofertas_empleo";
             $result_ofertas = $conn->query($sql_ofertas);
+
         }
         ?>
 
-        <!DOCTYPE html>
-        <html lang="es">
-        <head>
-            <!-- Existing head content... -->
-        </head>
-        <body>
-            <div class="container">
-                <!-- Existing content... -->
-
-        <?php if ($tipo_usuario == 'empresa'): ?>
-            <!-- Existing form for 'empresa' users... -->
-
-            <!-- Table to display job offers -->
-            <h2>Ofertas de Empleo</h2>
-            <table border="1">
-                <tr>
-                    <th>Vigente</th>
-                    <th>Estado</th>
-                    <th>Municipio</th>
-                    <th>Fecha Publicación</th>
-                    <th>Sueldo</th>
-                    <th>Tipo de Viaje</th>
-                    <th>Descripción de Ruta</th>
-                    <th>Tipo Vehículo/Remolque</th>
-                    <th>Requisitos</th>
-                    <th>Prestaciones</th>
-                    <th>Contacto</th>
-                </tr>
-                <?php if (!empty($job_offers)): ?>
-                    <?php foreach($job_offers as $row_oferta): ?>
-                        <tr>
-                            <td><?php echo $row_oferta['vigente']; ?></td>
-                            <td><?php echo $row_oferta['estado']; ?></td>
-                            <td><?php echo $row_oferta['municipio']; ?></td>
-                            <td><?php echo $row_oferta['fecha_publicacion']; ?></td>
-                            <td><?php echo $row_oferta['sueldo']; ?></td>
-                            <td><?php echo $row_oferta['tipo_viaje']; ?></td>
-                            <td><?php echo $row_oferta['descripcion_ruta']; ?></td>
-                            <td><?php echo $row_oferta['tipo_vehiculo_remolque']; ?></td>
-                            <td><?php echo $row_oferta['requisitos']; ?></td>
-                            <td><?php echo $row_oferta['prestaciones']; ?></td>
-                            <td><?php echo $row_oferta['contacto']; ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr><td colspan="11">No hay ofertas de empleo disponibles.</td></tr>
-                <?php endif; ?>
-            </table>
-        <?php endif; ?>
+        <table border="1">
+    <tr>
+        <th>Vigente</th>
+        <th>Estado</th>
+        <th>Municipio</th>
+        <th>Fecha Publicación</th>
+        <th>Sueldo</th>
+        <th>Tipo de Viaje</th>
+        <th>Descripción de Ruta</th>
+        <th>Tipo Vehículo/Remolque</th>
+        <th>Requisitos</th>
+        <th>Prestaciones</th>
+        <th>Contacto</th>
+        <th>Acciones</th>
+    </tr>
+    <?php if (!empty($job_offers)): ?>
+        <?php foreach($job_offers as $row_oferta): ?>
+            <tr>
+                <td><?php echo $row_oferta['vigente']; ?></td>
+                <td><?php echo $row_oferta['estado']; ?></td>
+                <td><?php echo $row_oferta['municipio']; ?></td>
+                <td><?php echo $row_oferta['fecha_publicacion']; ?></td>
+                <td><?php echo $row_oferta['sueldo']; ?></td>
+                <td><?php echo $row_oferta['tipo_viaje']; ?></td>
+                <td><?php echo $row_oferta['descripcion_ruta']; ?></td>
+                <td><?php echo $row_oferta['tipo_vehiculo_remolque']; ?></td>
+                <td><?php echo $row_oferta['requisitos']; ?></td>
+                <td><?php echo $row_oferta['prestaciones']; ?></td>
+                <td><?php echo $row_oferta['contacto']; ?></td>
+                <td><a href="editar_oferta.php?id=<?php echo $row_oferta['id']; ?>" class="button">Editar</a></td>
+            </tr>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <tr><td colspan="12">No hay ofertas de empleo disponibles.</td></tr>
+    <?php endif; ?>
+</table>
 
         <div class="edit-button">
             <button onclick="location.href='editar_perfil.php'" class="button">Editar perfil</button>
