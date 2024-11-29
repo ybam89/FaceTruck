@@ -71,6 +71,19 @@ if ($result_email->num_rows > 0) {
 }
 
 $stmt_email->close(); // Cierra la declaración preparada
+
+// Fetch job offers for 'empresa' users before closing the connection
+$job_offers = [];
+if ($tipo_usuario == 'empresa') {
+    $sql_ofertas = "SELECT * FROM ofertas_empleo";
+    $result_ofertas = $conn->query($sql_ofertas);
+    if ($result_ofertas->num_rows > 0) {
+        while($row_oferta = $result_ofertas->fetch_assoc()) {
+            $job_offers[] = $row_oferta;
+        }
+    }
+}
+
 $conn->close(); // Cierra la conexión a la base de datos
 
 // Establecer la imagen de perfil predeterminada si no hay una imagen de perfil
@@ -305,7 +318,7 @@ switch ($tipo_usuario) {
                 <label for="pregunta_tres">Pregunta tres empresas</label>
                 <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $row['pregunta_tres_empresas']; ?>" readonly>
                 <div class="edit-button">
-                    <button onclick="location.href='publicar_vacante.php'" class="button">Publicar bacante de operador</button>
+                    <button onclick="location.href='publicar_vacante.php'" class="button">Publicar bacante deoperador</button>
                 </div>
             </div>
         <?php endif; ?>
@@ -314,6 +327,69 @@ switch ($tipo_usuario) {
             <button onclick="location.href='editar_perfil.php'" class="button">Editar perfil</button>
         </div>
 
+        <?php
+        // Existing code...
+
+        // Additional code for fetching job offers for 'empresa' users
+        if ($tipo_usuario == 'empresa') {
+            $sql_ofertas = "SELECT * FROM ofertas_empleo";
+            $result_ofertas = $conn->query($sql_ofertas);
+        }
+        ?>
+
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <!-- Existing head content... -->
+        </head>
+        <body>
+            <div class="container">
+                <!-- Existing content... -->
+
+        <?php if ($tipo_usuario == 'empresa'): ?>
+            <!-- Existing form for 'empresa' users... -->
+
+            <!-- Table to display job offers -->
+            <h2>Ofertas de Empleo</h2>
+            <table border="1">
+                <tr>
+                    <th>Vigente</th>
+                    <th>Estado</th>
+                    <th>Municipio</th>
+                    <th>Fecha Publicación</th>
+                    <th>Sueldo</th>
+                    <th>Tipo de Viaje</th>
+                    <th>Descripción de Ruta</th>
+                    <th>Tipo Vehículo/Remolque</th>
+                    <th>Requisitos</th>
+                    <th>Prestaciones</th>
+                    <th>Contacto</th>
+                </tr>
+                <?php if (!empty($job_offers)): ?>
+                    <?php foreach($job_offers as $row_oferta): ?>
+                        <tr>
+                            <td><?php echo $row_oferta['vigente']; ?></td>
+                            <td><?php echo $row_oferta['estado']; ?></td>
+                            <td><?php echo $row_oferta['municipio']; ?></td>
+                            <td><?php echo $row_oferta['fecha_publicacion']; ?></td>
+                            <td><?php echo $row_oferta['sueldo']; ?></td>
+                            <td><?php echo $row_oferta['tipo_viaje']; ?></td>
+                            <td><?php echo $row_oferta['descripcion_ruta']; ?></td>
+                            <td><?php echo $row_oferta['tipo_vehiculo_remolque']; ?></td>
+                            <td><?php echo $row_oferta['requisitos']; ?></td>
+                            <td><?php echo $row_oferta['prestaciones']; ?></td>
+                            <td><?php echo $row_oferta['contacto']; ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr><td colspan="11">No hay ofertas de empleo disponibles.</td></tr>
+                <?php endif; ?>
+            </table>
+        <?php endif; ?>
+
+        <div class="edit-button">
+            <button onclick="location.href='editar_perfil.php'" class="button">Editar perfil</button>
+        </div>
     </div>
 </body>
 </html>
