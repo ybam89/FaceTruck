@@ -367,52 +367,7 @@ $conn->close(); // Cierra la conexión a la base de datos
 </head>
 <body>
 
-<table id="tabla">
-    <thead>
-        <tr>
-            <th class="sortable" onclick="sortTable(0)">Vigente <input type="text" onkeyup="filterTable(0)" placeholder="Filtrar..."></th>
-            <th class="sortable" onclick="sortTable(1)">Estado <input type="text" onkeyup="filterTable(1)" placeholder="Filtrar..."></th>
-            <th class="sortable" onclick="sortTable(2)">Municipio <input type="text" onkeyup="filterTable(2)" placeholder="Filtrar..."></th>
-            <th class="sortable" onclick="sortTable(3)">Fecha Publicación <input type="text" onkeyup="filterTable(3)" placeholder="Filtrar..."></th>
-            <th class="sortable" onclick="sortTable(4)">Sueldo <input type="text" onkeyup="filterTable(4)" placeholder="Filtrar..."></th>
-            <th class="sortable" onclick="sortTable(5)">Tipo de Viaje <input type="text" onkeyup="filterTable(5)" placeholder="Filtrar..."></th>
-            <th class="sortable" onclick="sortTable(6)">Descripción de Ruta <input type="text" onkeyup="filterTable(6)" placeholder="Filtrar..."></th>
-            <th class="sortable" onclick="sortTable(7)">Tipo Vehículo/Remolque <input type="text" onkeyup="filterTable(7)" placeholder="Filtrar..."></th>
-            <th class="sortable" onclick="sortTable(8)">Requisitos <input type="text" onkeyup="filterTable(8)" placeholder="Filtrar..."></th>
-            <th class="sortable" onclick="sortTable(9)">Prestaciones <input type="text" onkeyup="filterTable(9)" placeholder="Filtrar..."></th>
-            <th class="sortable" onclick="sortTable(10)">Contacto <input type="text" onkeyup="filterTable(10)" placeholder="Filtrar..."></th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-<tbody>
-    <?php if (!empty($job_offers)): ?>
-        <?php foreach($job_offers as $row_oferta): ?>
-            <tr>
-                <td><?php echo $row_oferta['vigente']; ?></td>
-                <td><?php echo $row_oferta['estado']; ?></td>
-                <td><?php echo $row_oferta['municipio']; ?></td>
-                <td><?php echo $row_oferta['fecha_publicacion']; ?></td>
-                <td><?php echo $row_oferta['sueldo']; ?></td>
-                <td><?php echo $row_oferta['tipo_viaje']; ?></td>
-                <td><?php echo $row_oferta['descripcion_ruta']; ?></td>
-                <td><?php echo $row_oferta['tipo_vehiculo_remolque']; ?></td>
-                <td><?php echo $row_oferta['requisitos']; ?></td>
-                <td><?php echo $row_oferta['prestaciones']; ?></td>
-                <td><?php echo $row_oferta['contacto']; ?></td>
-                <td>
-                    <a href="editar_oferta.php?id=<?php echo $row_oferta['id']; ?>" class="button">Editar</a>
-                    <form method="POST" action="eliminar_oferta.php" style="display:inline;">
-                        <input type="hidden" name="id" value="<?php echo $row_oferta['id']; ?>">
-                        <button type="submit" class="button" onclick="return confirm('¿Estás seguro de que deseas eliminar esta oferta?');">Eliminar</button>
-                    </form>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <tr><td colspan="12">No hay ofertas de empleo disponibles.</td></tr>
-    <?php endif; ?>
-</tbody>
-</table>
+
 
 <script>
     // Función para ordenar las filas de la tabla por una columna
@@ -466,9 +421,6 @@ $conn->close(); // Cierra la conexión a la base de datos
     }
 </script>
 
-        <div class="edit-button">
-            <button onclick="location.href='editar_perfil.php'" class="button">Editar perfil</button>
-        </div>
     </div>
 </body>
 </html>
