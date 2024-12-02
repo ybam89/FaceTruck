@@ -384,28 +384,34 @@ $conn->close(); // Cierra la conexión a la base de datos
             <th>Acciones</th>
         </tr>
     </thead>
-    <tbody>
-        <?php if (!empty($job_offers)): ?>
-            <?php foreach($job_offers as $row_oferta): ?>
-                <tr>
-                    <td><?php echo $row_oferta['vigente']; ?></td>
-                    <td><?php echo $row_oferta['estado']; ?></td>
-                    <td><?php echo $row_oferta['municipio']; ?></td>
-                    <td><?php echo $row_oferta['fecha_publicacion']; ?></td>
-                    <td><?php echo $row_oferta['sueldo']; ?></td>
-                    <td><?php echo $row_oferta['tipo_viaje']; ?></td>
-                    <td><?php echo $row_oferta['descripcion_ruta']; ?></td>
-                    <td><?php echo $row_oferta['tipo_vehiculo_remolque']; ?></td>
-                    <td><?php echo $row_oferta['requisitos']; ?></td>
-                    <td><?php echo $row_oferta['prestaciones']; ?></td>
-                    <td><?php echo $row_oferta['contacto']; ?></td>
-                    <td><a href="editar_oferta.php?id=<?php echo $row_oferta['id']; ?>" class="button">Editar</a></td>
-                </tr>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <tr><td colspan="12">No hay ofertas de empleo disponibles.</td></tr>
-        <?php endif; ?>
-    </tbody>
+<tbody>
+    <?php if (!empty($job_offers)): ?>
+        <?php foreach($job_offers as $row_oferta): ?>
+            <tr>
+                <td><?php echo $row_oferta['vigente']; ?></td>
+                <td><?php echo $row_oferta['estado']; ?></td>
+                <td><?php echo $row_oferta['municipio']; ?></td>
+                <td><?php echo $row_oferta['fecha_publicacion']; ?></td>
+                <td><?php echo $row_oferta['sueldo']; ?></td>
+                <td><?php echo $row_oferta['tipo_viaje']; ?></td>
+                <td><?php echo $row_oferta['descripcion_ruta']; ?></td>
+                <td><?php echo $row_oferta['tipo_vehiculo_remolque']; ?></td>
+                <td><?php echo $row_oferta['requisitos']; ?></td>
+                <td><?php echo $row_oferta['prestaciones']; ?></td>
+                <td><?php echo $row_oferta['contacto']; ?></td>
+                <td>
+                    <a href="editar_oferta.php?id=<?php echo $row_oferta['id']; ?>" class="button">Editar</a>
+                    <form method="POST" action="eliminar_oferta.php" style="display:inline;">
+                        <input type="hidden" name="id" value="<?php echo $row_oferta['id']; ?>">
+                        <button type="submit" class="button" onclick="return confirm('¿Estás seguro de que deseas eliminar esta oferta?');">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <tr><td colspan="12">No hay ofertas de empleo disponibles.</td></tr>
+    <?php endif; ?>
+</tbody>
 </table>
 
 <script>
