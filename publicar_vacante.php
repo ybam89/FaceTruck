@@ -400,7 +400,7 @@ $result = $stmt->get_result();
         // Función para editar un registro
         function editRecord(id) {
             // Redirigir a la página de edición con el ID del registro
-            window.location.href = 'editar_vacante.php?id=' + id;
+            window.location.href = 'editar_oferta.php?id=' + id;
         }
     </script>
 </body>

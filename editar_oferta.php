@@ -79,7 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Ejecutar la actualización y verificar si se ha completado correctamente
     if ($stmt_update->execute()) {
-        header("Location: perfil.php"); // Redirigir a perfil.php después de guardar los cambios
+        header("Location: publicar_vacante.php"); // Redirigir a perfil.php después de guardar los cambios
         exit;
     } else {
         echo "Error: " . $stmt_update->error;
@@ -254,7 +254,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <button type="submit" class="button">Guardar cambios</button>
         </form>
         <div class="edit-button">
-            <button onclick="location.href='perfil.php'" class="button">Regresar</button>
+            <button onclick="location.href='publicar_vacante.php'" class="button">Regresar</button>
         </div>
     </div>
 </body>

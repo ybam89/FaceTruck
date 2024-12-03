@@ -1,48 +1,41 @@
 <?php
-session_start();
+// Conexión a la base de datos
 $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "facetruck";
+
 $conn = new mysqli($servername, $username, $password, $dbname);
 
+// Verificar la conexión
 if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 }
 
-if (!isset($_SESSION['usuario_id'])) {
-    echo "Error: No se ha iniciado sesión correctamente.";
-    exit;
-}
-$usuario_id = $_SESSION['usuario_id'];
+// Consulta para contar el número de vacantes activas para 'operador'
+$sql_vacantes = "SELECT COUNT(*) as num_vacantes FROM vacantes WHERE tipo = 'operador' AND estado = 'activa'";
+$result_vacantes = $conn->query($sql_vacantes);
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['fileToUpload'])) {
-    $target_dir = "uploads/";
-    $file_name = basename($_FILES["fileToUpload"]["name"]);
-    $target_file = $target_dir . uniqid() . "_" . $file_name;
-
-    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-    $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
-    if ($check !== false) {
-        if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-            $sql = "UPDATE Usuarios SET foto_perfil = ? WHERE id = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("si", $target_file, $usuario_id);
-            if ($stmt->execute()) {
-                echo "La foto de perfil se ha actualizado correctamente.";
-                header("Location: perfil.php");
-                exit();
-            } else {
-                echo "Error al actualizar la base de datos.";
-            }
-            $stmt->close();
-        } else {
-            echo "Error al subir el archivo.";
-        }
-    } else {
-        echo "El archivo no es una imagen.";
-    }
+if ($result_vacantes->num_rows > 0) {
+    $row_vacantes = $result_vacantes->fetch_assoc();
+    $num_vacantes = $row_vacantes['num_vacantes'];
+} else {
+    $num_vacantes = 0;
 }
 
 $conn->close();
 ?>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil del Usuario - FaceTruck</title>
+</head>
+<body>
+    <div class="container">
+        <p>Numero de vacantes activas para 'operador': <?php echo $num_vacantes; ?></p>
+    </div>
+</body>
+</html>
