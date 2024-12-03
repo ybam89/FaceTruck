@@ -92,14 +92,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         echo "Error: ID de vacante no recibido.";
     }
 }
-
-// Recuperar los registros de ofertas_empleo para el usuario actual
-$sql = "SELECT * FROM ofertas_empleo WHERE usuario_id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $usuario_id);
-$stmt->execute();
-$result = $stmt->get_result();
-
 ?>
 
 <!DOCTYPE html>
@@ -180,7 +172,7 @@ $result = $stmt->get_result();
         .dropdown-menu:hover .dropdown-content {
             display: block;
         }
-        .form-container {
+.form-container {
             display: flex;
             flex-direction: column;
             gap: 20px;
@@ -345,7 +337,6 @@ $result = $stmt->get_result();
             </tbody>
         </table>
     </div>
-
     <script>
         // Función para ordenar las filas de la tabla por una columna
         function sortTable(n) {
@@ -399,14 +390,41 @@ $result = $stmt->get_result();
 
         // Función para editar un registro
         function editRecord(id) {
-            // Redirigir a la página de edición con el ID del registro
-            window.location.href = 'editar_vacante.php?id=' + id;
+            // Rellenar el formulario con los datos del registro
+            $.ajax({
+                url: 'obtener_vacante.php',
+                type: 'GET',
+                data: { id: id },
+                success: function(data) {
+                    const vacante = JSON.parse(data);
+                    $('#vigente').val(vacante.vigente);
+                    $('#estado').val(vacante.estado);
+                    $('#municipio').val(vacante.municipio);
+                    $('#fecha_publicacion').val(vacante.fecha_publicacion);
+                    $('#sueldo').val(vacante.sueldo);
+                    $('#tipo_viaje').val(vacante.tipo_viaje);
+                    $('#descripcion_ruta').val(vacante.descripcion_ruta);
+                    $('#tipo_vehiculo_remolque').val(vacante.tipo_vehiculo_remolque);
+                    $('#requisitos').val(vacante.requisitos);
+                    $('#prestaciones').val(vacante.prestaciones);
+                    $('#contacto').val(vacante.contacto);
+                    $('form').append('<input type="hidden" name="id" value="' + vacante.id + '">');
+                    $('form').append('<input type="hidden" name="action" value="editar">');
+                }
+            });
         }
     </script>
 </body>
 </html>
 
 <?php
+// Recuperar los registros de ofertas_empleo para el usuario actual
+$sql = "SELECT * FROM ofertas_empleo WHERE usuario_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $usuario_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
 // Cerrar la conexión a la base de datos
 $stmt->close();
 $conn->close();
