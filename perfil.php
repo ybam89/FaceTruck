@@ -109,7 +109,7 @@ switch ($tipo_usuario) {
                     <li><a href="buscar_operadores.php">Buscar operadores</a></li>
                     <li><a href="buscar_hombres_camion.php">Buscar Hombres camión</a></li>
                     <li><a href="buscar_ofertas_rutas.php">Buscar ofertas de rutas</a></li>
-                    <li><a href="publicar_vacante.php">Publicar vacante operador</a></li>
+                    <li><a href="publicar_vacante.php">Publicar y consulta vacante operador</a></li>
                     <li><a href="publicar_flete.php">Publicar Flete eventual</a></li>
                     <li><a href="publicar_oferta_ruta.php">Publicar oferta de ruta</a></li>
                  </ul>';

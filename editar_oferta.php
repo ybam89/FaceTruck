@@ -30,7 +30,7 @@ if ($tipo_usuario == 'empresa') {
                 <li><a href="buscar_operadores.php">Buscar operadores</a></li>
                 <li><a href="buscar_hombres_camion.php">Buscar Hombres camión</a></li>
                 <li><a href="buscar_ofertas_rutas.php">Buscar ofertas de rutas</a></li>
-                <li><a href="publicar_vacante.php">Publicar vacante operador</a></li>
+                <li><a href="publicar_vacante.php">Publicar y consulta vacante operador</a></li>
                 <li><a href="publicar_flete.php">Publicar Flete eventual</a></li>
                 <li><a href="publicar_oferta_ruta.php">Publicar oferta de ruta</a></li>
              </ul>';
@@ -214,8 +214,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <form method="post" class="form-container">
             <label for="vigente">Vigente:</label>
             <select id="vigente" name="vigente">
-                <option value="Sí" <?php if ($row_oferta['vigente'] == 'Sí') echo 'selected'; ?>>Sí</option>
-                <option value="No" <?php if ($row_oferta['vigente'] == 'No') echo 'selected'; ?>>No</option>
+                <option value="1" <?php if ($row_oferta['vigente'] == 'Sí') echo 'selected'; ?>>Sí</option>
+                <option value="0" <?php if ($row_oferta['vigente'] == 'No') echo 'selected'; ?>>No</option>
             </select>
 
             <label for="estado">Estado:</label>

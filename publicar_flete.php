@@ -30,7 +30,7 @@ if ($tipo_usuario == 'empresa') {
                 <li><a href="buscar_operadores.php">Buscar operadores</a></li>
                 <li><a href="buscar_hombres_camion.php">Buscar Hombres camión</a></li>
                 <li><a href="buscar_ofertas_rutas.php">Buscar ofertas de rutas</a></li>
-                <li><a href="publicar_vacante.php">Publicar y consulta vacante operador</a></li>
+                <li><a href="publicar_vacante.php">Publicar vacante operador</a></li>
                 <li><a href="publicar_flete.php">Publicar Flete eventual</a></li>
                 <li><a href="publicar_oferta_ruta.php">Publicar oferta de ruta</a></li>
              </ul>';
@@ -39,29 +39,29 @@ if ($tipo_usuario == 'empresa') {
     exit;
 }
 
-// Procesar el formulario de publicación de vacante
+// Procesar el formulario de publicación de flete
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'publicar') {
-    // Recibir y validar los datos del formulario
-    $vigente = $_POST['vigente'];
-    $estado = $_POST['estado'];
-    $municipio = $_POST['municipio'];
-    $fecha_publicacion = $_POST['fecha_publicacion'];
-    $sueldo = $_POST['sueldo'];
-    $tipo_viaje = $_POST['tipo_viaje'];
-    $descripcion_ruta = $_POST['descripcion_ruta'];
-    $tipo_vehiculo_remolque = $_POST['tipo_vehiculo_remolque'];
-    $requisitos = $_POST['requisitos'];
-    $prestaciones = $_POST['prestaciones'];
-    $contacto = $_POST['contacto'];
+    // Validar y recibir los datos del formulario
+    $vigencia = isset($_POST['vigencia']) ? $_POST['vigencia'] : null;
+    $estado_partida = isset($_POST['estado_partida']) ? $_POST['estado_partida'] : null;
+    $municipio_partida = isset($_POST['municipio_partida']) ? $_POST['municipio_partida'] : null;
+    $estado_destino = isset($_POST['estado_destino']) ? $_POST['estado_destino'] : null;
+    $municipio_destino = isset($_POST['municipio_destino']) ? $_POST['municipio_destino'] : null;
+    $fecha_publicacion = isset($_POST['fecha_publicacion']) ? $_POST['fecha_publicacion'] : null;
+    $tipo_viaje = isset($_POST['tipo_viaje']) ? $_POST['tipo_viaje'] : null;
+    $kilometraje_aproximado = isset($_POST['kilometraje_aproximado']) ? $_POST['kilometraje_aproximado'] : null;
+    $tipo_vehiculo_solicitado = isset($_POST['tipo_vehiculo_solicitado']) ? $_POST['tipo_vehiculo_solicitado'] : null;
+    $descripcion = isset($_POST['descripcion']) ? $_POST['descripcion'] : null;
+    $pago_ofrecido = isset($_POST['pago_ofrecido']) ? $_POST['pago_ofrecido'] : null;
 
-    // Insertar los datos en la tabla ofertas_empleo
-    $sql = "INSERT INTO ofertas_empleo (vigente, estado, municipio, fecha_publicacion, sueldo, tipo_viaje, descripcion_ruta, tipo_vehiculo_remolque, requisitos, prestaciones, contacto, usuario_id)
+    // Insertar los datos en la tabla buscar_fletes
+    $sql = "INSERT INTO buscar_fletes (vigencia, estado_partida, municipio_partida, estado_destino, municipio_destino, fecha_publicacion, tipo_viaje, kilometraje_aproximado, tipo_vehiculo_solicitado, descripcion, pago_ofrecido, usuario_id)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssssssssssi", $vigente, $estado, $municipio, $fecha_publicacion, $sueldo, $tipo_viaje, $descripcion_ruta, $tipo_vehiculo_remolque, $requisitos, $prestaciones, $contacto, $usuario_id);
+    $stmt->bind_param("sssssssssssi", $vigencia, $estado_partida, $municipio_partida, $estado_destino, $municipio_destino, $fecha_publicacion, $tipo_viaje, $kilometraje_aproximado, $tipo_vehiculo_solicitado, $descripcion, $pago_ofrecido, $usuario_id);
 
     if ($stmt->execute()) {
-        echo "Vacante publicada exitosamente.";
+        echo "Flete publicado exitosamente.";
     } else {
         echo "Error: " . $stmt->error;
     }
@@ -69,32 +69,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     $stmt->close();
 }
 
-// Procesar la solicitud de eliminación de vacante
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'eliminar') {
-    // Verificar si se ha recibido el ID del registro a eliminar
-    if (isset($_POST['id'])) {
-        $id = $_POST['id'];
-
-        // Preparar la consulta para eliminar el registro
-        $sql = "DELETE FROM ofertas_empleo WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $id);
-
-        // Ejecutar la consulta y verificar el resultado
-        if ($stmt->execute()) {
-            echo "Vacante eliminada exitosamente.";
-        } else {
-            echo "Error al eliminar la vacante.";
-        }
-
-        $stmt->close();
-    } else {
-        echo "Error: ID de vacante no recibido.";
-    }
-}
-
-// Recuperar los registros de ofertas_empleo para el usuario actual
-$sql = "SELECT * FROM ofertas_empleo WHERE usuario_id = ?";
+// Recuperar los registros de buscar_fletes para el usuario actual
+$sql = "SELECT * FROM buscar_fletes WHERE usuario_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $usuario_id);
 $stmt->execute();
@@ -107,7 +83,7 @@ $result = $stmt->get_result();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Publicar Vacante - FaceTruck</title>
+    <title>Publicar Flete - FaceTruck</title>
     <style>
         /* Estilos CSS */
         body {
@@ -252,47 +228,47 @@ $result = $stmt->get_result();
             </div>
         </div>
         <a href="logout.php" class="logout-button">Cerrar sesión</a>
-        <h2>Publicar Vacante</h2>
+        <h2>Publicar Flete</h2>
         <form method="post" class="form-container">
             <input type="hidden" name="action" value="publicar">
-            <label for="vigente">Vigente:</label>
-            <select id="vigente" name="vigente">
-                <option value="Sí">Sí</option>
-                <option value="No">No</option>
+            <label for="vigencia">Vigente:</label>
+            <select id="vigencia" name="vigencia">
+                <option value="1">Sí</option>
+                <option value="0">No</option>
             </select>
 
-            <label for="estado">Estado:</label>
-            <input type="text" id="estado" name="estado" required>
+            <label for="estado_partida">Estado de Partida:</label>
+            <input type="text" id="estado_partida" name="estado_partida" required>
 
-            <label for="municipio">Municipio:</label>
-            <input type="text" id="municipio" name="municipio" required>
+            <label for="municipio_partida">Municipio de Partida:</label>
+            <input type="text" id="municipio_partida" name="municipio_partida" required>
 
-            <label for="fecha_publicacion">Fecha de publicación:</label>
+            <label for="estado_destino">Estado de Destino:</label>
+            <input type="text" id="estado_destino" name="estado_destino" required>
+
+            <label for="municipio_destino">Municipio de Destino:</label>
+            <input type="text" id="municipio_destino" name="municipio_destino" required>
+
+            <label for="fecha_publicacion">Fecha de Publicación:</label>
             <input type="date" id="fecha_publicacion" name="fecha_publicacion" required>
 
-            <label for="sueldo">Sueldo:</label>
-            <input type="text" id="sueldo" name="sueldo" required>
-
-            <label for="tipo_viaje">Tipo de viaje:</label>
+            <label for="tipo_viaje">Tipo de Viaje:</label>
             <select id="tipo_viaje" name="tipo_viaje">
-                <option value="Foráneo">Foráneo</option>
                 <option value="Local">Local</option>
+                <option value="Foráneo">Foráneo</option>
             </select>
 
-            <label for="descripcion_ruta">Descripción de ruta:</label>
-            <textarea id="descripcion_ruta" name="descripcion_ruta" rows="4" required></textarea>
+            <label for="kilometraje_aproximado">Kilometraje Aproximado:</label>
+            <input type="text" id="kilometraje_aproximado" name="kilometraje_aproximado" required>
 
-            <label for="tipo_vehiculo_remolque">Tipo de vehículo y remolque (si aplica):</label>
-            <input type="text" id="tipo_vehiculo_remolque" name="tipo_vehiculo_remolque">
+            <label for="tipo_vehiculo_solicitado">Tipo de Vehículo Solicitado:</label>
+            <input type="text" id="tipo_vehiculo_solicitado" name="tipo_vehiculo_solicitado">
 
-            <label for="requisitos">Requisitos:</label>
-            <textarea id="requisitos" name="requisitos" rows="4" required></textarea>
+            <label for="descripcion">Descripción:</label>
+            <textarea id="descripcion" name="descripcion" rows="4" required></textarea>
 
-            <label for="prestaciones">Prestaciones:</label>
-            <textarea id="prestaciones" name="prestaciones" rows="4" required></textarea>
-
-            <label for="contacto">Contacto:</label>
-            <input type="text" id="contacto" name="contacto" required>
+            <label for="pago_ofrecido">Pago Ofrecido:</label>
+            <input type="text" id="pago_ofrecido" name="pago_ofrecido" required>
 
             <button type="submit" class="button">Guardar cambios</button>
         </form>
@@ -300,44 +276,44 @@ $result = $stmt->get_result();
             <button onclick="location.href='perfil.php'" class="button">Regresar</button>
         </div>
         <!-- Nueva sección para mostrar la tabla de registros -->
-        <h2>Registros de Vacantes</h2>
+        <h2>Registros de Fletes</h2>
         <table id="tabla">
             <thead>
                 <tr>
                     <th onclick="sortTable(0)">Vigente <input type="text" onkeyup="filterTable(0)"></th>
-                    <th onclick="sortTable(1)">Estado <input type="text" onkeyup="filterTable(1)"></th>
-                    <th onclick="sortTable(2)">Municipio <input type="text" onkeyup="filterTable(2)"></th>
-                    <th onclick="sortTable(3)">Fecha de Publicación <input type="text" onkeyup="filterTable(3)"></th>
-                    <th onclick="sortTable(4)">Sueldo <input type="text" onkeyup="filterTable(4)"></th>
-                    <th onclick="sortTable(5)">Tipo de Viaje <input type="text" onkeyup="filterTable(5)"></th>
-                    <th onclick="sortTable(6)">Descripción de Ruta <input type="text" onkeyup="filterTable(6)"></th>
-                    <th onclick="sortTable(7)">Tipo de Vehículo y Remolque <input type="text" onkeyup="filterTable(7)"></th>
-                    <th onclick="sortTable(8)">Requisitos <input type="text" onkeyup="filterTable(8)"></th>
-                    <th onclick="sortTable(9)">Prestaciones <input type="text" onkeyup="filterTable(9)"></th>
-                    <th onclick="sortTable(10)">Contacto <input type="text" onkeyup="filterTable(10)"></th>
+                    <th onclick="sortTable(1)">Estado de Partida <input type="text" onkeyup="filterTable(1)"></th>
+                    <th onclick="sortTable(2)">Municipio de Partida <input type="text" onkeyup="filterTable(2)"></th>
+                    <th onclick="sortTable(3)">Estado de Destino <input type="text" onkeyup="filterTable(3)"></th>
+                    <th onclick="sortTable(4)">Municipio de Destino <input type="text" onkeyup="filterTable(4)"></th>
+                    <th onclick="sortTable(5)">Fecha de Publicación <input type="text" onkeyup="filterTable(5)"></th>
+                    <th onclick="sortTable(6)">Tipo de Viaje <input type="text" onkeyup="filterTable(6)"></th>
+                    <th onclick="sortTable(7)">Kilometraje Aproximado <input type="text" onkeyup="filterTable(7)"></th>
+                    <th onclick="sortTable(8)">Tipo de Vehículo Solicitado <input type="text" onkeyup="filterTable(8)"></th>
+                    <th onclick="sortTable(9)">Descripción <input type="text" onkeyup="filterTable(9)"></th>
+                    <th onclick="sortTable(10)">Pago Ofrecido <input type="text" onkeyup="filterTable(10)"></th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php while($row = $result->fetch_assoc()): ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($row['vigente'] == '1' ? 'Sí' : 'No'); ?></td>
-                        <td><?php echo htmlspecialchars($row['estado']); ?></td>
-                        <td><?php echo htmlspecialchars($row['municipio']); ?></td>
+                        <td><?php echo htmlspecialchars($row['vigencia'] == '1' ? 'Sí' : 'No'); ?></td>
+                        <td><?php echo htmlspecialchars($row['estado_partida']); ?></td>
+                        <td><?php echo htmlspecialchars($row['municipio_partida']); ?></td>
+                        <td><?php echo htmlspecialchars($row['estado_destino']); ?></td>
+                        <td><?php echo htmlspecialchars($row['municipio_destino']); ?></td>
                         <td><?php echo htmlspecialchars($row['fecha_publicacion']); ?></td>
-                        <td><?php echo htmlspecialchars($row['sueldo']); ?></td>
                         <td><?php echo htmlspecialchars($row['tipo_viaje']); ?></td>
-                        <td><?php echo htmlspecialchars($row['descripcion_ruta']); ?></td>
-                        <td><?php echo htmlspecialchars($row['tipo_vehiculo_remolque']); ?></td>
-                        <td><?php echo htmlspecialchars($row['requisitos']); ?></td>
-                        <td><?php echo htmlspecialchars($row['prestaciones']); ?></td>
-                        <td><?php echo htmlspecialchars($row['contacto']); ?></td>
+                        <td><?php echo htmlspecialchars($row['kilometraje_aproximado']); ?></td>
+                        <td><?php echo htmlspecialchars($row['tipo_vehiculo_solicitado']); ?></td>
+                        <td><?php echo htmlspecialchars($row['descripcion']); ?></td>
+                        <td><?php echo htmlspecialchars($row['pago_ofrecido']); ?></td>
                         <td>
                             <button onclick="editRecord(<?php echo $row['id']; ?>)">Editar</button>
                             <form method="post" style="display:inline;">
                                 <input type="hidden" name="action" value="eliminar">
                                 <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
-                                <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar esta vacante?');">Eliminar</button>
+                                <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar este flete?');">Eliminar</button>
                             </form>
                         </td>
                     </tr>
@@ -400,7 +376,7 @@ $result = $stmt->get_result();
         // Función para editar un registro
         function editRecord(id) {
             // Redirigir a la página de edición con el ID del registro
-            window.location.href = 'editar_oferta.php?id=' + id;
+            window.location.href = 'editar_flete.php?id=' + id;
         }
     </script>
 </body>
