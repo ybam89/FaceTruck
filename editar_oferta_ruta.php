@@ -47,7 +47,7 @@ $oferta = $result->fetch_assoc();
 // Procesar el formulario de edición de oferta de ruta
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'editar') {
     // Recibir y validar los datos del formulario
-    $vigente = $_POST['vigente'];
+    $vigente = $_POST['vigente'] == 'Sí' ? 1 : 0;
     $estado = $_POST['estado'];
     $municipio = $_POST['municipio'];
     $fecha_publicacion = $_POST['fecha_publicacion'];
@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     // Actualizar los datos en la tabla ofertas_empresas
     $sql = "UPDATE ofertas_empresas SET vigente = ?, estado = ?, municipio = ?, fecha_publicacion = ?, pago_ofrecido = ?, tipo_viaje = ?, descripcion_ruta = ?, tipo_vehiculo_remolque = ?, requisitos = ?, contacto = ? WHERE id = ? AND usuario_id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssssssssii", $vigente, $estado, $municipio, $fecha_publicacion, $pago_ofrecido, $tipo_viaje, $descripcion_ruta, $tipo_vehiculo_remolque, $requisitos, $contacto, $id, $usuario_id);
+    $stmt->bind_param("issssssssiii", $vigente, $estado, $municipio, $fecha_publicacion, $pago_ofrecido, $tipo_viaje, $descripcion_ruta, $tipo_vehiculo_remolque, $requisitos, $contacto, $id, $usuario_id);
 
     if ($stmt->execute()) {
         header("Location: publicar_oferta_ruta.php");
@@ -160,8 +160,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             <input type="hidden" name="action" value="editar">
             <label for="vigente">Vigente:</label>
             <select id="vigente" name="vigente">
-                <option value="Sí" <?php echo $oferta['vigente'] == 'Sí' ? 'selected' : ''; ?>>Sí</option>
-                <option value="No" <?php echo $oferta['vigente'] == 'No' ? 'selected' : ''; ?>>No</option>
+                <option value="Sí" <?php echo $oferta['vigente'] == 1 ? 'selected' : ''; ?>>Sí</option>
+                <option value="No" <?php echo $oferta['vigente'] == 0 ? 'selected' : ''; ?>>No</option>
             </select>
 
             <label for="estado">Estado:</label>

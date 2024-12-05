@@ -102,6 +102,7 @@ switch ($tipo_usuario) {
                     <li><a href="ofertas_empresas.php">Ofertas de empresas</a></li>
                     <li><a href="buscar_operadores.php">Buscar operadores</a></li>
                     <li><a href="buscar_fletes.php">Buscar fletes eventuales</a></li>
+                    <li><a href="publicar_vacante.php">Publicar y consultar mis vacantes "operador"</a></li>
                  </ul>';
         break;
     case 'empresa':
