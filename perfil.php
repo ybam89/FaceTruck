@@ -109,9 +109,9 @@ switch ($tipo_usuario) {
                     <li><a href="buscar_operadores.php">Buscar operadores</a></li>
                     <li><a href="buscar_hombres_camion.php">Buscar Hombres camión</a></li>
                     <li><a href="buscar_ofertas_rutas.php">Buscar ofertas de rutas</a></li>
-                    <li><a href="publicar_vacante.php">Publicar y consulta vacante operador</a></li>
-                    <li><a href="publicar_flete.php">Publicar Flete eventual</a></li>
-                    <li><a href="publicar_oferta_ruta.php">Publicar oferta de ruta</a></li>
+                    <li><a href="publicar_vacante.php">Publicar y consultar mis vacantes "operador"</a></li>
+                    <li><a href="publicar_flete.php">Publicar y consultar mis Fletes eventuales</a></li>
+                    <li><a href="publicar_oferta_ruta.php">Publicar y consultar oferta de ruta</a></li>
                  </ul>';
         break;
 $conn->close(); // Cierra la conexión a la base de datos
@@ -318,9 +318,6 @@ $conn->close(); // Cierra la conexión a la base de datos
                 
                 <label for="pregunta_tres">Pregunta tres empresas</label>
                 <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $row['pregunta_tres_empresas']; ?>" readonly>
-                <div class="edit-button">
-                    <button onclick="location.href='publicar_vacante.php'" class="button">Publicar bacante deoperador</button>
-                </div>
             </div>
         <?php endif; ?>
 

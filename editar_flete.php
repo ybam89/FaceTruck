@@ -39,47 +39,47 @@ if ($tipo_usuario == 'empresa') {
     exit;
 }
 
-// Obtener el ID de la oferta de empleo desde la URL
-$oferta_id = $_GET['id'];
+// Obtener el ID del flete desde la URL
+$flete_id = $_GET['id'];
 
-// Obtener los datos de la oferta de empleo
-$sql_oferta = "SELECT * FROM ofertas_empleo WHERE id = ? AND usuario_id = ?";
-$stmt_oferta = $conn->prepare($sql_oferta);
-$stmt_oferta->bind_param("ii", $oferta_id, $usuario_id);
-$stmt_oferta->execute();
-$result_oferta = $stmt_oferta->get_result();
+// Obtener los datos del flete
+$sql_flete = "SELECT * FROM buscar_fletes WHERE id = ? AND usuario_id = ?";
+$stmt_flete = $conn->prepare($sql_flete);
+$stmt_flete->bind_param("ii", $flete_id, $usuario_id);
+$stmt_flete->execute();
+$result_flete = $stmt_flete->get_result();
 
-if ($result_oferta->num_rows > 0) {
-    $row_oferta = $result_oferta->fetch_assoc(); // Obtener los datos de la oferta de empleo
+if ($result_flete->num_rows > 0) {
+    $row_flete = $result_flete->fetch_assoc(); // Obtener los datos del flete
 } else {
-    echo "Error: Oferta de empleo no encontrada.";
+    echo "Error: Flete no encontrado.";
     exit;
 }
 
-$stmt_oferta->close();
+$stmt_flete->close();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recibir y validar los datos del formulario
-    $vigente = $_POST['vigente'];
-    $estado = $_POST['estado'];
-    $municipio = $_POST['municipio'];
+    $vigencia = $_POST['vigencia'];
+    $estado_partida = $_POST['estado_partida'];
+    $municipio_partida = $_POST['municipio_partida'];
+    $estado_destino = $_POST['estado_destino'];
+    $municipio_destino = $_POST['municipio_destino'];
     $fecha_publicacion = $_POST['fecha_publicacion'];
-    $sueldo = $_POST['sueldo'];
     $tipo_viaje = $_POST['tipo_viaje'];
-    $descripcion_ruta = $_POST['descripcion_ruta'];
-    $tipo_vehiculo_remolque = $_POST['tipo_vehiculo_remolque'];
-    $requisitos = $_POST['requisitos'];
-    $prestaciones = $_POST['prestaciones'];
-    $contacto = $_POST['contacto'];
+    $kilometraje_aproximado = $_POST['kilometraje_aproximado'];
+    $tipo_vehiculo_solicitado = $_POST['tipo_vehiculo_solicitado'];
+    $descripcion = $_POST['descripcion'];
+    $pago_ofrecido = $_POST['pago_ofrecido'];
 
-    // Actualizar los datos de la oferta de empleo
-    $sql_update = "UPDATE ofertas_empleo SET vigente = ?, estado = ?, municipio = ?, fecha_publicacion = ?, sueldo = ?, tipo_viaje = ?, descripcion_ruta = ?, tipo_vehiculo_remolque = ?, requisitos = ?, prestaciones = ?, contacto = ? WHERE id = ? AND usuario_id = ?";
+    // Actualizar los datos del flete
+    $sql_update = "UPDATE buscar_fletes SET vigencia = ?, estado_partida = ?, municipio_partida = ?, estado_destino = ?, municipio_destino = ?, fecha_publicacion = ?, tipo_viaje = ?, kilometraje_aproximado = ?, tipo_vehiculo_solicitado = ?, descripcion = ?, pago_ofrecido = ? WHERE id = ? AND usuario_id = ?";
     $stmt_update = $conn->prepare($sql_update);
-    $stmt_update->bind_param("sssssssssssii", $vigente, $estado, $municipio, $fecha_publicacion, $sueldo, $tipo_viaje, $descripcion_ruta, $tipo_vehiculo_remolque, $requisitos, $prestaciones, $contacto, $oferta_id, $usuario_id);
+    $stmt_update->bind_param("sssssssssssii", $vigencia, $estado_partida, $municipio_partida, $estado_destino, $municipio_destino, $fecha_publicacion, $tipo_viaje, $kilometraje_aproximado, $tipo_vehiculo_solicitado, $descripcion, $pago_ofrecido, $flete_id, $usuario_id);
 
     // Ejecutar la actualización y verificar si se ha completado correctamente
     if ($stmt_update->execute()) {
-        header("Location: publicar_vacante.php"); // Redirigir a perfil.php después de guardar los cambios
+        header("Location: publicar_flete.php"); // Redirigir a publicar_flete.php después de guardar los cambios
         exit;
     } else {
         echo "Error: " . $stmt_update->error;
@@ -95,7 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Oferta - FaceTruck</title>
+    <title>Editar Flete - FaceTruck</title>
     <style>
         /* Estilos CSS */
         body {
@@ -210,51 +210,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
         <a href="logout.php" class="logout-button">Cerrar sesión</a>
-        <h2>Editar Oferta de Empleo</h2>
+        <h2>Editar Flete</h2>
         <form method="post" class="form-container">
-            <label for="vigente">Vigente:</label>
-            <select id="vigente" name="vigente">
-                <option value="1" <?php if ($row_oferta['vigente'] == 'Sí') echo 'selected'; ?>>Sí</option>
-                <option value="0" <?php if ($row_oferta['vigente'] == 'No') echo 'selected'; ?>>No</option>
+            <label for="vigencia">Vigente:</label>
+            <select id="vigencia" name="vigencia">
+                <option value="1" <?php if ($row_flete['vigencia'] == '1') echo 'selected'; ?>>Sí</option>
+                <option value="0" <?php if ($row_flete['vigencia'] == '0') echo 'selected'; ?>>No</option>
             </select>
 
-            <label for="estado">Estado:</label>
-            <input type="text" id="estado" name="estado" value="<?php echo $row_oferta['estado']; ?>" required>
+            <label for="estado_partida">Estado de Partida:</label>
+            <input type="text" id="estado_partida" name="estado_partida" value="<?php echo $row_flete['estado_partida']; ?>" required>
 
-            <label for="municipio">Municipio:</label>
-            <input type="text" id="municipio" name="municipio" value="<?php echo $row_oferta['municipio']; ?>" required>
+            <label for="municipio_partida">Municipio de Partida:</label>
+            <input type="text" id="municipio_partida" name="municipio_partida" value="<?php echo $row_flete['municipio_partida']; ?>" required>
 
-            <label for="fecha_publicacion">Fecha de publicación:</label>
-            <input type="date" id="fecha_publicacion" name="fecha_publicacion" value="<?php echo $row_oferta['fecha_publicacion']; ?>" required>
+            <label for="estado_destino">Estado de Destino:</label>
+            <input type="text" id="estado_destino" name="estado_destino" value="<?php echo $row_flete['estado_destino']; ?>" required>
 
-            <label for="sueldo">Sueldo:</label>
-            <input type="text" id="sueldo" name="sueldo" value="<?php echo $row_oferta['sueldo']; ?>" required>
+            <label for="municipio_destino">Municipio de Destino:</label>
+            <input type="text" id="municipio_destino" name="municipio_destino" value="<?php echo $row_flete['municipio_destino']; ?>" required>
 
-            <label for="tipo_viaje">Tipo de viaje:</label>
+            <label for="fecha_publicacion">Fecha de Publicación:</label>
+            <input type="date" id="fecha_publicacion" name="fecha_publicacion" value="<?php echo $row_flete['fecha_publicacion']; ?>" required>
+
+            <label for="tipo_viaje">Tipo de Viaje:</label>
             <select id="tipo_viaje" name="tipo_viaje">
-                <option value="Foráneo" <?php if ($row_oferta['tipo_viaje'] == 'Foráneo') echo 'selected'; ?>>Foráneo</option>
-                <option value="Local" <?php if ($row_oferta['tipo_viaje'] == 'Local') echo 'selected'; ?>>Local</option>
+                <option value="Local" <?php if ($row_flete['tipo_viaje'] == 'Local') echo 'selected'; ?>>Local</option>
+                <option value="Foráneo" <?php if ($row_flete['tipo_viaje'] == 'Foráneo') echo 'selected'; ?>>Foráneo</option>
             </select>
 
-            <label for="descripcion_ruta">Descripción de ruta:</label>
-            <textarea id="descripcion_ruta" name="descripcion_ruta" rows="4" required><?php echo $row_oferta['descripcion_ruta']; ?></textarea>
+            <label for="kilometraje_aproximado">Kilometraje Aproximado:</label>
+            <input type="text" id="kilometraje_aproximado" name="kilometraje_aproximado" value="<?php echo $row_flete['kilometraje_aproximado']; ?>" required>
 
-            <label for="tipo_vehiculo_remolque">Tipo de vehículo y remolque (si aplica):</label>
-            <input type="text" id="tipo_vehiculo_remolque" name="tipo_vehiculo_remolque" value="<?php echo $row_oferta['tipo_vehiculo_remolque']; ?>">
+            <label for="tipo_vehiculo_solicitado">Tipo de Vehículo Solicitado:</label>
+            <input type="text" id="tipo_vehiculo_solicitado" name="tipo_vehiculo_solicitado" value="<?php echo $row_flete['tipo_vehiculo_solicitado']; ?>">
 
-            <label for="requisitos">Requisitos:</label>
-            <textarea id="requisitos" name="requisitos" rows="4" required><?php echo $row_oferta['requisitos']; ?></textarea>
+            <label for="descripcion">Descripción:</label>
+            <textarea id="descripcion" name="descripcion" rows="4" required><?php echo $row_flete['descripcion']; ?></textarea>
 
-            <label for="prestaciones">Prestaciones:</label>
-            <textarea id="prestaciones" name="prestaciones" rows="4" required><?php echo $row_oferta['prestaciones']; ?></textarea>
-
-            <label for="contacto">Contacto:</label>
-            <input type="text" id="contacto" name="contacto" value="<?php echo $row_oferta['contacto']; ?>" required>
+            <label for="pago_ofrecido">Pago Ofrecido:</label>
+            <input type="text" id="pago_ofrecido" name="pago_ofrecido" value="<?php echo $row_flete['pago_ofrecido']; ?>" required>
 
             <button type="submit" class="button">Guardar cambios</button>
         </form>
         <div class="edit-button">
-            <button onclick="location.href='publicar_vacante.php'" class="button">Regresar</button>
+            <button onclick="location.href='publicar_flete.php'" class="button">Regresar</button>
         </div>
     </div>
 </body>

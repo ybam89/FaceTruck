@@ -30,9 +30,9 @@ if ($tipo_usuario == 'empresa') {
                 <li><a href="buscar_operadores.php">Buscar operadores</a></li>
                 <li><a href="buscar_hombres_camion.php">Buscar Hombres camión</a></li>
                 <li><a href="buscar_ofertas_rutas.php">Buscar ofertas de rutas</a></li>
-                <li><a href="publicar_vacante.php">Publicar vacante operador</a></li>
-                <li><a href="publicar_flete.php">Publicar Flete eventual</a></li>
-                <li><a href="publicar_oferta_ruta.php">Publicar oferta de ruta</a></li>
+                <li><a href="publicar_vacante.php">Publicar y consultar mis vacantes "operador"</a></li>
+                <li><a href="publicar_flete.php">Publicar y consultar mis Fletes eventuales</a></li>
+                <li><a href="publicar_oferta_ruta.php">Publicar y consultar oferta de ruta</a></li>
              </ul>';
 } else {
     echo "Error: Acceso no autorizado.";
@@ -42,17 +42,23 @@ if ($tipo_usuario == 'empresa') {
 // Procesar el formulario de publicación de flete
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'publicar') {
     // Validar y recibir los datos del formulario
-    $vigencia = isset($_POST['vigencia']) ? $_POST['vigencia'] : null;
-    $estado_partida = isset($_POST['estado_partida']) ? $_POST['estado_partida'] : null;
-    $municipio_partida = isset($_POST['municipio_partida']) ? $_POST['municipio_partida'] : null;
-    $estado_destino = isset($_POST['estado_destino']) ? $_POST['estado_destino'] : null;
-    $municipio_destino = isset($_POST['municipio_destino']) ? $_POST['municipio_destino'] : null;
-    $fecha_publicacion = isset($_POST['fecha_publicacion']) ? $_POST['fecha_publicacion'] : null;
-    $tipo_viaje = isset($_POST['tipo_viaje']) ? $_POST['tipo_viaje'] : null;
-    $kilometraje_aproximado = isset($_POST['kilometraje_aproximado']) ? $_POST['kilometraje_aproximado'] : null;
-    $tipo_vehiculo_solicitado = isset($_POST['tipo_vehiculo_solicitado']) ? $_POST['tipo_vehiculo_solicitado'] : null;
-    $descripcion = isset($_POST['descripcion']) ? $_POST['descripcion'] : null;
-    $pago_ofrecido = isset($_POST['pago_ofrecido']) ? $_POST['pago_ofrecido'] : null;
+    $vigencia = isset($_POST['vigencia']) ? $_POST['vigencia'] : '';
+    $estado_partida = isset($_POST['estado_partida']) ? $_POST['estado_partida'] : '';
+    $municipio_partida = isset($_POST['municipio_partida']) ? $_POST['municipio_partida'] : '';
+    $estado_destino = isset($_POST['estado_destino']) ? $_POST['estado_destino'] : '';
+    $municipio_destino = isset($_POST['municipio_destino']) ? $_POST['municipio_destino'] : '';
+    $fecha_publicacion = isset($_POST['fecha_publicacion']) ? $_POST['fecha_publicacion'] : '';
+    $tipo_viaje = isset($_POST['tipo_viaje']) ? $_POST['tipo_viaje'] : '';
+    $kilometraje_aproximado = isset($_POST['kilometraje_aproximado']) ? $_POST['kilometraje_aproximado'] : '';
+    $tipo_vehiculo_solicitado = isset($_POST['tipo_vehiculo_solicitado']) ? $_POST['tipo_vehiculo_solicitado'] : '';
+    $descripcion = isset($_POST['descripcion']) ? $_POST['descripcion'] : '';
+    $pago_ofrecido = isset($_POST['pago_ofrecido']) ? $_POST['pago_ofrecido'] : '';
+
+    // Verifica que no falten valores obligatorios
+    if (empty($vigencia) || empty($estado_partida) || empty($municipio_partida) || empty($estado_destino) || empty($municipio_destino) || empty($fecha_publicacion) || empty($tipo_viaje) || empty($kilometraje_aproximado) || empty($tipo_vehiculo_solicitado) || empty($descripcion) || empty($pago_ofrecido)) {
+        echo "Error: Todos los campos son obligatorios.";
+        exit;
+    }
 
     // Insertar los datos en la tabla buscar_fletes
     $sql = "INSERT INTO buscar_fletes (vigencia, estado_partida, municipio_partida, estado_destino, municipio_destino, fecha_publicacion, tipo_viaje, kilometraje_aproximado, tipo_vehiculo_solicitado, descripcion, pago_ofrecido, usuario_id)
