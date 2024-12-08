@@ -23,6 +23,12 @@ if (!isset($_SESSION['usuario_id']) || !isset($_SESSION['tipo_usuario'])) {
 $usuario_id = $_SESSION['usuario_id'];
 $tipo_usuario = $_SESSION['tipo_usuario'];
 
+// Verificar el tipo de usuario
+if ($tipo_usuario !== 'hombreCamion' && $tipo_usuario !== 'empresa') {
+    echo "Error: Acceso no autorizado.";
+    exit;
+}
+
 // Menús según el tipo de usuario
 $menu = '';
 if ($tipo_usuario == 'empresa') {
@@ -35,8 +41,9 @@ if ($tipo_usuario == 'empresa') {
                 <li><a href="publicar_oferta_ruta.php">Publicar y consultar oferta de ruta</a></li>
              </ul>';
 } else {
-    echo "Error: Acceso no autorizado.";
-    exit;
+    $menu = '<ul>
+                <li><a href="publicar_vacante.php">Publicar y consultar mis vacantes "operador"</a></li>
+             </ul>';
 }
 
 // Procesar el formulario de publicación de vacante
