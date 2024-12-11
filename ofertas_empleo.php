@@ -165,6 +165,9 @@ $result = $conn->query($sql);
                         <td><?php echo htmlspecialchars($row['prestaciones']); ?></td>
                         <td><?php echo htmlspecialchars($row['contacto']); ?></td>
                         <td><?php echo htmlspecialchars($row['correo']); ?></td>
+                        <td>
+                            <a href="detalles_oferta_op.php?id=<?php echo $row['id']; ?>" class="button">Ver detalles</a>
+                        </td>
                     </tr>
                 <?php endwhile; ?>
             </tbody>
