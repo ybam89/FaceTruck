@@ -20,6 +20,35 @@ if (!isset($_SESSION['usuario_id']) || !isset($_SESSION['tipo_usuario'])) {
     echo "Error: No se ha iniciado sesión correctamente.";
     exit;
 }
+
+<?php
+// Incluir al inicio del archivo, después de la conexión a la base de datos y la obtención del usuario
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['contenido'])) {
+    $contenido = $_POST['contenido'];
+    $imagen = ''; // Manejar la carga de imágenes aquí si es necesario
+
+    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == UPLOAD_ERR_OK) {
+        $imagen = 'uploads/' . basename($_FILES['imagen']['name']);
+        move_uploaded_file($_FILES['imagen']['tmp_name'], $imagen);
+    }
+
+    $stmt = $conn->prepare("INSERT INTO publicaciones (usuario_id, contenido, imagen) VALUES (?, ?, ?)");
+    $stmt->bind_param("iss", $usuario_id, $contenido, $imagen);
+    $stmt->execute();
+    $stmt->close();
+}
+
+// Fetch publicaciones del usuario
+$publicaciones = [];
+$stmt = $conn->prepare("SELECT * FROM publicaciones WHERE usuario_id = ? ORDER BY fecha_publicacion DESC LIMIT 10");
+$stmt->bind_param("i", $usuario_id);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+    $publicaciones[] = $row;
+}
+$stmt->close();
+?>
 $usuario_id = $_SESSION['usuario_id'];
 $tipo_usuario = $_SESSION['tipo_usuario'];
 
@@ -364,5 +393,47 @@ $conn->close(); // Cierra la conexión a la base de datos
     </style>
 </head>
 <body>
+    <div class="post-section">
+    <form id="post-form" method="post" enctype="multipart/form-data">
+        <textarea name="contenido" placeholder="¿Qué estás pensando?" required></textarea>
+        <input type="file" name="imagen" accept="image/*">
+        <button type="submit" class="button">Publicar</button>
+    </form>
+    <div id="posts">
+        <?php foreach ($publicaciones as $publicacion): ?>
+        <div class="post">
+            <p><?php echo htmlspecialchars($publicacion['contenido']); ?></p>
+            <?php if ($publicacion['imagen']): ?>
+            <img src="<?php echo htmlspecialchars($publicacion['imagen']); ?>" alt="Imagen de publicación">
+            <?php endif; ?>
+            <button class="like-button" data-id="<?php echo $publicacion['id']; ?>">👍 Me gusta (<?php echo $publicacion['likes']; ?>)</button>
+        </div>
+        <?php endforeach; ?>
+    </div>
+</div>
+
+<script>
+document.getElementById('post-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    var formData = new FormData(this);
+    fetch('perfil.php', {
+        method: 'POST',
+        body: formData
+    }).then(response => response.text()).then(data => {
+        document.getElementById('posts').innerHTML = data + document.getElementById('posts').innerHTML;
+        this.reset();
+    });
+});
+
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('like-button')) {
+        var button = event.target;
+        var postId = button.getAttribute('data-id');
+        fetch('like.php?id=' + postId).then(response => response.text()).then(data => {
+            button.innerHTML = '👍 Me gusta (' + data + ')';
+        });
+    }
+});
+</script>
 </body>
 </html>
