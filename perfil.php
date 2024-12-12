@@ -28,14 +28,15 @@ $tipo_usuario = $_SESSION['tipo_usuario'];
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['contenido'])) {
     $contenido = $_POST['contenido'];
     $imagen = ''; // Manejar la carga de imágenes aquí si es necesario
+    $fecha_publicacion = date('Y-m-d H:i:s'); // Fecha y hora actual
 
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == UPLOAD_ERR_OK) {
         $imagen = 'uploads/' . basename($_FILES['imagen']['name']);
         move_uploaded_file($_FILES['imagen']['tmp_name'], $imagen);
     }
 
-    $stmt = $conn->prepare("INSERT INTO publicaciones (usuario_id, contenido, imagen) VALUES (?, ?, ?)");
-    $stmt->bind_param("iss", $usuario_id, $contenido, $imagen);
+    $stmt = $conn->prepare("INSERT INTO publicaciones (usuario_id, contenido, imagen, fecha_publicacion) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("isss", $usuario_id, $contenido, $imagen, $fecha_publicacion);
     $stmt->execute();
     $stmt->close();
 
@@ -542,17 +543,17 @@ $conn->close(); // Cierra la conexión a la base de datos
         <input type="file" name="imagen" accept="image/*">
         <button type="submit" class="button">Publicar</button>
     </form>
-    <div id="posts">
-        <?php foreach ($publicaciones as $publicacion): ?>
-        <div class="post">
-            <p><?php echo htmlspecialchars($publicacion['contenido']); ?></p>
-            <?php if ($publicacion['imagen']): ?>
-            <img src="<?php echo htmlspecialchars($publicacion['imagen']); ?>" alt="Imagen de publicación">
-            <?php endif; ?>
-            <button class="like-button" data-id="<?php echo $publicacion['id']; ?>">👍 Me gusta (<?php echo $publicacion['likes']; ?>)</button>
-        </div>
-        <?php endforeach; ?>
+<div id="posts">
+    <?php foreach ($publicaciones as $publicacion): ?>
+    <div class="post">
+        <p><?php echo htmlspecialchars($publicacion['contenido']); ?></p>
+        <?php if ($publicacion['imagen']): ?>
+        <img src="<?php echo htmlspecialchars($publicacion['imagen']); ?>" alt="Imagen de publicación">
+        <?php endif; ?>
+        <p><?php echo date('d \d\e F \d\e Y, H:i \h\r\s', strtotime($publicacion['fecha_publicacion'])); ?></p>
+        <button class="like-button" data-id="<?php echo $publicacion['id']; ?>">👍 Me gusta (<?php echo $publicacion['likes']; ?>)</button>
     </div>
+    <?php endforeach; ?>
 </div>
 
 <script>
