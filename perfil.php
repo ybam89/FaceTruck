@@ -21,7 +21,9 @@ if (!isset($_SESSION['usuario_id']) || !isset($_SESSION['tipo_usuario'])) {
     exit;
 }
 
-<?php
+$usuario_id = $_SESSION['usuario_id'];
+$tipo_usuario = $_SESSION['tipo_usuario'];
+
 // Incluir al inicio del archivo, después de la conexión a la base de datos y la obtención del usuario
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['contenido'])) {
     $contenido = $_POST['contenido'];
@@ -48,9 +50,6 @@ while ($row = $result->fetch_assoc()) {
     $publicaciones[] = $row;
 }
 $stmt->close();
-?>
-$usuario_id = $_SESSION['usuario_id'];
-$tipo_usuario = $_SESSION['tipo_usuario'];
 
 // Consulta para obtener la información del usuario según el tipo
 switch ($tipo_usuario) {
@@ -113,8 +112,6 @@ if ($tipo_usuario == 'empresa') {
     }
 }
 
-
-
 // Establecer la imagen de perfil predeterminada si no hay una imagen de perfil
 $foto_perfil = $foto_perfil ?? 'img/camion.jpg'; // Usa un valor predeterminado si no está definido
 
@@ -144,8 +141,8 @@ switch ($tipo_usuario) {
                     <li><a href="publicar_oferta_ruta.php">Publicar y consultar oferta de ruta</a></li>
                  </ul>';
         break;
-$conn->close(); // Cierra la conexión a la base de datos
 }
+$conn->close(); // Cierra la conexión a la base de datos
 ?>
 
 <!DOCTYPE html>
@@ -234,7 +231,7 @@ $conn->close(); // Cierra la conexión a la base de datos
             display: block; /* Muestra la imagen como un bloque */
             margin: auto; /* Centra la imagen horizontalmente */
             width: 150px; /* Establece el ancho de la imagen a 150 píxeles */
-            height: 150px; /* Establece la altura de la imagen a 150 píxeles */
+            height: 150 px; /* Establece la altura de la imagen a 150 píxeles */
             border-radius: 50%; /* Hace que la imagen sea circular */
             object-fit: cover; /* Asegura que la imagen cubra el área de visualización sin estirarse */
         }
@@ -254,7 +251,7 @@ $conn->close(); // Cierra la conexión a la base de datos
             cursor: pointer; /* Cambia el cursor a un puntero al pasar sobre la etiqueta */
             text-align: center; /* Alinea el texto al centro de la etiqueta */
             display: inline-block; /* Muestra la etiqueta como un bloque en línea */
-            margin-top: 10px; /* Añade un margen superior de 10 píxeles encima de la etiqueta */
+            margin-top: 10 px; /* Añade un margen superior de 10 píxeles encima de la etiqueta */
         }
         .profile-picture label:hover {
             background-color: #0056b3; /* Cambia el color de fondo de la etiqueta a un azul más oscuro al pasar sobre ella */
@@ -270,26 +267,26 @@ $conn->close(); // Cierra la conexión a la base de datos
         .form-container input[type="text"] {
             width: 100%; /* Establece el ancho del campo de entrada a 100% del contenedor */
             padding: 10px; /* Añade un relleno interno de 10 píxeles alrededor del contenido del campo de entrada */
-            border: 1px solid #ccc; /* Establece un borde de 1 píxel de color gris claro alrededor del campo de entrada */
-            border-radius: 4px; /* Redondea las esquinas del campo de entrada con un radio de 4 píxeles */
+            border: 1 px solid #ccc; /* Establece un borde de 1 píxel de color gris claro alrededor del campo de entrada */
+            border-radius: 4 px; /* Redondea las esquinas del campo de entrada con un radio de 4 píxeles */
         }
         .button {
             background-color: #007BFF; /* Establece el color de fondo del botón a azul */
             color: white; /* Establece el color del texto del botón a blanco */
             padding: 10px 20px; /* Añade un relleno interno de 10 píxeles verticalmente y 20 píxeles horizontalmente */
             border: none; /* Elimina el borde del botón */
-            border-radius: 4px; /* Redondea las esquinas del botón con un radio de 4 píxeles */
+            border-radius: 4 px; /* Redondea las esquinas del botón con un radio de 4 píxeles */
             cursor: pointer; /* Cambia el cursor a un puntero al pasar sobre el botón */
             text-align: center; /* Alinea el texto al centro del botón */
             display: inline-block; /* Muestra el botón como un bloque en línea */
-            margin-top: 10px; /* Añade un margen superior de 10 píxeles encima del botón */
+            margin-top: 10 px; /* Añade un margen superior de 10 píxeles encima del botón */
         }
         .button:hover {
             background-color: #0056b3; /* Cambia el color de fondo del botón a un azul más oscuro al pasar sobre él */
         }
         .edit-button {
             text-align: center; /* Alinea el contenido al centro */
-            margin-top: 20px; /* Añade un margen superior de 20 píxeles encima del elemento */
+            margin-top: 20 px; /* Añade un margen superior de 20 píxeles encima del elemento */
         }
     </style>
 </head>
@@ -321,6 +318,7 @@ $conn->close(); // Cierra la conexión a la base de datos
                 
                 <label for="pregunta_dos">Pregunta dos operadores</label>
                 <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $row['pregunta_dos_operadores']; ?>" readonly>
+                
                 
                 <label for="pregunta_tres">Pregunta tres operadores</label>
                 <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $row['pregunta_tres_operadores']; ?>" readonly>
