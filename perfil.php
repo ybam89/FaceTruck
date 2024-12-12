@@ -38,6 +38,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['contenido'])) {
     $stmt->bind_param("iss", $usuario_id, $contenido, $imagen);
     $stmt->execute();
     $stmt->close();
+
+    // Redirigir después de procesar el formulario para evitar duplicaciones
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit;
 }
 
 // Fetch publicaciones del usuario
