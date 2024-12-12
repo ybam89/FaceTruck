@@ -564,7 +564,10 @@ document.getElementById('post-form').addEventListener('submit', function(event) 
         method: 'POST',
         body: formData
     }).then(response => response.text()).then(data => {
-        document.getElementById('posts').innerHTML = data;
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(data, 'text/html');
+        var newPosts = doc.getElementById('posts').innerHTML;
+        document.getElementById('posts').innerHTML = newPosts;
         this.reset();
     });
 });
