@@ -24,6 +24,8 @@ if (!isset($_SESSION['usuario_id']) || !isset($_SESSION['tipo_usuario'])) {
 $usuario_id = $_SESSION['usuario_id'];
 $tipo_usuario = $_SESSION['tipo_usuario'];
 
+date_default_timezone_set('America/Mexico_City');
+
 // Incluir al inicio del archivo, después de la conexión a la base de datos y la obtención del usuario
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['contenido'])) {
     $contenido = $_POST['contenido'];
@@ -544,6 +546,7 @@ $conn->close(); // Cierra la conexión a la base de datos
         <button type="submit" class="button">Publicar</button>
     </form>
 <div id="posts">
+<div id="posts">
     <?php foreach ($publicaciones as $publicacion): ?>
     <div class="post">
         <p><?php echo htmlspecialchars($publicacion['contenido']); ?></p>
@@ -555,7 +558,6 @@ $conn->close(); // Cierra la conexión a la base de datos
     </div>
     <?php endforeach; ?>
 </div>
-
 <script>
 document.getElementById('post-form').addEventListener('submit', function(event) {
     event.preventDefault();
