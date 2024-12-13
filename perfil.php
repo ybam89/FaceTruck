@@ -118,7 +118,8 @@ if ($tipo_usuario == 'empresa') {
         }
     }
 }
-$conn->close();
+
+$conn->close(); // Mueve esta línea aquí para cerrar la conexión después de obtener las ofertas de trabajo
 // Establecer la imagen de perfil predeterminada si no hay una imagen de perfil
 $foto_perfil = $foto_perfil ?? 'img/camion.jpg'; // Usa un valor predeterminado si no está definido
 
@@ -158,7 +159,7 @@ switch ($tipo_usuario) {
                 </ul>';
         break;
 }
-$conn->close(); // Cierra la conexión a la base de datos
+
 ?>
 
 <!DOCTYPE html>
