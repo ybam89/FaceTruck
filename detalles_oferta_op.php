@@ -37,6 +37,17 @@ if ($result_oferta->num_rows == 0) {
 }
 
 $oferta = $result_oferta->fetch_assoc();
+$usuario_id = $oferta['usuario_id'];
+$usuario_id_actual = $_SESSION['usuario_id'];
+
+// Verificar si el usuario actual sigue al usuario del perfil
+$stmt = $conn->prepare("SELECT COUNT(*) as count FROM seguidores WHERE seguidor_id = ? AND seguido_id = ?");
+$stmt->bind_param("ii", $usuario_id_actual, $usuario_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+$siguiendo = $row['count'] > 0;
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -146,11 +157,36 @@ $oferta = $result_oferta->fetch_assoc();
         <h2>Detalles del Usuario</h2>
         <ul>
             <li><strong>Nombre:</strong> <?php echo htmlspecialchars($oferta['nombre']); ?></li>
-            <li><strong>Correo:</strong> <?php echo htmlspecialchars($oferta['correo']); ?></li>
+            <li><strong>Correo:</strong> <a href="ver_perfil.php?correo=<?php echo urlencode($oferta['correo']); ?>"><?php echo htmlspecialchars($oferta['correo']); ?></a></li>
             <li><strong>Teléfono:</strong> <?php echo htmlspecialchars($oferta['telefono']); ?></li>
             <li><strong>Tipo de Usuario:</strong> <?php echo htmlspecialchars($oferta['tipo_usuario']); ?></li>
         </ul>
+        <button id="follow-button" class="button" data-seguidor-id="<?php echo $usuario_id_actual; ?>" data-seguido-id="<?php echo $usuario_id; ?>">
+            <?php echo $siguiendo ? 'Dejar de seguir' : 'Seguir'; ?>
+        </button>
     </div>
+    <script>
+        document.getElementById('follow-button').addEventListener('click', function() {
+            var button = this;
+            var seguidorId = button.getAttribute('data-seguidor-id');
+            var seguidoId = button.getAttribute('data-seguido-id');
+            var action = button.innerText === 'Seguir' ? 'seguir' : 'dejar_de_seguir';
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    if (xhr.responseText === 'ok') {
+                        button.innerText = action === 'seguir' ? 'Dejar de seguir' : 'Seguir';
+                    } else {
+                        alert('Error al realizar la acción. Inténtalo de nuevo.');
+                    }
+                }
+            };
+            xhr.send('action=' + action + '&seguidor_id=' + encodeURIComponent(seguidorId) + '&seguido_id=' + encodeURIComponent(seguidoId));
+        });
+    </script>
 </body>
 </html>
 
