@@ -48,6 +48,61 @@ $result = $stmt->get_result();
 $row = $result->fetch_assoc();
 $siguiendo = $row['count'] > 0;
 $stmt->close();
+
+// Generar el menú basado en el tipo de usuario
+switch ($tipo_usuario) {
+    case 'operador':
+        $menu = '<ul>
+                    <li><a href="inicio_facetruck.php">Inicio FaceTruck</a></li>
+                    <li><a href="ofertas_empleo.php">Ofertas de empleo</a></li>
+                    <li><a href="universo_facetruck.php">Universo FaceTruck</a></li>
+                 </ul>';
+        break;
+    case 'hombreCamion':
+        $menu = '<ul>
+                    <li><a href="inicio_facetruck.php">Inicio FaceTruck</a></li>
+                    <li><a href="universo_facetruck.php">Universo FaceTruck</a></li>
+                    <li><a href="ofertas_empresas.php">Ofertas de empresas</a></li>
+                    <li><a href="buscar_operadores.php">Buscar operadores</a></li>
+                    <li><a href="buscar_fletes.php">Buscar fletes eventuales</a></li>
+                    <li><a href="publicar_vacante.php">Publicar y consultar mis vacantes "operador"</a></li>
+                 </ul>';
+        break;
+    case 'empresa':
+        $menu = '<ul>
+                    <li><a href="inicio_facetruck.php">Inicio FaceTruck</a></li>
+                    <li><a href="universo_facetruck.php">Universo FaceTruck</a></li>
+                    <li><a href="buscar_operadores.php">Buscar operadores</a></li>
+                    <li><a href="buscar_hombres_camion.php">Buscar Hombres camión</a></li>
+                    <li><a href="buscar_ofertas_rutas.php">Buscar ofertas de rutas</a></li>
+                    <li><a href="publicar_vacante.php">Publicar y consultar mis vacantes "operador"</a></li>
+                    <li><a href="publicar_flete.php">Publicar y consultar mis Fletes eventuales</a></li>
+                    <li><a href="publicar_oferta_ruta.php">Publicar y consultar oferta de ruta</a></li>
+                </ul>';
+        break;
+
+// Manejar la solicitud AJAX de seguir/dejar de seguir
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['action']) && isset($_POST['seguidor_id']) && isset($_POST['seguido_id'])) {
+        $seguidor_id = $_POST['seguidor_id'];
+        $seguido_id = $_POST['seguido_id'];
+        if ($_POST['action'] === 'seguir') {
+            $stmt = $conn->prepare("INSERT INTO seguidores (seguidor_id, seguido_id) VALUES (?, ?)");
+            $stmt->bind_param("ii", $seguidor_id, $seguido_id);
+            $stmt->execute();
+            $stmt->close();
+            echo "ok";
+        } elseif ($_POST['action'] === 'dejar_de_seguir') {
+            $stmt = $conn->prepare("DELETE FROM seguidores WHERE seguidor_id = ? AND seguido_id = ?");
+            $stmt->bind_param("ii", $seguidor_id, $seguido_id);
+            $stmt->execute();
+            $stmt->close();
+            echo "ok";
+        }
+        $conn->close();
+        exit;
+    }
+}
 ?>
 
 <!DOCTYPE html>
