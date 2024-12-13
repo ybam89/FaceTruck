@@ -128,6 +128,7 @@ switch ($tipo_usuario) {
     case 'operador':
         $menu = '<ul>
                     <li><a href="ofertas_empleo.php">Ofertas de empleo</a></li>
+                    <li><a href="universo_facetruck.php">Universo FaceTruck</a></li>
                  </ul>';
         break;
     case 'hombreCamion':
@@ -136,6 +137,7 @@ switch ($tipo_usuario) {
                     <li><a href="buscar_operadores.php">Buscar operadores</a></li>
                     <li><a href="buscar_fletes.php">Buscar fletes eventuales</a></li>
                     <li><a href="publicar_vacante.php">Publicar y consultar mis vacantes "operador"</a></li>
+                    <li><a href="universo_facetruck.php">Universo FaceTruck</a></li>
                  </ul>';
         break;
     case 'empresa':
@@ -146,6 +148,7 @@ switch ($tipo_usuario) {
                     <li><a href="publicar_vacante.php">Publicar y consultar mis vacantes "operador"</a></li>
                     <li><a href="publicar_flete.php">Publicar y consultar mis Fletes eventuales</a></li>
                     <li><a href="publicar_oferta_ruta.php">Publicar y consultar oferta de ruta</a></li>
+                    <li><a href="universo_facetruck.php">Universo FaceTruck</a></li>
                  </ul>';
         break;
 }
