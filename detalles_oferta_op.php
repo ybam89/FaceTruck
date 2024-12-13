@@ -80,6 +80,7 @@ switch ($tipo_usuario) {
                     <li><a href="publicar_oferta_ruta.php">Publicar y consultar oferta de ruta</a></li>
                 </ul>';
         break;
+}
 
 // Manejar la solicitud AJAX de seguir/dejar de seguir
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
