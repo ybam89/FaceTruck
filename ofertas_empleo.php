@@ -29,6 +29,39 @@ if ($tipo_usuario !== 'operador') {
     exit;
 }
 
+// Añadir el menú desplegable
+switch ($tipo_usuario) {
+    case 'operador':
+        $menu = '<ul>
+                    <li><a href="inicio_facetruck.php">Inicio FaceTruck</a></li>
+                    <li><a href="ofertas_empleo.php">Ofertas de empleo</a></li>
+                    <li><a href="universo_facetruck.php">Universo FaceTruck</a></li>
+                 </ul>';
+        break;
+    case 'hombreCamion':
+        $menu = '<ul>
+                    <li><a href="inicio_facetruck.php">Inicio FaceTruck</a></li>
+                    <li><a href="universo_facetruck.php">Universo FaceTruck</a></li>
+                    <li><a href="ofertas_empresas.php">Ofertas de empresas</a></li>
+                    <li><a href="buscar_operadores.php">Buscar operadores</a></li>
+                    <li><a href="buscar_fletes.php">Buscar fletes eventuales</a></li>
+                    <li><a href="publicar_vacante.php">Publicar y consultar mis vacantes "operador"</a></li>
+                 </ul>';
+        break;
+    case 'empresa':
+        $menu = '<ul>
+                    <li><a href="inicio_facetruck.php">Inicio FaceTruck</a></li>
+                    <li><a href="universo_facetruck.php">Universo FaceTruck</a></li>
+                    <li><a href="buscar_operadores.php">Buscar operadores</a></li>
+                    <li><a href="buscar_hombres_camion.php">Buscar Hombres camión</a></li>
+                    <li><a href="buscar_ofertas_rutas.php">Buscar ofertas de rutas</a></li>
+                    <li><a href="publicar_vacante.php">Publicar y consultar mis vacantes "operador"</a></li>
+                    <li><a href="publicar_flete.php">Publicar y consultar mis Fletes eventuales</a></li>
+                    <li><a href="publicar_oferta_ruta.php">Publicar y consultar oferta de ruta</a></li>
+                </ul>';
+        break;
+}
+
 // Recuperar los registros de ofertas_empleo hechos por usuarios tipo "hombreCamion" y "empresa" con "vigente" en "1"
 $sql = "SELECT oe.*, u.correo FROM ofertas_empleo oe
         JOIN usuarios u ON oe.usuario_id = u.id
@@ -83,6 +116,38 @@ $result = $conn->query($sql);
         .logout-button:hover {
             background-color: #cc0000;
         }
+        .dropdown-menu {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #007BFF;
+            color: white;
+            padding: 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .dropdown-content {
+            display: none;
+            padding: 2px 2px;
+            position: absolute;
+            background-color: white;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 10px 40px;
+            text-decoration: none;
+            display: block;
+            white-space: nowrap;
+            text-align: left;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+        .dropdown-menu:hover .dropdown-content {
+            display: block;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -131,6 +196,11 @@ $result = $conn->query($sql);
 </head>
 <body>
     <div class="container">
+        <div class="dropdown-menu">Menú
+            <div class="dropdown-content">
+                <?php echo $menu; ?>
+            </div>
+        </div>
         <a href="logout.php" class="logout-button">Cerrar sesión</a>
         <h2>Consultar Ofertas de Empleo</h2>
         <table id="tabla">

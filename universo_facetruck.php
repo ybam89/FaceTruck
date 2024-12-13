@@ -19,6 +19,38 @@ if (!isset($_SESSION['usuario_id']) || !isset($_SESSION['tipo_usuario'])) {
 $usuario_id = $_SESSION['usuario_id'];
 $tipo_usuario = $_SESSION['tipo_usuario'];
 
+switch ($tipo_usuario) {
+    case 'operador':
+        $menu = '<ul>
+                    <li><a href="inicio_facetruck.php">Inicio FaceTruck</a></li>
+                    <li><a href="ofertas_empleo.php">Ofertas de empleo</a></li>
+                    <li><a href="universo_facetruck.php">Universo FaceTruck</a></li>
+                 </ul>';
+        break;
+    case 'hombreCamion':
+        $menu = '<ul>
+                    <li><a href="inicio_facetruck.php">Inicio FaceTruck</a></li>
+                    <li><a href="universo_facetruck.php">Universo FaceTruck</a></li>
+                    <li><a href="ofertas_empresas.php">Ofertas de empresas</a></li>
+                    <li><a href="buscar_operadores.php">Buscar operadores</a></li>
+                    <li><a href="buscar_fletes.php">Buscar fletes eventuales</a></li>
+                    <li><a href="publicar_vacante.php">Publicar y consultar mis vacantes "operador"</a></li>
+                 </ul>';
+        break;
+    case 'empresa':
+        $menu = '<ul>
+                    <li><a href="inicio_facetruck.php">Inicio FaceTruck</a></li>
+                    <li><a href="universo_facetruck.php">Universo FaceTruck</a></li>
+                    <li><a href="buscar_operadores.php">Buscar operadores</a></li>
+                    <li><a href="buscar_hombres_camion.php">Buscar Hombres camión</a></li>
+                    <li><a href="buscar_ofertas_rutas.php">Buscar ofertas de rutas</a></li>
+                    <li><a href="publicar_vacante.php">Publicar y consultar mis vacantes "operador"</a></li>
+                    <li><a href="publicar_flete.php">Publicar y consultar mis Fletes eventuales</a></li>
+                    <li><a href="publicar_oferta_ruta.php">Publicar y consultar oferta de ruta</a></li>
+                </ul>';
+        break;
+}
+
 date_default_timezone_set('America/Mexico_City');
 
 $publicaciones = [];
