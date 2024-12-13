@@ -118,7 +118,7 @@ if ($tipo_usuario == 'empresa') {
         }
     }
 }
-
+$conn->close();
 // Establecer la imagen de perfil predeterminada si no hay una imagen de perfil
 $foto_perfil = $foto_perfil ?? 'img/camion.jpg'; // Usa un valor predeterminado si no está definido
 
