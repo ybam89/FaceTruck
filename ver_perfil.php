@@ -22,6 +22,8 @@ if (!isset($_GET['correo'])) {
 }
 
 $correo = $_GET['correo'];
+$usuario_id_actual = $_SESSION['usuario_id'];
+
 $stmt = $conn->prepare("SELECT * FROM Usuarios WHERE correo = ?");
 $stmt->bind_param("s", $correo);
 $stmt->execute();
@@ -31,7 +33,41 @@ if ($result->num_rows === 0) {
     exit;
 }
 $usuario = $result->fetch_assoc();
+$usuario_id = $usuario['id'];
 $stmt->close();
+
+// Verificar si el usuario actual sigue al usuario del perfil
+$stmt = $conn->prepare("SELECT COUNT(*) as count FROM seguidores WHERE seguidor_id = ? AND seguido_id = ?");
+$stmt->bind_param("ii", $usuario_id_actual, $usuario_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+$siguiendo = $row['count'] > 0;
+$stmt->close();
+
+// Manejar la solicitud AJAX de seguir/dejar de seguir
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['action']) && isset($_POST['seguidor_id']) && isset($_POST['seguido_id'])) {
+        $seguidor_id = $_POST['seguidor_id'];
+        $seguido_id = $_POST['seguido_id'];
+        if ($_POST['action'] === 'seguir') {
+            $stmt = $conn->prepare("INSERT INTO seguidores (seguidor_id, seguido_id) VALUES (?, ?)");
+            $stmt->bind_param("ii", $seguidor_id, $seguido_id);
+            $stmt->execute();
+            $stmt->close();
+            echo "ok";
+        } elseif ($_POST['action'] === 'dejar_de_seguir') {
+            $stmt = $conn->prepare("DELETE FROM seguidores WHERE seguidor_id = ? AND seguido_id = ?");
+            $stmt->bind_param("ii", $seguidor_id, $seguido_id);
+            $stmt->execute();
+            $stmt->close();
+            echo "ok";
+        }
+        $conn->close();
+        exit;
+    }
+}
+
 $conn->close();
 ?>
 
@@ -139,6 +175,31 @@ $conn->close();
             <label for="tipo_usuario">Tipo de Usuario:</label>
             <input type="text" id="tipo_usuario" name="tipo_usuario" value="<?php echo htmlspecialchars($usuario['tipo_usuario']); ?>" readonly>
         </div>
+        <button id="follow-button" class="button" data-seguidor-id="<?php echo $usuario_id_actual; ?>" data-seguido-id="<?php echo $usuario_id; ?>">
+            <?php echo $siguiendo ? 'Dejar de seguir' : 'Seguir'; ?>
+        </button>
     </div>
+    <script>
+        document.getElementById('follow-button').addEventListener('click', function() {
+            var button = this;
+            var seguidorId = button.getAttribute('data-seguidor-id');
+            var seguidoId = button.getAttribute('data-seguido-id');
+            var action = button.innerText === 'Seguir' ? 'seguir' : 'dejar_de_seguir';
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    if (xhr.responseText === 'ok') {
+                        button.innerText = action === 'seguir' ? 'Dejar de seguir' : 'Seguir';
+                    } else {
+                        alert('Error al realizar la acción. Inténtalo de nuevo.');
+                    }
+                }
+            };
+            xhr.send('action=' + action + '&seguidor_id=' + encodeURIComponent(seguidorId) + '&seguido_id=' + encodeURIComponent(seguidoId));
+        });
+    </script>
 </body>
 </html>
