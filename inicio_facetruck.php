@@ -22,6 +22,7 @@ $tipo_usuario = $_SESSION['tipo_usuario'];
 switch ($tipo_usuario) {
     case 'operador':
         $menu = '<ul>
+                    <li><a href="perfil.php">Mi Perfil</a></li>
                     <li><a href="inicio_facetruck.php">Inicio FaceTruck</a></li>
                     <li><a href="ofertas_empleo.php">Ofertas de empleo</a></li>
                     <li><a href="universo_facetruck.php">Universo FaceTruck</a></li>
@@ -29,6 +30,7 @@ switch ($tipo_usuario) {
         break;
     case 'hombreCamion':
         $menu = '<ul>
+                    <li><a href="perfil.php">Mi Perfil</a></li>
                     <li><a href="inicio_facetruck.php">Inicio FaceTruck</a></li>
                     <li><a href="universo_facetruck.php">Universo FaceTruck</a></li>
                     <li><a href="ofertas_empresas.php">Ofertas de empresas</a></li>
@@ -39,6 +41,7 @@ switch ($tipo_usuario) {
         break;
     case 'empresa':
         $menu = '<ul>
+                    <li><a href="perfil.php">Mi Perfil</a></li>
                     <li><a href="inicio_facetruck.php">Inicio FaceTruck</a></li>
                     <li><a href="universo_facetruck.php">Universo FaceTruck</a></li>
                     <li><a href="buscar_operadores.php">Buscar operadores</a></li>

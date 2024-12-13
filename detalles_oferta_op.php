@@ -40,6 +40,9 @@ $oferta = $result_oferta->fetch_assoc();
 $usuario_id = $oferta['usuario_id'];
 $usuario_id_actual = $_SESSION['usuario_id'];
 
+// Obtener el tipo de usuario desde la sesión
+$tipo_usuario = isset($_SESSION['tipo_usuario']) ? $_SESSION['tipo_usuario'] : '';
+
 // Verificar si el usuario actual sigue al usuario del perfil
 $stmt = $conn->prepare("SELECT COUNT(*) as count FROM seguidores WHERE seguidor_id = ? AND seguido_id = ?");
 $stmt->bind_param("ii", $usuario_id_actual, $usuario_id);
@@ -53,6 +56,7 @@ $stmt->close();
 switch ($tipo_usuario) {
     case 'operador':
         $menu = '<ul>
+                    <li><a href="perfil.php">Mi Perfil</a></li>
                     <li><a href="inicio_facetruck.php">Inicio FaceTruck</a></li>
                     <li><a href="ofertas_empleo.php">Ofertas de empleo</a></li>
                     <li><a href="universo_facetruck.php">Universo FaceTruck</a></li>
@@ -60,6 +64,7 @@ switch ($tipo_usuario) {
         break;
     case 'hombreCamion':
         $menu = '<ul>
+                    <li><a href="perfil.php">Mi Perfil</a></li>
                     <li><a href="inicio_facetruck.php">Inicio FaceTruck</a></li>
                     <li><a href="universo_facetruck.php">Universo FaceTruck</a></li>
                     <li><a href="ofertas_empresas.php">Ofertas de empresas</a></li>
@@ -70,6 +75,7 @@ switch ($tipo_usuario) {
         break;
     case 'empresa':
         $menu = '<ul>
+                    <li><a href="perfil.php">Mi Perfil</a></li>
                     <li><a href="inicio_facetruck.php">Inicio FaceTruck</a></li>
                     <li><a href="universo_facetruck.php">Universo FaceTruck</a></li>
                     <li><a href="buscar_operadores.php">Buscar operadores</a></li>
@@ -79,6 +85,11 @@ switch ($tipo_usuario) {
                     <li><a href="publicar_flete.php">Publicar y consultar mis Fletes eventuales</a></li>
                     <li><a href="publicar_oferta_ruta.php">Publicar y consultar oferta de ruta</a></li>
                 </ul>';
+        break;
+    default:
+        $menu = '<ul>
+                    <li><a href="inicio_facetruck.php">Inicio FaceTruck</a></li>
+                 </ul>';
         break;
 }
 
@@ -187,9 +198,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container">
         <div class="dropdown-menu">Menú
             <div class="dropdown-content">
-                <ul>
-                    <li><a href="ofertas_empleo.php">Ofertas de empleo</a></li>
-                </ul>
+                <?php echo $menu; ?>
             </div>
         </div>
         <a href="logout.php" class="logout-button">Cerrar sesión</a>
