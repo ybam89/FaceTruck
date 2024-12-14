@@ -478,33 +478,37 @@ switch ($tipo_usuario) {
         </div>
 
         <!-- Mostrar el formulario según el tipo de usuario -->
-        <?php if ($tipo_usuario == 'operador'): ?>
-            <h2>Formulario para Operadores</h2>
-            <div class="form-container">
-                <label for="pregunta_uno">Pregunta uno operadores</label>
-                <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo $row['pregunta_uno_operadores']; ?>" readonly>
-                
-                <label for="pregunta_dos">Pregunta dos operadores</label>
-                <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $row['pregunta_dos_operadores']; ?>" readonly>
-                
-                <label for="pregunta_tres">Pregunta tres operadores</label>
-                <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $row['pregunta_tres_operadores']; ?>" readonly>
-                
-                <!-- Nueva sección para disponibilidad laboral -->
-                <h3>Disponibilidad para trabajar</h3>
-                <div>
-                    <input type="checkbox" id="oportunidad_trabajo" name="disponibilidad[]" value="En busca de una oportunidad de trabajo">
-                    <label for="oportunidad_trabajo">En busca de una oportunidad de trabajo</label>
-                </div>
-                <div>
-                    <input type="checkbox" id="mejor_oportunidad" name="disponibilidad[]" value="Actualmente laborando, pero buscando una mejor oportunidad">
-                    <label for="mejor_oportunidad">Actualmente laborando, pero buscando una mejor oportunidad</label>
-                </div>
-                <div>
-                    <input type="checkbox" id="desempleado" name="disponibilidad[]" value="Desempleado, en busca de empleo">
-                    <label for="desempleado">Desempleado, en busca de empleo</label>
-                </div>
+<?php if ($tipo_usuario == 'operador'): ?>
+    <h2>Formulario para Operadores</h2>
+    <form method="post">
+        <div class="form-container">
+            <label for="pregunta_uno">Pregunta uno operadores</label>
+            <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo $row['pregunta_uno_operadores']; ?>" readonly>
+            
+            <label for="pregunta_dos">Pregunta dos operadores</label>
+            <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $row['pregunta_dos_operadores']; ?>" readonly>
+            
+            <label for="pregunta_tres">Pregunta tres operadores</label>
+            <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $row['pregunta_tres_operadores']; ?>" readonly>
+            
+            <!-- Nueva sección para disponibilidad laboral -->
+            <h3>Disponibilidad para trabajar</h3>
+            <div>
+                <input type="radio" id="oportunidad_trabajo" name="disponibilidad" value="En busca de una oportunidad de trabajo" <?php echo ($disponibilidad_actual == 'En busca de una oportunidad de trabajo') ? 'checked' : ''; ?>>
+                <label for="oportunidad_trabajo">En busca de una oportunidad de trabajo</label>
             </div>
+            <div>
+                <input type="radio" id="mejor_oportunidad" name="disponibilidad" value="Actualmente laborando, pero buscando una mejor oportunidad" <?php echo ($disponibilidad_actual == 'Actualmente laborando, pero buscando una mejor oportunidad') ? 'checked' : ''; ?>>
+                <label for="mejor_oportunidad">Actualmente laborando, pero buscando una mejor oportunidad</label>
+            </div>
+            <div>
+                <input type="radio" id="desempleado" name="disponibilidad" value="Desempleado, en busca de empleo" <?php echo ($disponibilidad_actual == 'Desempleado, en busca de empleo') ? 'checked' : ''; ?>>
+                <label for="desempleado">Desempleado, en busca de empleo</label>
+            </div>
+        </div>
+        <button type="submit" class="button">Guardar cambios</button>
+    </form>
+<?php endif; ?>
         <?php elseif ($tipo_usuario == 'hombreCamion'): ?>
             <h2>Formulario para Hombres Camión</h2>
             <div class="form-container">
