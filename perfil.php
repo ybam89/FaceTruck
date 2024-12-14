@@ -70,7 +70,7 @@ $stmt->close();
 // Consulta para obtener la información del usuario según el tipo
 switch ($tipo_usuario) {
     case 'operador':
-        $sql = "SELECT pregunta_uno_operadores, pregunta_dos_operadores, pregunta_tres_operadores FROM operadores WHERE usuario_id = ?";
+        $sql = "SELECT pregunta_uno_operadores, pregunta_dos_operadores, pregunta_tres_operadores, disponibilidad FROM operadores WHERE usuario_id = ?";
         break;
     case 'hombreCamion':
         $sql = "SELECT pregunta_uno_hombres_camion, pregunta_dos_hombres_camion, pregunta_tres_hombres_camion FROM hombres_camion WHERE usuario_id = ?";
@@ -91,6 +91,9 @@ $result = $stmt->get_result(); // Obtiene el resultado de la consulta
 // Verificar si se encontró algún resultado
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc(); // Obtener los datos del usuario
+    if ($tipo_usuario == 'operador') {
+        $disponibilidad_actual = $row['disponibilidad'] ?? '';
+    }
 } else {
     echo "No se encontró información del usuario.";
     exit;
@@ -476,7 +479,6 @@ switch ($tipo_usuario) {
             <p><?php echo $correo; ?></p>
             <p><?php echo ucfirst($tipo_usuario); ?></p>
         </div>
-
         <!-- Mostrar el formulario según el tipo de usuario -->
         <?php if ($tipo_usuario == 'operador'): ?>
             <h2>Formulario para Operadores</h2>
