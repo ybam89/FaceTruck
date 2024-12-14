@@ -119,9 +119,6 @@ if ($tipo_usuario == 'empresa') {
     }
 }
 
-// Elimina esta línea
-// $conn->close();
-
 // Establecer la imagen de perfil predeterminada si no hay una imagen de perfil
 $foto_perfil = $foto_perfil ?? 'img/camion.jpg'; // Usa un valor predeterminado si no está definido
 
@@ -163,7 +160,7 @@ switch ($tipo_usuario) {
 }
 
 // Añade esta línea al final
-$conn->close();
+
 ?>
 
 <!DOCTYPE html>
@@ -481,9 +478,23 @@ $conn->close();
                 <label for="pregunta_dos">Pregunta dos operadores</label>
                 <input type="text" id="pregunta_dos" name="pregunta_dos" value="<?php echo $row['pregunta_dos_operadores']; ?>" readonly>
                 
-                
                 <label for="pregunta_tres">Pregunta tres operadores</label>
                 <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $row['pregunta_tres_operadores']; ?>" readonly>
+                
+                <!-- Nueva sección para disponibilidad laboral -->
+                <h3>Disponibilidad para trabajar</h3>
+                <div>
+                    <input type="checkbox" id="oportunidad_trabajo" name="disponibilidad[]" value="En busca de una oportunidad de trabajo">
+                    <label for="oportunidad_trabajo">En busca de una oportunidad de trabajo</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="mejor_oportunidad" name="disponibilidad[]" value="Actualmente laborando, pero buscando una mejor oportunidad">
+                    <label for="mejor_oportunidad">Actualmente laborando, pero buscando una mejor oportunidad</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="desempleado" name="disponibilidad[]" value="Desempleado, en busca de empleo">
+                    <label for="desempleado">Desempleado, en busca de empleo</label>
+                </div>
             </div>
         <?php elseif ($tipo_usuario == 'hombreCamion'): ?>
             <h2>Formulario para Hombres Camión</h2>
@@ -522,7 +533,7 @@ $conn->close();
         if ($tipo_usuario == 'empresa') {
             $sql_ofertas = "SELECT * FROM ofertas_empleo";
             $result_ofertas = $conn->query($sql_ofertas);
-
+            $conn->close();
         }
         ?>
 
