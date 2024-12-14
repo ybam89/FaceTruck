@@ -108,6 +108,7 @@ $stmt_email->bind_param("i", $usuario_id);
 $stmt_email->execute();
 $result_email = $stmt_email->get_result();
 
+// Verificar si se encontró algún resultado para el correo y la foto de perfil
 if ($result_email->num_rows > 0) {
     $row_email = $result_email->fetch_assoc();
     $correo = $row_email['correo'];
@@ -496,22 +497,22 @@ switch ($tipo_usuario) {
                     <!-- Nueva sección para disponibilidad laboral -->
                     <h3>Disponibilidad para trabajar</h3>
                     <div>
-                        <input type="radio" id="oportunidad_trabajo" name="disponibilidad" value="En busca de una oportunidad de trabajo" <?php echo ($disponibilidad_actual == 'En busca de una oportunidad de trabajo') ? 'checked' : ''; ?>>
-                        <label for="oportunidad_trabajo">En busca de una oportunidad de trabajo</label>
+                        <input type="radio" id="desempleado" name="disponibilidad" value="1" <?php echo ($disponibilidad_actual == '1') ? 'checked' : ''; ?>>
+                        <label for="desempleado">Desempleado, en busca de una oportunidad de trabajo</label>
                     </div>
                     <div>
-                        <input type="radio" id="mejor_oportunidad" name="disponibilidad" value="Actualmente laborando, pero buscando una mejor oportunidad" <?php echo ($disponibilidad_actual == 'Actualmente laborando, pero buscando una mejor oportunidad') ? 'checked' : ''; ?>>
+                        <input type="radio" id="mejor_oportunidad" name="disponibilidad" value="2" <?php echo ($disponibilidad_actual == '2') ? 'checked' : ''; ?>>
                         <label for="mejor_oportunidad">Actualmente laborando, pero buscando una mejor oportunidad</label>
                     </div>
                     <div>
-                        <input type="radio" id="desempleado" name="disponibilidad" value="Desempleado, en busca de empleo" <?php echo ($disponibilidad_actual == 'Desempleado, en busca de empleo') ? 'checked' : ''; ?>>
-                        <label for="desempleado">Desempleado, en busca de empleo</label>
+                        <input type="radio" id="laborando" name="disponibilidad" value="3" <?php echo ($disponibilidad_actual == '3') ? 'checked' : ''; ?>>
+                        <label for="laborando">Actualmente laborando</label>
                     </div>
                 </div>
                 <button type="submit" class="button">Guardar cambios</button>
             </form>
         <?php endif; ?>
-        <?php elseif ($tipo_usuario == 'hombreCamion'): ?>
+        <?php if ($tipo_usuario == 'hombreCamion'): ?>
             <h2>Formulario para Hombres Camión</h2>
             <div class="form-container">
                 <label for="pregunta_uno">Pregunta uno hombres camión</label>
