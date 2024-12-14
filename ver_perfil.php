@@ -25,6 +25,28 @@ $correo = $_GET['correo'];
 $usuario_id_actual = $_SESSION['usuario_id'];
 $tipo_usuario = $_SESSION['tipo_usuario'];
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
+    $seguidor_id = $_POST['seguidor_id'];
+    $seguido_id = $_POST['seguido_id'];
+    $action = $_POST['action'];
+
+    if ($action == 'seguir') {
+        $stmt = $conn->prepare("INSERT INTO seguidores (seguidor_id, seguido_id) VALUES (?, ?)");
+        $stmt->bind_param("ii", $seguidor_id, $seguido_id);
+    } else if ($action == 'dejar_de_seguir') {
+        $stmt = $conn->prepare("DELETE FROM seguidores WHERE seguidor_id = ? AND seguido_id = ?");
+        $stmt->bind_param("ii", $seguidor_id, $seguido_id);
+    }
+
+    if ($stmt->execute()) {
+        echo 'ok';
+    } else {
+        echo 'error';
+    }
+    $stmt->close();
+    exit;
+}
+
 $stmt = $conn->prepare("SELECT * FROM Usuarios WHERE correo = ?");
 $stmt->bind_param("s", $correo);
 $stmt->execute();

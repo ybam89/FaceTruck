@@ -45,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['contenido'])) {
     // Redirigir después de procesar el formulario para evitar duplicaciones
     header("Location: " . $_SERVER['PHP_SELF']);
     exit;
+
 }
 
 // Fetch publicaciones del usuario
@@ -160,7 +161,21 @@ switch ($tipo_usuario) {
 }
 
 // Añade esta línea al final
+    if (isset($_POST['disponibilidad'])) {
+        $disponibilidad = $_POST['disponibilidad'];
+        $stmt = $conn->prepare("UPDATE operadores SET disponibilidad = ? WHERE usuario_id = ?");
+        $stmt->bind_param("si", $disponibilidad, $usuario_id);
+        $stmt->execute();
+        $stmt->close();
+    }
 
+    // Redirigir después de procesar el formulario para evitar duplicaciones
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit;
+}
+
+// Obtener la disponibilidad actual del usuario
+$disponibilidad_actual = $row['disponibilidad'];
 ?>
 
 <!DOCTYPE html>
@@ -471,6 +486,7 @@ switch ($tipo_usuario) {
         <!-- Mostrar el formulario según el tipo de usuario -->
         <?php if ($tipo_usuario == 'operador'): ?>
             <h2>Formulario para Operadores</h2>
+            <h2>Formulario para Operadores</h2>
             <div class="form-container">
                 <label for="pregunta_uno">Pregunta uno operadores</label>
                 <input type="text" id="pregunta_uno" name="pregunta_uno" value="<?php echo $row['pregunta_uno_operadores']; ?>" readonly>
@@ -484,15 +500,15 @@ switch ($tipo_usuario) {
                 <!-- Nueva sección para disponibilidad laboral -->
                 <h3>Disponibilidad para trabajar</h3>
                 <div>
-                    <input type="checkbox" id="oportunidad_trabajo" name="disponibilidad[]" value="En busca de una oportunidad de trabajo">
+                    <input type="radio" id="oportunidad_trabajo" name="disponibilidad" value="En busca de una oportunidad de trabajo">
                     <label for="oportunidad_trabajo">En busca de una oportunidad de trabajo</label>
                 </div>
                 <div>
-                    <input type="checkbox" id="mejor_oportunidad" name="disponibilidad[]" value="Actualmente laborando, pero buscando una mejor oportunidad">
+                    <input type="radio" id="mejor_oportunidad" name="disponibilidad" value="Actualmente laborando, pero buscando una mejor oportunidad">
                     <label for="mejor_oportunidad">Actualmente laborando, pero buscando una mejor oportunidad</label>
                 </div>
                 <div>
-                    <input type="checkbox" id="desempleado" name="disponibilidad[]" value="Desempleado, en busca de empleo">
+                    <input type="radio" id="desempleado" name="disponibilidad" value="Desempleado, en busca de empleo">
                     <label for="desempleado">Desempleado, en busca de empleo</label>
                 </div>
             </div>
