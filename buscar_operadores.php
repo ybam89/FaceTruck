@@ -59,10 +59,14 @@ switch ($tipo_usuario) {
         break;
 }
 
-// Recuperar los registros de operadores con disponibilidad 1 y 2
-$sql = "SELECT o.*, u.correo FROM operadores o
+// Recuperar los registros de operadores con disponibilidad 1 y 2, y hombres camión con disponibilidad 1
+$sql = "(SELECT o.*, u.correo, 'operador' as tipo_usuario FROM operadores o
         JOIN usuarios u ON o.usuario_id = u.id
-        WHERE o.disponibilidad IN (1, 2)";
+        WHERE o.disponibilidad IN (1, 2))
+        UNION
+        (SELECT h.*, u.correo, 'hombreCamion' as tipo_usuario FROM hombres_camion h
+        JOIN usuarios u ON h.usuario_id = u.id
+        WHERE h.disponibilidad = 1)";
 $result = $conn->query($sql);
 
 ?>
@@ -206,6 +210,7 @@ $result = $conn->query($sql);
                     <th onclick="sortTable(0)">Nombre <input type="text" onkeyup="filterTable(0)"></th>
                     <th onclick="sortTable(1)">Correo <input type="text" onkeyup="filterTable(1)"></th>
                     <th onclick="sortTable(2)">Disponibilidad <input type="text" onkeyup="filterTable(2)"></th>
+                    <th onclick="sortTable(3)">Tipo de Usuario <input type="text" onkeyup="filterTable(3)"></th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -214,7 +219,8 @@ $result = $conn->query($sql);
                     <tr>
                         <td><?php echo htmlspecialchars($row['nombre']); ?></td>
                         <td><?php echo htmlspecialchars($row['correo']); ?></td>
-                        <td><?php echo htmlspecialchars($row['disponibilidad'] == '1' ? 'En busca de una oportunidad de trabajo' : 'Actualmente laborando, pero buscando una mejor oportunidad'); ?></td>
+                        <td><?php echo htmlspecialchars($row['disponibilidad'] == '1' ? 'Disponible para el trabajo' : 'Actualmente laborando, pero buscando una mejor oportunidad'); ?></td>
+                        <td><?php echo htmlspecialchars($row['tipo_usuario']); ?></td>
                         <td>
                             <a href="ver_perfil.php?id=<?php echo $row['usuario_id']; ?>" class="button">Ver perfil</a>
                         </td>

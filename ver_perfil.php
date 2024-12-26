@@ -59,6 +59,20 @@ $usuario = $result->fetch_assoc();
 $usuario_id = $usuario['id'];
 $stmt->close();
 
+// Obtener la disponibilidad si es un operador
+$disponibilidad = '';
+if ($usuario['tipo_usuario'] == 'operador') {
+    $stmt = $conn->prepare("SELECT disponibilidad FROM operadores WHERE usuario_id = ?");
+    $stmt->bind_param("i", $usuario_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $disponibilidad = $row['disponibilidad'];
+    }
+    $stmt->close();
+}
+
 // Verificar si el usuario actual sigue al usuario del perfil
 $stmt = $conn->prepare("SELECT COUNT(*) as count FROM seguidores WHERE seguidor_id = ? AND seguido_id = ?");
 $stmt->bind_param("ii", $usuario_id_actual, $usuario_id);
@@ -246,6 +260,11 @@ switch ($tipo_usuario) {
 
             <label for="tipo_usuario">Tipo de Usuario:</label>
             <input type="text" id="tipo_usuario" name="tipo_usuario" value="<?php echo htmlspecialchars($usuario['tipo_usuario']); ?>" readonly>
+
+            <?php if ($usuario['tipo_usuario'] == 'operador'): ?>
+                <label for="disponibilidad">Disponibilidad para trabajar:</label>
+                <input type="text" id="disponibilidad" name="disponibilidad" value="<?php echo htmlspecialchars($disponibilidad == '1' ? 'En busca de una oportunidad de trabajo' : 'Actualmente laborando, pero buscando una mejor oportunidad'); ?>" readonly>
+            <?php endif; ?>
         </div>
         <button id="follow-button" class="button" data-seguidor-id="<?php echo $usuario_id_actual; ?>" data-seguido-id="<?php echo $usuario_id; ?>">
             <?php echo $siguiendo ? 'Dejar de seguir' : 'Seguir'; ?>

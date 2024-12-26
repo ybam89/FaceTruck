@@ -47,14 +47,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['contenido'])) {
     exit;
 }
 
-    if (isset($_POST['disponibilidad'])) {
-        $disponibilidad = $_POST['disponibilidad'];
+if (isset($_POST['disponibilidad'])) {
+    $disponibilidad = $_POST['disponibilidad'];
+    if ($tipo_usuario == 'operador') {
         $stmt = $conn->prepare("UPDATE operadores SET disponibilidad = ? WHERE usuario_id = ?");
-        $stmt->bind_param("si", $disponibilidad, $usuario_id);
-        $stmt->execute();
-        $stmt->close();
+    } elseif ($tipo_usuario == 'hombreCamion') {
+        $stmt = $conn->prepare("UPDATE hombres_camion SET disponibilidad = ? WHERE usuario_id = ?");
+    }
+    $stmt->bind_param("ii", $disponibilidad, $usuario_id);
+    $stmt->execute();
+    $stmt->close();
 }
-
 
 // Fetch publicaciones del usuario
 $publicaciones = [];
@@ -73,7 +76,7 @@ switch ($tipo_usuario) {
         $sql = "SELECT pregunta_uno_operadores, pregunta_dos_operadores, pregunta_tres_operadores, disponibilidad FROM operadores WHERE usuario_id = ?";
         break;
     case 'hombreCamion':
-        $sql = "SELECT pregunta_uno_hombres_camion, pregunta_dos_hombres_camion, pregunta_tres_hombres_camion FROM hombres_camion WHERE usuario_id = ?";
+        $sql = "SELECT pregunta_uno_hombres_camion, pregunta_dos_hombres_camion, pregunta_tres_hombres_camion, disponibilidad FROM hombres_camion WHERE usuario_id = ?";
         break;
     case 'empresa':
         $sql = "SELECT pregunta_uno_empresas, pregunta_dos_empresas, pregunta_tres_empresas FROM empresas WHERE usuario_id = ?";
@@ -91,7 +94,7 @@ $result = $stmt->get_result(); // Obtiene el resultado de la consulta
 // Verificar si se encontró algún resultado
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc(); // Obtener los datos del usuario
-    if ($tipo_usuario == 'operador') {
+    if ($tipo_usuario == 'operador' || $tipo_usuario == 'hombreCamion') {
         $disponibilidad_actual = $row['disponibilidad'] ?? '';
     }
 } else {
@@ -173,7 +176,6 @@ switch ($tipo_usuario) {
 }
 
 // Añade esta línea al final
-
 ?>
 
 <!DOCTYPE html>
@@ -523,6 +525,15 @@ switch ($tipo_usuario) {
                 
                 <label for="pregunta_tres">Pregunta tres hombres camión</label>
                 <input type="text" id="pregunta_tres" name="pregunta_tres" value="<?php echo $row['pregunta_tres_hombres_camion']; ?>" readonly>
+                
+                <form method="POST" action="">
+                    <label for="disponibilidad">Disponibilidad para trabajar:</label><br>
+                    <input type="radio" id="disponibilidad1" name="disponibilidad" value="4" <?php echo ($row['disponibilidad'] == '4') ? 'checked' : ''; ?>>
+                    <label for="disponibilidad1">Disponible para el trabajo</label><br>
+                    <input type="radio" id="disponibilidad3" name="disponibilidad" value="5" <?php echo ($row['disponibilidad'] == '5') ? 'checked' : ''; ?>>
+                    <label for="disponibilidad3">Actualmente trabajando</label><br>
+                    <button type="submit" class="button">Guardar</button>
+                </form>
             </div>
         <?php elseif ($tipo_usuario == 'empresa'): ?>
             <h2>Formulario para Empresas</h2>
