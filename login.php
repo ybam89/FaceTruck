@@ -1,179 +1,119 @@
 <?php
-session_start(); // Inicia la sesión
+session_start(); // Inicia la sesión para poder usar $_SESSION
 
-// Incluir el archivo de conexión a la base de datos
-include 'db.php';
-
-// Obtener el ID del usuario y el tipo de usuario desde la sesión
-if (!isset($_SESSION['usuario_id']) || !isset($_SESSION['tipo_usuario'])) {
-    echo "Error: No se ha iniciado sesión correctamente.";
-    exit;
-}
-
-$usuario_id = $_SESSION['usuario_id'];
-$tipo_usuario = $_SESSION['tipo_usuario'];
-
-date_default_timezone_set('America/Mexico_City');
-
-// Incluir al inicio del archivo, después de la conexión a la base de datos y la obtención del usuario
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['contenido'])) {
-    $contenido = sanitizeInput($_POST['contenido']);
-    $imagen = ''; // Manejar la carga de imágenes aquí si es necesario
-    $fecha_publicacion = date('Y-m-d H:i:s'); // Fecha y hora actual
-
-    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == UPLOAD_ERR_OK) {
-        $imagen = 'uploads/' . basename($_FILES['imagen']['name']);
-        move_uploaded_file($_FILES['imagen']['tmp_name'], $imagen);
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Verificación de reCAPTCHA
+    $recaptcha_secret = 'YOUR_SECRET_KEY'; // Reemplaza 'YOUR_SECRET_KEY' con tu clave secreta de reCAPTCHA
+    $recaptcha_response = $_POST['g-recaptcha-response']; // Obtiene la respuesta de reCAPTCHA del formulario
+    $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
+    
+    // Solicita la verificación de reCAPTCHA a Google
+    $recaptcha = file_get_contents($recaptcha_url . '?secret=' . $recaptcha_secret . '&response=' . $recaptcha_response);
+    $recaptcha = json_decode($recaptcha);
+    
+    // Verifica si la validación de reCAPTCHA fue exitosa
+    if (!$recaptcha->success) {
+        $_SESSION['error'] = 'Error de verificación de reCAPTCHA. Inténtalo de nuevo.';
+        header("Location: login.php");
+        exit();
     }
 
-    // Usar sentencias preparadas para prevenir inyecciones SQL
-    $stmt = $conn->prepare("INSERT INTO publicaciones (usuario_id, contenido, imagen, fecha_publicacion) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("isss", $usuario_id, $contenido, $imagen, $fecha_publicacion);
+    $correo = $_POST['username']; // Obtiene el correo electrónico del formulario
+    $password = $_POST['password']; // Obtiene la contraseña del formulario
+
+    // Datos de conexión a la base de datos
+    $servername = "localhost";
+    $db_username = "root";
+    $db_password = "pjyWa2THaRii5L2kC4LlvO8uofNIQ7dlTzyI0LpIuUea0Q44sz";
+    $dbname = "facetruck";
+
+    // Crea una nueva conexión a la base de datos
+    $conn = new mysqli($servername, $db_username, $db_password, $dbname);
+
+    // Verifica si la conexión a la base de datos ha fallado
+    if ($conn->connect_error) {
+        die("Conexión fallida: " . $conn->connect_error);
+    }
+
+    // Prepara una consulta SQL para verificar el correo en la base de datos
+    $sql = "SELECT id, password FROM usuarios WHERE correo = ?";
+    $stmt = $conn->prepare($sql);
+    // Asigna el valor del correo a la consulta preparada
+    $stmt->bind_param("s", $correo);
+    // Ejecuta la consulta
     $stmt->execute();
-    $stmt->close();
+    // Almacena el resultado de la consulta
+    $stmt->store_result();
 
-    // Redirigir después de procesar el formulario para evitar duplicaciones
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit;
-}
-
-if (isset($_POST['disponibilidad'])) {
-    $disponibilidad = (int)$_POST['disponibilidad'];
-    if ($tipo_usuario == 'operador') {
-        $stmt = $conn->prepare("UPDATE operadores SET disponibilidad = ? WHERE usuario_id = ?");
-    } elseif ($tipo_usuario == 'hombreCamion') {
-        $stmt = $conn->prepare("UPDATE hombres_camion SET disponibilidad = ? WHERE usuario_id = ?");
-    }
-    $stmt->bind_param("ii", $disponibilidad, $usuario_id);
-    $stmt->execute();
-    $stmt->close();
-}
-
-// Fetch publicaciones del usuario
-$publicaciones = [];
-$stmt = $conn->prepare("SELECT * FROM publicaciones WHERE usuario_id = ? ORDER BY fecha_publicacion DESC LIMIT 10");
-$stmt->bind_param("i", $usuario_id);
-$stmt->execute();
-$result = $stmt->get_result();
-while ($row = $result->fetch_assoc()) {
-    $publicaciones[] = $row;
-}
-$stmt->close();
-
-// Consulta para obtener la información del usuario según el tipo
-switch ($tipo_usuario) {
-    case 'operador':
-        $sql = "SELECT pregunta_uno_operadores, pregunta_dos_operadores, pregunta_tres_operadores, disponibilidad FROM operadores WHERE usuario_id = ?";
-        break;
-    case 'hombreCamion':
-        $sql = "SELECT pregunta_uno_hombres_camion, pregunta_dos_hombres_camion, pregunta_tres_hombres_camion, disponibilidad FROM hombres_camion WHERE usuario_id = ?";
-        break;
-    case 'empresa':
-        $sql = "SELECT pregunta_uno_empresas, pregunta_dos_empresas, pregunta_tres_empresas FROM empresas WHERE usuario_id = ?";
-        break;
-    default:
-        echo "Error: Tipo de usuario no válido.";
-        exit;
-}
-
-$stmt = $conn->prepare($sql); // Prepara la consulta SQL
-$stmt->bind_param("i", $usuario_id); // Vincula el parámetro ID del usuario
-$stmt->execute(); // Ejecuta la consulta
-$result = $stmt->get_result(); // Obtiene el resultado de la consulta
-
-// Verificar si se encontró algún resultado
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc(); // Obtener los datos del usuario
-    if ($tipo_usuario == 'operador' || $tipo_usuario == 'hombreCamion') {
-        $disponibilidad_actual = $row['disponibilidad'] ?? '';
-    }
-} else {
-    echo "No se encontró información del usuario.";
-    exit;
-}
-
-$stmt->close(); // Cierra la declaración preparada
-
-// Consulta para obtener el correo y foto de perfil del usuario desde la tabla Usuarios
-$sql_email = "SELECT correo, foto_perfil FROM Usuarios WHERE id = ?";
-$stmt_email = $conn->prepare($sql_email);
-$stmt_email->bind_param("i", $usuario_id);
-$stmt_email->execute();
-$result_email = $stmt_email->get_result();
-
-// Verificar si se encontró algún resultado para el correo y la foto de perfil
-if ($result_email->num_rows > 0) {
-    $row_email = $result_email->fetch_assoc();
-    $correo = $row_email['correo'];
-    $foto_perfil = $row_email['foto_perfil']; // Obtener la ruta de la foto de perfil
-} else {
-    $correo = "Correo no encontrado";
-    $foto_perfil = 'img/camion.jpg'; // Imagen predeterminada
-}
-
-$stmt_email->close(); // Cierra la declaración preparada
-
-// Fetch job offers for 'empresa' users before closing the connection
-$job_offers = [];
-if ($tipo_usuario == 'empresa') {
-    $sql_ofertas = "SELECT * FROM ofertas_empleo";
-    $result_ofertas = $conn->query($sql_ofertas);
-    if ($result_ofertas->num_rows > 0) {
-        while($row_oferta = $result_ofertas->fetch_assoc()) {
-            $job_offers[] = $row_oferta;
+    // Verifica si se encontró un usuario con el correo proporcionado
+    if ($stmt->num_rows > 0) {
+        // Asigna los resultados de la consulta a variables
+        $stmt->bind_result($id, $hashed_password);
+        $stmt->fetch();
+        // Verifica si la contraseña proporcionada coincide con la almacenada en la base de datos
+        if (password_verify($password, $hashed_password)) {
+            // Almacena el id del usuario en la sesión
+            $_SESSION['operador_id'] = $id;
+            echo 'Inicio de sesión exitoso!<br>';
+            echo 'ID de usuario: ' . $id;
+            echo '<script>
+                    setTimeout(function() {
+                        window.location.href = "perfil.php";
+                    }, 5000);
+                  </script>';
+            exit();
+        } else {
+            // Si la contraseña es incorrecta, establece un mensaje de error en la sesión
+            $_SESSION['error'] = 'Contraseña incorrecta';
         }
+    } else {
+        // Si no se encontró el correo en la base de datos, establece un mensaje de error en la sesión
+        $_SESSION['error'] = 'Correo electrónico no encontrado';
     }
+
+    // Cierra la declaración y la conexión a la base de datos
+    $stmt->close();
+    $conn->close();
+
+    // Redirige de vuelta a la página de inicio de sesión
+    header("Location: login.php");
+    exit();
 }
-
-// Establecer la imagen de perfil predeterminada si no hay una imagen de perfil
-$foto_perfil = $foto_perfil ?? 'img/camion.jpg'; // Usa un valor predeterminado si no está definido
-
-// Menús según el tipo de usuario
-$menu = '';
-switch ($tipo_usuario) {
-    case 'operador':
-        $menu = '<ul>
-                    <li><a href="perfil.php">Mi Perfil</a></li>
-                    <li><a href="inicio_facetruck.php">Inicio FaceTruck</a></li>
-                    <li><a href="ofertas_empleo.php">Ofertas de empleo</a></li>
-                    <li><a href="universo_facetruck.php">Universo FaceTruck</a></li>
-                 </ul>';
-        break;
-    case 'hombreCamion':
-        $menu = '<ul>
-                    <li><a href="perfil.php">Mi Perfil</a></li>
-                    <li><a href="inicio_facetruck.php">Inicio FaceTruck</a></li>
-                    <li><a href="universo_facetruck.php">Universo FaceTruck</a></li>
-                    <li><a href="ofertas_empresas.php">Ofertas de empresas</a></li>
-                    <li><a href="buscar_operadores.php">Buscar operadores</a></li>
-                    <li><a href="buscar_fletes.php">Buscar fletes eventuales</a></li>
-                    <li><a href="publicar_vacante.php">Publicar y consultar mis vacantes "operador"</a></li>
-                 </ul>';
-        break;
-    case 'empresa':
-        $menu = '<ul>
-                    <li><a href="perfil.php">Mi Perfil</a></li>
-                    <li><a href="inicio_facetruck.php">Inicio FaceTruck</a></li>
-                    <li><a href="universo_facetruck.php">Universo FaceTruck</a></li>
-                    <li><a href="buscar_operadores.php">Buscar operadores</a></li>
-                    <li><a href="buscar_hombres_camion.php">Buscar Hombres camión</a></li>
-                    <li><a href="buscar_ofertas_rutas.php">Buscar ofertas de rutas</a></li>
-                    <li><a href="publicar_vacante.php">Publicar y consultar mis vacantes "operador"</a></li>
-                    <li><a href="publicar_flete.php">Publicar y consultar mis Fletes eventuales</a></li>
-                    <li><a href="publicar_oferta_ruta.php">Publicar y consultar oferta de ruta</a></li>
-                </ul>';
-        break;
-}
-
-// Añade esta línea al final
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil del Usuario - FaceTruck</title>
+    <meta charset="UTF-8"> <!-- Define la codificación de caracteres como UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Configura la vista para dispositivos móviles -->
+    <title>Iniciar Sesión - FaceTruck</title> <!-- Título de la página -->
     <link rel="stylesheet" href="style.css">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script> <!-- Script para cargar reCAPTCHA -->
 </head>
 <body>
+    <div class="login-container">
+        <img src="img/camion.jpg" alt="Camión"> <!-- Imagen de encabezado -->
+        <h2>Inicio de Sesión - FaceTruck</h2> <!-- Título de la página -->
+        <?php
+        if (isset($_SESSION['error'])) {
+            // Muestra el mensaje de error si existe en la sesión
+            echo '<div class="error-message">' . $_SESSION['error'] . '</div>';
+            unset($_SESSION['error']); // Elimina el mensaje de error de la sesión
+        }
+        ?>
+        <form action="login.php" method="post"> <!-- Formulario de inicio de sesión -->
+            <label for="username">Correo Electrónico</label>
+            <input type="email" id="username" name="username" placeholder="Correo Electrónico" autocomplete="username" required> <!-- Campo de entrada para el correo electrónico -->
+            
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" name="password" placeholder="Contraseña" autocomplete="current-password" required> <!-- Campo de entrada para la contraseña -->
+            
+            <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div> <!-- Añadir reCAPTCHA al formulario -->
+            
+            <input type="submit" value="Iniciar Sesión"> <!-- Botón para enviar el formulario -->
+        </form>
+        <button onclick="location.href='registro.php'" aria-label="Registrarse">Registrarse</button> <!-- Botón para ir a la página de registro -->
+        <button onclick="location.href='olvide_contraseña.html'" aria-label="Olvidé mi contraseña">Olvidé mi contraseña</button> <!-- Botón para ir a la página de recuperación de contraseña -->
+    </div>
+</body>
+</html>
