@@ -2,7 +2,7 @@
 // Configuración de la conexión a la base de datos
 $servername = "localhost";
 $username = "root";
-$password = "pjyWa2THaRii5L2kC4LlvO8uofNIQ7dlTzyI0LpIuUea0Q44sz"; // Asegúrate de que esta contraseña es correcta
+$password = "pjyWa2THaRii5L2kC4LlvO8uofNIQ7dlTzyI0LpIuUea0Q44sz"; // Nueva contraseña
 $dbname = "facetruck"; // Verifica que este es el nombre correcto de la base de datos
 
 // Crear la conexión usando MySQLi
