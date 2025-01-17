@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body>
     <div class="login-container">
-        <img src="img/camion.jpg" alt="Camión"> <!-- Imagen de encabezado -->
+        <img src="img/camion.jpg" alt="Camión" class="header-image"> <!-- Imagen de encabezado -->
         <h2>Inicio de Sesión - FaceTruck</h2> <!-- Título de la página -->
         <?php
         if (isset($_SESSION['error'])) {
