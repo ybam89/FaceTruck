@@ -92,8 +92,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body>
     <div class="login-container">
-        <img src="img/camion.jpg" alt="Camión" class="header-image"> <!-- Imagen de encabezado -->
-        <h2>Inicio de Sesión - FaceTruck</h2> <!-- Título de la página -->
+        <img src="img/camion.jpg" alt="Camión" width="585" height="148" class="header-image"> <!-- Imagen de encabezado -->
+      <h2>Inicio de Sesión - FaceTruck ok</h2> <!-- Título de la página -->
         <?php
         if (isset($_SESSION['error'])) {
             // Muestra el mensaje de error si existe en la sesión
@@ -113,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <input type="submit" value="Iniciar Sesión"> <!-- Botón para enviar el formulario -->
         </form>
         <button onclick="location.href='registro.php'" aria-label="Registrarse">Registrarse</button> <!-- Botón para ir a la página de registro -->
-        <button onclick="location.href='olvide_contraseña.html'" aria-label="Olvidé mi contraseña">Olvidé mi contraseña</button> <!-- Botón para ir a la página de recuperación de contraseña -->
-    </div>
+        <button onclick="location.href='olvide_contraseña.html'" aria-label="Olvidé mi contraseña">Olvidé mi contraseña</button> <!-- Botón para ir a la página de recuperación de contraseñas -->
+</div>
 </body>
 </html>
