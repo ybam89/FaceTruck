@@ -3,20 +3,20 @@ session_start(); // Inicia la sesión para poder usar $_SESSION
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verificación de reCAPTCHA
-    $recaptcha_secret = 'YOUR_SECRET_KEY'; // Reemplaza 'YOUR_SECRET_KEY' con tu clave secreta de reCAPTCHA
-    $recaptcha_response = $_POST['g-recaptcha-response']; // Obtiene la respuesta de reCAPTCHA del formulario
-    $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
+    // $recaptcha_secret = 'YOUR_SECRET_KEY'; // Reemplaza 'YOUR_SECRET_KEY' con tu clave secreta de reCAPTCHA
+    // $recaptcha_response = $_POST['g-recaptcha-response']; // Obtiene la respuesta de reCAPTCHA del formulario
+    // $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
     
     // Solicita la verificación de reCAPTCHA a Google
-    $recaptcha = file_get_contents($recaptcha_url . '?secret=' . $recaptcha_secret . '&response=' . $recaptcha_response);
-    $recaptcha = json_decode($recaptcha);
+    // $recaptcha = file_get_contents($recaptcha_url . '?secret=' . $recaptcha_secret . '&response=' . $recaptcha_response);
+    // $recaptcha = json_decode($recaptcha);
     
     // Verifica si la validación de reCAPTCHA fue exitosa
-    if (!$recaptcha->success) {
-        $_SESSION['error'] = 'Error de verificación de reCAPTCHA. Inténtalo de nuevo.';
-        header("Location: login.php");
-        exit();
-    }
+    // if (!$recaptcha->success) {
+    //     $_SESSION['error'] = 'Error de verificación de reCAPTCHA. Inténtalo de nuevo.';
+    //     header("Location: login.php");
+    //     exit();
+    // }
 
     $correo = $_POST['username']; // Obtiene el correo electrónico del formulario
     $password = $_POST['password']; // Obtiene la contraseña del formulario
@@ -67,15 +67,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['error'] = 'Contraseña incorrecta';
         }
     } else {
-        // Si no se encontró el correo en la base de datos, establece un mensaje de error en la sesión
-        $_SESSION['error'] = 'Correo electrónico no encontrado';
+        // Si no se encuentra un usuario con el correo proporcionado, establece un mensaje de error en la sesión
+        $_SESSION['error'] = 'Correo no encontrado';
     }
 
     // Cierra la declaración y la conexión a la base de datos
     $stmt->close();
     $conn->close();
 
-    // Redirige de vuelta a la página de inicio de sesión
+    // Redirige al usuario de vuelta a la página de inicio de sesión con un mensaje de error
     header("Location: login.php");
     exit();
 }

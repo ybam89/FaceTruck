@@ -178,6 +178,7 @@ h2 {
     width: 100%; /* Ancho completo */
     max-width: 200px; /* Ancho máximo */
     margin-bottom: 20px; /* Margen inferior */
+	
 }
 
 .login-container label {
@@ -235,4 +236,78 @@ h2 {
     height: 200px; /* Altura de la imagen */
     display: block; /* Mostrar como bloque */
     margin: 0 auto; /* Centrar la imagen */
+}
+/* Estilos CSS */
+body {
+    font-family: Arial, sans-serif; /* Establece la fuente del texto a Arial, y si no está disponible, a sans-serif */
+    background-color: #f0f0f0; /* Establece el color de fondo de la página a un gris claro */
+    margin: 0; /* Elimina el margen por defecto alrededor del cuerpo de la página */
+    display: flex; /* Usar flexbox para centrar el contenido */
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+    height: 100vh; /* Altura de la página completa */
+}
+
+.login-container {
+    background-color: #ffffff; /* Color de fondo del contenedor de login */
+    padding: 20px; /* Espaciado interno */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra del contenedor */
+    text-align: center; /* Centrar el texto */
+}
+
+.login-container img.header-image {
+    width: 150px; /* Ancho de la imagen */
+    height: 200px; /* Altura de la imagen */
+    display: block; /* Mostrar como bloque */
+    margin: 0 auto; /* Centrar la imagen */
+}
+
+.login-container label {
+    display: block; /* Mostrar como bloque */
+    margin: 10px 0 5px; /* Margen */
+    font-weight: bold; /* Texto en negrita */
+}
+
+.login-container input {
+    width: calc(100% - 20px); /* Ancho de los inputs */
+    padding: 10px; /* Relleno interno */
+    margin: 10px 0; /* Margen */
+    border: 1px solid #ccc; /* Bordes de los inputs */
+    border-radius: 4px; /* Bordes redondeados */
+    display: block; /* Mostrar como bloque */
+}
+
+.login-container input[type="submit"] {
+    background-color: #007BFF; /* Color de fondo del botón de envío */
+    border: none; /* Sin borde */
+    color: white; /* Color del texto del botón de envío */
+    cursor: pointer; /* Cambiar el cursor a mano */
+    margin-top: 10px; /* Margen superior */
+    width: 100%; /* Ancho completo */
+    padding: 10px; /* Relleno interno */
+}
+
+.login-container input[type="submit"]:hover {
+    background-color: #0056b3; /* Color de fondo del botón de envío al pasar el ratón */
+}
+
+.login-container button {
+    width: 100%; /* Ancho completo */
+    padding: 10px; /* Relleno interno */
+    background-color: #007BFF; /* Color de fondo de los botones */
+    border: none; /* Sin borde */
+    color: white; /* Color del texto de los botones */
+    border-radius: 4px; /* Bordes redondeados */
+    cursor: pointer; /* Cambiar el cursor a mano */
+    margin-top: 10px; /* Margen superior */
+}
+
+.login-container button:hover {
+    background-color: #0056b3; /* Color de fondo de los botones al pasar el ratón */
+}
+
+.error-message {
+    color: red; /* Color del texto del mensaje de error */
+    margin: 10px 0; /* Margen del mensaje de error */
 }
